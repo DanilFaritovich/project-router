@@ -29,6 +29,13 @@ describe('portfolio', () => {
     'keeps the Contacts and Hero social order and highlights only Telegram for %s',
     async (locale) => {
       const { wrapper } = await render(`/${locale}/`)
+      for (const link of wrapper.findAll('a[href^="https://"]')) {
+        expect(link.attributes('target')).toBe('_blank')
+        expect(link.attributes('rel')).toBe('noopener noreferrer')
+      }
+      for (const link of wrapper.findAll('a:not([href^="https://"])')) {
+        expect(link.attributes('target')).toBeUndefined()
+      }
       const instagram = wrapper.get(
         '#contacts a[href="https://www.instagram.com/daniel_de_casto"]',
       )

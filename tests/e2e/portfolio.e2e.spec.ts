@@ -1,5 +1,42 @@
 import { test, expect } from '@playwright/test'
 
+test('external social and release links preserve the portfolio tab and scroll position', async ({
+  page,
+  context,
+}) => {
+  // Keep popup navigation deterministic and independent of external services.
+  await context.route(/^https:\/\//, (route) =>
+    route.fulfill({
+      contentType: 'text/html',
+      body: '<title>External destination</title>',
+    }),
+  )
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/en/')
+  for (const selector of [
+    '#hero .social-links a',
+    '#projects a[href$="/releases/latest"]',
+    '#contacts .social-links a',
+  ]) {
+    const links = page.locator(selector)
+    for (const link of await links.all()) {
+      await link.scrollIntoViewIfNeeded()
+      const url = page.url()
+      const scrollY = await page.evaluate(() => window.scrollY)
+      const popupPromise = page.waitForEvent('popup')
+      await link.click()
+      const popup = await popupPromise
+      await popup.waitForLoadState()
+      expect(popup.url()).toBe(await link.getAttribute('href'))
+      expect(await popup.evaluate(() => window.opener)).toBeNull()
+      await popup.close()
+      expect(page.url()).toBe(url)
+      expect(await page.evaluate(() => window.scrollY)).toBe(scrollY)
+    }
+  }
+  expect(context.pages()).toHaveLength(1)
+})
+
 for (const width of [320, 390, 768, 1024, 1440]) {
   test(`layout keeps consistent content spacing without overflow at ${width}px`, async ({
     page,
@@ -61,6 +98,7 @@ test('desktop section tracking and language switching preserve the visible secti
     'Избранные проекты',
   )
   await page.locator('#hero').evaluate((el) => el.scrollIntoView())
+  expect(page.context().pages()).toHaveLength(1)
   await expect(page.locator('.desktop-rail a[lang="en"]')).toHaveAttribute(
     'href',
     '/en/',

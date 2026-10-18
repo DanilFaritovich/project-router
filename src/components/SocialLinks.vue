@@ -31,7 +31,9 @@ const { t } = useI18n()
         :primary="link.label === 'telegram'"
         >{{ t(link.label) }}</UiAction
       >
-      <a v-else :href="link.href">{{ t(link.label) }}</a>
+      <a v-else :href="link.href" target="_blank" rel="noopener noreferrer">{{
+        t(link.label)
+      }}</a>
     </template>
   </div>
 </template>

@@ -30,10 +30,14 @@ test('production direct entry, refresh, language switching and root redirect', a
 
 test('Russian production HTML works with JavaScript disabled', async ({
   browser,
+  baseURL,
 }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false })
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    baseURL,
+  })
   const page = await context.newPage()
-  await page.goto('http://127.0.0.1:4173/ru/')
+  await page.goto('/ru/')
   await expect(page.locator('main')).toContainText('Данил Мифтахов')
   await page
     .getByRole('link', { name: 'English' })
