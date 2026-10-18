@@ -19,6 +19,12 @@ export const sectionLabel = {
   contacts: 'navContacts',
 } as const
 const github = 'https://github.com/DanilFaritovich/'
+export const contactSocialOrder = [
+  'telegram',
+  'linkedin',
+  'github',
+  'instagram',
+]
 export const socialLinks = [
   { label: 'github', href: github.slice(0, -1) },
   {

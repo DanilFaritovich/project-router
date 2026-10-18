@@ -26,7 +26,7 @@ afterEach(() => {
 
 describe('portfolio', () => {
   it.each(['en', 'ru'])(
-    'shows Instagram only in Contacts for %s',
+    'keeps the Contacts and Hero social order and highlights only Telegram for %s',
     async (locale) => {
       const { wrapper } = await render(`/${locale}/`)
       const instagram = wrapper.get(
@@ -35,8 +35,17 @@ describe('portfolio', () => {
       expect(instagram.text()).toBe('Instagram')
       expect(instagram.classes()).toContain('action')
       expect(instagram.classes()).not.toContain('action-primary')
-      expect(wrapper.findAll('#contacts .social-links a')).toHaveLength(4)
-      expect(wrapper.findAll('#hero .social-links a')).toHaveLength(3)
+      expect(
+        wrapper.findAll('#contacts .social-links a').map((link) => link.text()),
+      ).toEqual(['Telegram', 'LinkedIn', 'GitHub', 'Instagram'])
+      expect(
+        wrapper
+          .findAll('#contacts .social-links .action-primary')
+          .map((link) => link.text()),
+      ).toEqual(['Telegram'])
+      expect(
+        wrapper.findAll('#hero .social-links a').map((link) => link.text()),
+      ).toEqual(['GitHub', 'LinkedIn', 'Telegram'])
       expect(wrapper.find('#hero a[href*="instagram.com"]').exists()).toBe(
         false,
       )

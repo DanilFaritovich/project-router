@@ -1,17 +1,24 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { socialLinks } from '../content/portfolio'
+import { contactSocialOrder, socialLinks } from '../content/portfolio'
 import UiAction from './UiAction.vue'
 const props = defineProps<{
   buttons?: boolean
   section?: 'hero' | 'contacts'
 }>()
-const links = computed(() =>
-  socialLinks.filter(
+const links = computed(() => {
+  const visible = socialLinks.filter(
     (link) => !('contactsOnly' in link) || props.section === 'contacts',
-  ),
-)
+  )
+  return props.section === 'contacts'
+    ? visible.sort(
+        (a, b) =>
+          contactSocialOrder.indexOf(a.label) -
+          contactSocialOrder.indexOf(b.label),
+      )
+    : visible
+})
 const { t } = useI18n()
 </script>
 
