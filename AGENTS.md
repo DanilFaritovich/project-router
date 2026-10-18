@@ -1,30 +1,25 @@
 # ProjectRouter agent instructions
 
-ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stage 01 contains
-documentation, Git setup, standards and preserved references only. Do not scaffold
-an app or install npm dependencies unless a later task requests it.
+ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stage 02 provides
+a minimal Vue application, localized static HTML, quality tooling and CI.
+Portfolio design, catalog, PDF interactions and delivery remain later stages.
 
-- Planned stack: Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Vue I18n,
-  SSG/prerender and PDF.js. Git-tracked content; no dedicated backend or database.
+- Stack: Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Vue I18n,
+  Vite SSG/Unhead; PDF.js is planned. Git-tracked content; no backend or database.
 - Read relevant local `.agents/skills/<name>/SKILL.md`. Start development with
   `task-development-workflow`; use `standards-sync` for updates and the exact
   `.codex-standards.lock.yaml` revision. Install complete packages; read optional
   references only when needed. Project-specific instructions take precedence:
   the generic Vue skill's backend/API guidance does not require a backend here.
-- Preserve the valid quoted YAML `description` fields in the installed
-  `code-quality` and `seo` skills. Their versions at the locked upstream commit
-  contain unquoted colon-space sequences and require a separate fix in
-  `codex-development-standards`. Until fixed upstream, synchronization must retain
-  these local repairs and validate frontmatter; do not restore malformed metadata.
 - For this repository, standing owner authorization covers task branches from
   `develop`, local commit, push and PR into `develop` via authenticated `gh`
   without additional confirmation. Continue an existing task branch. Preserve
   user changes; never force-push. Merge is manual, never automatic. Respect
   narrower stop points in a specific task. Do not develop directly on base branches.
-- Once Stage 02 provides tooling: `make fix` → targeted tests → `make check`.
-  Use `make verify` only when justified. CI independently runs read-only
-  `make ci`; it must not repair source. These targets and CI do not exist yet:
-  Stage 01 uses focused documentation, links, lock, secrets and Git checks.
+- Node 22.22.2+ (22.x), `npm ci`; use `make fix` → targeted tests → `make check`.
+  `make verify` adds SSG/HTML/Chromium checks without repeating `check`.
+  CI independently runs read-only `make ci` (`check` + `verify` once each).
+  Configure `VITE_SITE_ORIGIN` only when a real production origin is known.
 - Use `rg`, bounded output, selective file reads and focused diffs. Do not dump
   path-heavy SVGs, load all skill references or repeat successful full checks
   without a relevant change. Prefer existing PNG previews for visual inspection.
