@@ -2,7 +2,7 @@ version: 1
 
 source:
   repository: https://github.com/DanilFaritovich/codex-development-standards
-  ref: 3e55938f03f2e0a1062e438576fcbc9d72975e14
+  ref: 6e605d0193e10f7fdacff3c3da63455067859b21
 
 profile:
   name: vue-static-site
