@@ -10,6 +10,13 @@ embedded in design references. Unless a specific asset carries a separate
 permission, the owner reserves the applicable rights in those materials.
 Do not copy them into your own website without separate permission from the
 relevant rights holder. Replace them with your own assets when reusing the code.
+
+`design/reference/` contains elements of ProjectRouter's personal branding and
+personal visual design. Publishing these references in a public repository does
+not grant permission to freely reuse those protected personal materials, including
+in another website. This asset policy does not limit any source-code rights
+granted by the standard MIT License.
+
 Third-party materials remain subject to their own licenses.
 
 The code license grants no permission to impersonate Danil Miftakhov, claim his

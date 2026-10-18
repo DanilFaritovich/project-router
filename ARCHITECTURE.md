@@ -97,6 +97,13 @@ interfaces exist. Stage 01 validates documents, packages, links and Git only.
 
 ## Delivery boundaries (later)
 
+The nine-stage [README roadmap](README.md) defines implementation order. Initial
+quality tooling and CI start in Stage 02; Stage 07 expands testing and visual QA.
+Stage 08 covers Docker and production CI/CD foundations; Stage 09 covers Caddy
+and production release readiness. These are planned stages, not authorization
+to deploy. After them, a separate `develop` → `main` release PR and the `v1.0.0`
+tag/release require explicit authorization, outside the nine implementation stages.
+
 The future pipeline may package static output in Docker, publish immutable
 images to GHCR and serve it through Caddy with HTTPS and direct localized routes.
 Public requests go to static assets; there is no application server or database.

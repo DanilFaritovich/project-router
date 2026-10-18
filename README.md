@@ -2,84 +2,64 @@
 
 [English](README.md) · [Русский](README.ru.md)
 
-ProjectRouter is Danil Miftakhov's planned bilingual engineering portfolio:
-a static website presenting projects, reusable developer tools, resume documents
-and contact links. Content and translations will be reviewed and tracked in Git.
+ProjectRouter is Danil Miftakhov's planned EN/RU engineering portfolio: projects,
+developer tools, resume documents and contacts, with content tracked in Git.
 
-## Implemented in Stage 01
+## Current state — Stage 01
 
-- Repository initialization, `main` / `develop` / task-branch workflow.
-- Standard MIT code license and separate personal-materials policy.
-- Bilingual README, architecture plan, design specification and Codex instructions.
-- Nine complete local development skills, pinned to an exact upstream commit.
-- All 20 existing SVG/PNG/README reference files preserved without modification.
+Repository setup, MIT licensing, bilingual documentation, architecture/design
+plans and nine complete local skills are prepared. All 20 original design
+reference files are preserved. No Vue application, npm dependencies, Makefile,
+CI workflow or deployment exists yet.
 
-There is no Vue application, npm dependency installation, Makefile, CI workflow,
-Docker configuration or deployed website at this stage.
+## Planned website
 
-## Planned stack and features
-
-Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router and Vue I18n; SSG/prerendering
-for meaningful initial HTML at `/en/` and `/ru/`. Planned SEO includes localized
-metadata, canonical URLs, reciprocal hreflang and a sitemap after the production
-origin is known. No dedicated backend or database is planned.
-
-The responsive design has seven sections: Hero, About, Skills, Projects,
-Developer Tools, Resume and Contacts. Projects includes three Featured Projects
-and a More Projects list. Future interactions include language switching,
-mobile navigation and a PDF.js resume modal. Images and PDFs are optional;
-no actual resume PDFs are supplied. Latest Release and Live Demo actions will
-appear only for verified destinations. No demo or release is promised by a mockup.
-
-Quality tooling is planned around Vitest, Vue Test Utils, Playwright, ESLint,
-Prettier, vue-tsc and a Makefile, with independent read-only GitHub Actions checks.
-Docker, GHCR, Caddy and delivery belong to later stages; production deployment
-requires separate authorization.
+Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router and Vue I18n, with SSG/prerender
+at `/en/` and `/ru/`, SEO, PDF.js, Vitest and Playwright. No dedicated backend
+or database is planned. The responsive portfolio will have seven sections,
+three Featured Projects, More Projects and Developer Tools. Demo/release links
+and resume actions depend on verified destinations and real PDF files.
 
 ## Development roadmap
 
-1. **Stage 01 — Repository Initialization & Bootstrap:** this repository setup,
-   standards, licenses and documentation. Application work has not started.
-2. **Stage 02 — Vue Foundation:** scaffold Vue/TypeScript/Vite, select and integrate
-   prerendering, add routing/i18n foundations, dependency lock, Makefile and CI.
-3. **Responsive UI:** implement sections and reusable components from the references.
-4. **Content and interactions:** typed catalog, verified links/media, menu and PDF viewer.
-5. **Localization and quality:** complete EN/RU, generated HTML SEO, focused tests,
-   accessibility and browser visual checks.
-6. **Packaging and delivery:** separately scoped Docker/GHCR/Caddy work and authorized
-   deployment. No deployment infrastructure is configured now.
+Stage 01 is prepared in this PR; stages 02–09 are planned work.
 
-These later phases are plans, not available functionality. Stage 02 must define
-real install/run commands and supported runtime versions before documenting them.
-Future validation flow: `make fix` → targeted tests → `make check`; CI will use
-`make ci`. None of these Make targets exists in Stage 01.
+| Stage | Branch | Scope |
+| --- | --- | --- |
+| 01 | `chore/project-bootstrap` | Bootstrap |
+| 02 | `feature/vue-foundation` | Vue Foundation |
+| 03 | `feature/portfolio-layout` | Layout & Sections |
+| 04 | `feature/projects-catalog` | Projects Catalog |
+| 05 | `feature/i18n-seo` | Localization & SEO |
+| 06 | `feature/resume-interactions` | Resume & Interactions |
+| 07 | `test/portfolio-quality` | Testing & Visual QA |
+| 08 | `feature/production-foundation` | Docker & CI/CD |
+| 09 | `feature/caddy-production` | Caddy & Production Release |
 
-## Repository guide
+After these nine implementation stages, a separate release PR from `develop`
+into `main` and the `v1.0.0` tag/release require explicit authorization. This
+release handoff is not a tenth implementation stage. Production deployment also
+requires separate authorization.
 
-| Path | Purpose |
-| --- | --- |
-| [AGENTS.md](AGENTS.md) | Compact Codex workflow and repository-specific delivery authorization |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Planned modules, data flow, routes, SEO, quality and delivery boundaries |
-| [design/DESIGN.md](design/DESIGN.md) | Design tokens, sections, responsive behavior and interaction requirements |
-| [design/reference/README.md](design/reference/README.md) | Reference priority and original package notes |
-| [.agents/skills/](.agents/skills/) | Complete installed local skill packages and references |
-| [.codex-standards.lock.yaml](.codex-standards.lock.yaml) | Exact standards upstream revision and installed profile |
+## Development and documentation
 
-Standards source: [Codex Development Standards](https://github.com/DanilFaritovich/codex-development-standards),
-`develop`, profile `vue-static-site` v2, using `bootstrap/vue-static-site.md`.
-Installed: task-development-workflow, standards-sync, code-quality, vue,
-vue-testing, design-to-vue, seo, github-actions and documentation.
-Docker, CD and backend skills are not installed.
+Task branches start strictly from `develop`; local commit, push and PR into
+`develop` are owner-authorized. Merge remains manual; never force-push.
+Future quality flow: `make fix` → targeted tests → `make check`, with independent
+read-only CI. Commands and runtime requirements will be defined in Stage 02.
 
-Normal work starts in a task branch strictly from `develop`, then local commit,
-push and PR into `develop` through `gh` under the owner's standing authorization.
-Merge remains manual; never force-push. `main` is the stable branch.
+- [AGENTS.md](AGENTS.md): Codex workflow and project instructions.
+- [ARCHITECTURE.md](ARCHITECTURE.md): planned stack, boundaries, routing and quality.
+- [design/DESIGN.md](design/DESIGN.md) and [reference notes](design/reference/README.md): visual specification.
+- [.agents/skills/](.agents/skills/) and [standards lock](.codex-standards.lock.yaml): nine complete packages from
+  [Codex Development Standards](https://github.com/DanilFaritovich/codex-development-standards),
+  `develop`, profile `vue-static-site` v2, using `bootstrap/vue-static-site.md`.
+  Docker, CD and backend skills are not installed.
 
 ## License
 
-Source code and technical documentation use the standard [MIT License](LICENSE),
-copyright 2026 Danil Miftakhov; copying, modification and commercial use are allowed
-under its terms. Personal photos, original resume documents, personal illustrations
-and branding are excluded from that grant: see [ASSETS-LICENSE.md](ASSETS-LICENSE.md).
-Do not reuse them in your own site without separate permission or impersonate the
-owner. This policy does not claim copyright over unprotected facts or ideas.
+Code and technical documentation use the standard [MIT License](LICENSE),
+copyright 2026 Danil Miftakhov, permitting modification and commercial reuse.
+Personal assets and branding in `design/reference/` follow
+[ASSETS-LICENSE.md](ASSETS-LICENSE.md): public availability grants no reuse or
+impersonation rights. No copyright is claimed over unprotected facts or ideas.

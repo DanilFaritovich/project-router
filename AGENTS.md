@@ -11,6 +11,11 @@ an app or install npm dependencies unless a later task requests it.
   `.codex-standards.lock.yaml` revision. Install complete packages; read optional
   references only when needed. Project-specific instructions take precedence:
   the generic Vue skill's backend/API guidance does not require a backend here.
+- Preserve the valid quoted YAML `description` fields in the installed
+  `code-quality` and `seo` skills. Their versions at the locked upstream commit
+  contain unquoted colon-space sequences and require a separate fix in
+  `codex-development-standards`. Until fixed upstream, synchronization must retain
+  these local repairs and validate frontmatter; do not restore malformed metadata.
 - For this repository, standing owner authorization covers task branches from
   `develop`, local commit, push and PR into `develop` via authenticated `gh`
   without additional confirmation. Continue an existing task branch. Preserve
@@ -35,5 +40,8 @@ an app or install npm dependencies unless a later task requests it.
 - No credentials in Git or browser bundles. Personal materials follow
   [ASSETS-LICENSE.md](ASSETS-LICENSE.md). Never invent demo/release URLs, resume
   files, professional claims or a production domain.
+- Follow the nine-stage roadmap in [README.md](README.md). The separate release
+  PR `develop` → `main` and `v1.0.0` tag/release require explicit authorization;
+  release handoff is not a tenth implementation stage.
 - Docker, GHCR, Caddy and delivery are later stages. No unauthorized production
   deployments, production host access, tags/releases or automatic merges.

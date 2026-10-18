@@ -2,86 +2,63 @@
 
 [English](README.md) · [Русский](README.ru.md)
 
-ProjectRouter — планируемое двуязычное инженерное портфолио Данила Мифтахова:
-статический сайт с проектами, инструментами разработчика, резюме и контактами.
-Контент и переводы будут проходить проверку и храниться в Git.
+ProjectRouter — планируемое EN/RU инженерное портфолио Данила Мифтахова:
+проекты, инструменты разработчика, резюме и контакты; контент хранится в Git.
 
-## Реализовано в Stage 01
+## Текущее состояние — Stage 01
 
-- Инициализация репозитория и схема `main` / `develop` / рабочие ветки.
-- Стандартная MIT для кода и отдельная политика персональных материалов.
-- Двуязычный README, архитектурный план, дизайн-спецификация и инструкции Codex.
-- Девять полных локальных skills с привязкой к точному upstream commit.
-- Все 20 существующих SVG/PNG/README-референсов сохранены без изменений.
+Подготовлены Git-структура, MIT, двуязычная документация, архитектурный и дизайн-план,
+девять полных локальных skills. Все 20 исходных дизайн-референсов сохранены.
+Vue-приложения, npm-зависимостей, Makefile, CI workflow и развёртывания пока нет.
 
-На этом этапе нет Vue-приложения, установленных npm-зависимостей, Makefile,
-CI workflow, конфигурации Docker или опубликованного сайта.
+## Планируемый сайт
 
-## Планируемый стек и возможности
-
-Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router и Vue I18n; SSG/Prerender для
-содержательного исходного HTML по адресам `/en/` и `/ru/`. SEO будет включать
-локализованные метаданные, canonical, взаимные hreflang и sitemap после определения
-production-домена. Собственного backend и базы данных не планируется.
-
-В адаптивном дизайне семь секций: Hero, About, Skills, Projects, Developer Tools,
-Resume и Contacts. Projects содержит три Featured Projects и список More Projects.
-Запланированы переключение языка, мобильное меню и модальное резюме на PDF.js.
-Изображения и PDF необязательны; настоящие PDF резюме пока не предоставлены.
-Latest Release и Live Demo появятся только для проверенных адресов.
-Наличие элемента в макете не означает существование demo или релиза.
-
-Для качества запланированы Vitest, Vue Test Utils, Playwright, ESLint, Prettier,
-vue-tsc и Makefile, а также независимые проверки GitHub Actions без изменения кода.
-Docker, GHCR, Caddy и доставка относятся к поздним этапам; production-деплой
-требует отдельного разрешения.
+Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router и Vue I18n, SSG/Prerender по
+адресам `/en/` и `/ru/`, SEO, PDF.js, Vitest и Playwright. Собственного backend
+и базы данных не планируется. Адаптивное портфолио будет содержать семь секций,
+три Featured Projects, More Projects и Developer Tools. Ссылки demo/release и
+действия с резюме доступны только при проверенных адресах и настоящих PDF.
 
 ## План разработки
 
-1. **Stage 01 — Repository Initialization & Bootstrap:** текущая настройка
-   репозитория, стандартов, лицензий и документации. Разработка приложения не начата.
-2. **Stage 02 — Vue Foundation:** Vue/TypeScript/Vite, выбор и подключение
-   prerendering, основы routing/i18n, lock-файл зависимостей, Makefile и CI.
-3. **Адаптивный UI:** секции и переиспользуемые компоненты по референсам.
-4. **Контент и взаимодействия:** типизированный каталог, проверенные ссылки
-   и медиа, меню и PDF viewer.
-5. **Локализация и качество:** полные EN/RU, SEO с проверкой собранного HTML,
-   целевые тесты, доступность и визуальная проверка в браузере.
-6. **Упаковка и доставка:** отдельно запрошенные Docker/GHCR/Caddy и разрешённый
-   деплой. Инфраструктура развёртывания пока не настроена.
+Stage 01 подготовлен в текущем PR; этапы 02–09 запланированы.
 
-Поздние этапы — планы, а не готовые возможности. Stage 02 должен определить
-реальные команды установки/запуска и версии среды перед их документированием.
-Будущий порядок проверок: `make fix` → целевые тесты → `make check`; CI будет
-вызывать `make ci`. В Stage 01 этих Make-целей ещё нет.
+| Этап | Ветка | Название |
+| --- | --- | --- |
+| 01 | `chore/project-bootstrap` | Bootstrap |
+| 02 | `feature/vue-foundation` | Vue Foundation |
+| 03 | `feature/portfolio-layout` | Layout & Sections |
+| 04 | `feature/projects-catalog` | Projects Catalog |
+| 05 | `feature/i18n-seo` | Localization & SEO |
+| 06 | `feature/resume-interactions` | Resume & Interactions |
+| 07 | `test/portfolio-quality` | Testing & Visual QA |
+| 08 | `feature/production-foundation` | Docker & CI/CD |
+| 09 | `feature/caddy-production` | Caddy & Production Release |
 
-## Карта репозитория
+После этих девяти этапов реализации отдельно выполняются release PR из `develop`
+в `main` и тег/релиз `v1.0.0` по явному разрешению. Этот переход к релизу не является
+десятым этапом реализации. Production-деплой также требует отдельного разрешения.
 
-| Путь | Назначение |
-| --- | --- |
-| [AGENTS.md](AGENTS.md) | Краткий процесс Codex и разрешение публикации в этом репозитории |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | План модулей, потоки данных, маршруты, SEO, качество и границы доставки |
-| [design/DESIGN.md](design/DESIGN.md) | Токены дизайна, секции, адаптивность и требования к взаимодействиям |
-| [design/reference/README.md](design/reference/README.md) | Приоритет референсов и исходные пояснения к комплекту |
-| [.agents/skills/](.agents/skills/) | Полные установленные пакеты skills и references |
-| [.codex-standards.lock.yaml](.codex-standards.lock.yaml) | Точная upstream-ревизия стандартов и установленный профиль |
+## Разработка и документация
 
-Источник стандартов: [Codex Development Standards](https://github.com/DanilFaritovich/codex-development-standards),
-ветка `develop`, профиль `vue-static-site` v2, инструкция `bootstrap/vue-static-site.md`.
-Установлены task-development-workflow, standards-sync, code-quality, vue,
-vue-testing, design-to-vue, seo, github-actions и documentation.
-Docker, CD и backend-скиллы не установлены.
+Рабочие ветки создаются строго от `develop`; локальный commit, push и PR в
+`develop` разрешены владельцем. Merge выполняется вручную; force push запрещён.
+Будущий порядок качества: `make fix` → целевые тесты → `make check`, с независимым
+CI без изменения кода. Команды и требования к среде появятся в Stage 02.
 
-Обычная работа начинается в ветке строго от `develop`, затем локальный commit,
-push и PR в `develop` через `gh` по постоянному разрешению владельца.
-Merge выполняется вручную; force push запрещён. `main` — стабильная ветка.
+- [AGENTS.md](AGENTS.md): процесс Codex и проектные инструкции.
+- [ARCHITECTURE.md](ARCHITECTURE.md): план стека, границ, маршрутов и качества.
+- [design/DESIGN.md](design/DESIGN.md) и [пояснения к референсам](design/reference/README.md): дизайн-спецификация.
+- [.agents/skills/](.agents/skills/) и [lock стандартов](.codex-standards.lock.yaml): девять полных пакетов из
+  [Codex Development Standards](https://github.com/DanilFaritovich/codex-development-standards),
+  ветка `develop`, профиль `vue-static-site` v2, инструкция `bootstrap/vue-static-site.md`.
+  Docker, CD и backend-скиллы не установлены.
 
 ## Лицензия
 
 Код и техническая документация доступны по стандартной [MIT License](LICENSE),
-copyright 2026 Danil Miftakhov; разрешены копирование, изменение и коммерческое
-использование на её условиях. Личные фото, оригинальные резюме, персональные
-иллюстрации и брендинг исключены из этого разрешения:
-[ASSETS-LICENSE.md](ASSETS-LICENSE.md). Нельзя переносить их на свой сайт без
-отдельного разрешения или выдавать себя за владельца. Политика не заявляет
-авторские права на неохраняемые факты и идеи.
+copyright 2026 Danil Miftakhov, включая изменение и коммерческое использование.
+Персональные материалы и брендинг в `design/reference/` регулируются
+[ASSETS-LICENSE.md](ASSETS-LICENSE.md): открытая публикация не разрешает их повторное
+использование или присвоение личности владельца. Авторские права на неохраняемые
+факты и идеи не заявляются.
