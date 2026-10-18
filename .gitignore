@@ -1,0 +1,54 @@
+# Node.js and package-manager caches (keep dependency lock files)
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/install-state.gz
+*.tsbuildinfo
+
+# Vite, generated output, caches and reports
+dist/
+build/
+.vite/
+.vite-inspect/
+.cache/
+.turbo/
+.eslintcache
+.stylelintcache
+coverage/
+.nyc_output/
+playwright-report/
+playwright/.cache/
+test-results/
+blob-report/
+
+# Local environment and credentials; keep sanitized examples
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.local
+*.pem
+*.key
+
+# IDE and operating-system files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.pid
+*.pid.lock
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+tmp/
+temp/
+
+# .agents/skills/, dependency lock files and design/reference/ stay tracked.

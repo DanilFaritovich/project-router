@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1000" viewBox="0 0 1240 1000"><rect x="0" y="0" width="1240" height="1000" rx="0" fill="#F5F3EE"/>
+<text x="46" y="62" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#181818">Проверка русской локализации / RU Copy Check</text>
+<text x="46" y="92" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="400" fill="#737373">Reference states only. Main portfolio remains in English.</text>
+<text x="46" y="146" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#84530C" letter-spacing="0.8">DESKTOP / HERO + ACTIONS</text>
+<rect x="46" y="169" width="1148" height="288" rx="8" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="79" y="218" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="700" fill="#181818">Данил Мифтахов</text>
+<text x="79" y="264" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="600" fill="#181818">Python Backend-разработчик / инженер по данным и автоматизации</text>
+<text x="79" y="307" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="400" fill="#737373">Разрабатываю API, пайплайны обработки данных и интеграции,</text>
+<text x="79" y="331" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="400" fill="#737373">которые превращают сложные процессы в воспроизводимые инструменты.</text>
+<rect x="79" y="374" width="118" height="42" rx="5" fill="#181818" stroke="#181818" stroke-width="1"/>
+<text x="138.0" y="399.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">Проекты</text>
+<rect x="208" y="374" width="116" height="42" rx="5" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="266.0" y="399.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#181818" text-anchor="middle">Резюме</text>
+<text x="46" y="522" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#84530C" letter-spacing="0.8">MOBILE / TEXT LENGTH AND LANGUAGE MENU</text>
+<rect x="46" y="548" width="410" height="401" rx="6" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="68" y="594" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" fill="#181818">Проекты</text>
+<text x="68" y="635" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600" fill="#181818">Moon Courier Crisis</text>
+<text x="68" y="670" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="400" fill="#181818">Симулятор лунной логистики:</text>
+<text x="68" y="693" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="400" fill="#181818">маршруты, доставки и ограничения</text>
+<text x="68" y="716" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="400" fill="#181818">заряда. Логика игры — на сервере.</text>
+<rect x="68" y="779" width="95" height="42" rx="5" fill="#181818" stroke="#181818" stroke-width="1"/>
+<text x="115.5" y="804.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">Демо</text>
+<rect x="174" y="779" width="93" height="42" rx="5" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="220.5" y="804.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#181818" text-anchor="middle">GitHub</text>
+<rect x="68" y="833" width="189" height="42" rx="5" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="162.5" y="858.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#181818" text-anchor="middle">Последний релиз</text>
+<rect x="484" y="548" width="710" height="401" rx="6" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="513" y="593" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#84530C" letter-spacing="0.8">МОБИЛЬНОЕ МЕНЮ</text>
+<text x="513" y="635" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500" fill="#181818">Главная</text>
+<text x="513" y="674" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500" fill="#181818">Обо мне</text>
+<text x="513" y="713" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500" fill="#181818">Навыки</text>
+<text x="513" y="752" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500" fill="#181818">Проекты</text>
+<text x="513" y="791" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500" fill="#181818">Инструменты разработчика</text>
+<text x="513" y="830" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500" fill="#181818">Резюме</text>
+<text x="513" y="869" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500" fill="#181818">Контакты</text>
+<rect x="991" y="579" width="163" height="44" rx="5" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="1004" y="608" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500" fill="#737373">EN</text>
+<line x1="1054" y1="586" x2="1054" y2="616" stroke="#E2DED6" stroke-width="1" opacity="1"/>
+<text x="1073" y="608" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#181818">RU</text></svg>

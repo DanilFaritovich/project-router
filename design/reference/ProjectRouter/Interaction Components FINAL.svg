@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1250" height="1150" viewBox="0 0 1250 1150"><rect x="0" y="0" width="1250" height="1150" rx="0" fill="#F5F3EE"/>
+<text x="50" y="65" font-family="Inter, Arial, sans-serif" font-size="33" font-weight="700" fill="#181818">ProjectRouter / Interaction Components</text>
+<text x="50" y="99" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="400" fill="#737373">Optional project media, language controls and conditional actions</text>
+<line x1="50" y1="125" x2="1199" y2="125" stroke="#E2DED6" stroke-width="1" opacity="1"/>
+<text x="50" y="171" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#84530C" letter-spacing="0.8">A / PROJECT WITH OPTIONAL PREVIEW</text>
+<rect x="50" y="193" width="1148" height="358" rx="8" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="79" y="247" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="700" fill="#181818">Moon Courier Crisis</text>
+<text x="79" y="286" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="400" fill="#181818">Full-stack lunar logistics with backend-owned</text>
+<text x="79" y="312" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="400" fill="#181818">delivery rules, route constraints and a Vue UI.</text>
+<text x="79" y="373" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="400" fill="#737373">FastAPI · Vue 3 · SQLAlchemy · Docker</text>
+<rect x="79" y="418" width="172" height="42" rx="5" fill="#181818" stroke="#E2DED6" stroke-width="1"/>
+<text x="165.0" y="443.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">Live Demo (variant)</text>
+<a href="https://github.com/DanilFaritovich/Moon-courier-crisis-game" target="_blank">
+<rect x="264" y="418" width="105" height="42" rx="5" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="316.5" y="443.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#181818" text-anchor="middle">GitHub</text>
+</a>
+<a href="https://github.com/DanilFaritovich/Moon-courier-crisis-game/releases/latest" target="_blank">
+<rect x="383" y="418" width="168" height="42" rx="5" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="467.0" y="443.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#181818" text-anchor="middle">Latest Release</text>
+</a>
+<g id="replaceable-preview-slot-1"><title>replaceable preview slot 1</title>
+<rect x="738" y="215" width="429" height="316" rx="5" fill="#EFEAE0"/>
+<line x1="756" y1="241" x2="1149" y2="241" stroke="#D8D0C2" stroke-width="1" opacity="1"/>
+<text x="758" y="233" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="600" fill="#84530C" letter-spacing="1">01 / FULL-STACK</text>
+<text x="952.5" y="395.12" font-family="Inter, Arial, sans-serif" font-size="74" font-weight="700" fill="#C3B8A5" text-anchor="middle">MC</text>
+<text x="758" y="509" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="500" fill="#625B51">OPTIONAL MEDIA REGION</text>
+</g>
+<text x="50" y="597" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#84530C" letter-spacing="0.8">B / CURRENT STATE WITHOUT LIVE DEMO</text>
+<rect x="50" y="621" width="548" height="185" rx="6" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="75" y="666" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#181818">Support Assistant</text>
+<text x="75" y="699" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="400" fill="#737373">Conditional actions: GitHub only</text>
+<a href="https://github.com/DanilFaritovich/support-assistant-llm" target="_blank">
+<rect x="75" y="728" width="99" height="42" rx="5" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="124.5" y="753.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#181818" text-anchor="middle">GitHub</text>
+</a>
+<rect x="625" y="621" width="573" height="185" rx="6" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="655" y="665" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600" fill="#181818">Desktop language switch</text>
+<rect x="655" y="699" width="181" height="46" rx="5" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="674" y="728" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#181818">EN</text>
+<line x1="727" y1="707" x2="727" y2="736" stroke="#E2DED6" stroke-width="1" opacity="1"/>
+<text x="751" y="728" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="500" fill="#737373">RU</text>
+<text x="50" y="865" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#84530C" letter-spacing="0.8">C / MOBILE BUTTON WRAPPING</text>
+<rect x="50" y="890" width="382" height="191" rx="6" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="75" y="928" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600" fill="#181818">Three actions / when live</text>
+<rect x="75" y="955" width="135" height="42" rx="5" fill="#181818" stroke="#E2DED6" stroke-width="1"/>
+<text x="142.5" y="980.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">Live Demo</text>
+<rect x="220" y="955" width="101" height="42" rx="5" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="270.5" y="980.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#181818" text-anchor="middle">GitHub</text>
+<rect x="75" y="1008" width="158" height="42" rx="5" fill="#FFFFFF" stroke="#E2DED6" stroke-width="1"/>
+<text x="154.0" y="1033.9" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#181818" text-anchor="middle">Latest Release</text>
+<text x="477" y="926" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600" fill="#181818">Design contract:</text>
+<text x="477" y="958" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="400" fill="#737373">Demo link is shown only when a real public URL exists.</text>
+<text x="477" y="989" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="400" fill="#737373">Preview region is replaced with an actual image when available.</text>
+<text x="477" y="1020" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="400" fill="#737373">SVG controls illustrate appearance; interaction is implemented in Vue.</text></svg>
