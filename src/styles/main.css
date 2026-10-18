@@ -64,7 +64,7 @@
 @layer components {
   .portfolio-main {
     margin-left: var(--rail-width, 224px);
-    padding: 0 48px 48px 0;
+    padding: 0 48px 48px;
     max-width: 1280px;
   }
   .desktop-rail {
@@ -514,6 +514,7 @@
     padding: 24px 16px;
   }
   .portfolio-main {
+    padding-left: 32px;
     padding-right: 32px;
   }
   .hero-section {

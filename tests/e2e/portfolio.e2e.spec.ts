@@ -1,5 +1,35 @@
 import { test, expect } from '@playwright/test'
 
+for (const width of [320, 390, 768, 1024, 1440]) {
+  test(`layout keeps consistent content spacing without overflow at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 })
+    for (const locale of ['en', 'ru']) {
+      await page.goto(`/${locale}/`)
+      const geometry = await page.evaluate(() => {
+        const main = document.querySelector('main')!
+        const rail = document.querySelector('.desktop-rail')!
+        return {
+          overflow: document.documentElement.scrollWidth > innerWidth,
+          railRight: rail.getBoundingClientRect().right,
+          sectionLefts: [...main.querySelectorAll(':scope > section')].map(
+            (section) => section.getBoundingClientRect().left,
+          ),
+        }
+      })
+      expect(geometry.overflow).toBe(false)
+      const expectedLeft =
+        width >= 768
+          ? geometry.railRight + (width >= 1200 ? 48 : 32)
+          : width < 360
+            ? 20
+            : 24
+      for (const left of geometry.sectionLefts) expect(left).toBe(expectedLeft)
+    }
+  })
+}
+
 test('desktop section tracking and language switching preserve the visible section', async ({
   page,
 }) => {
