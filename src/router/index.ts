@@ -5,13 +5,13 @@ import {
   localeFromPath,
   type createAppI18n,
 } from '../locales'
-import FoundationView from '../views/FoundationView.vue'
+import PortfolioView from '../views/PortfolioView.vue'
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', redirect: '/en/' },
   ...locales.map((locale) => ({
     path: localePath(locale),
-    component: FoundationView,
+    component: PortfolioView,
   })),
 ]
 

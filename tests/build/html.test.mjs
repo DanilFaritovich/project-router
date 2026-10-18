@@ -16,9 +16,7 @@ for (const locale of ['en', 'ru']) {
     )
     assert.match(
       document.querySelector('main').textContent,
-      locale === 'en'
-        ? /Engineering portfolio of Danil/
-        : /Инженерное портфолио Данила/,
+      locale === 'en' ? /Danil Miftakhov/ : /Данил Мифтахов/,
     )
     assert.match(
       document.querySelector('meta[name="description"]').content,
@@ -35,6 +33,22 @@ for (const locale of ['en', 'ru']) {
       document.querySelector('meta[name="description"]').content,
     )
     assert.equal(document.querySelectorAll('h1').length, 1)
+    for (const id of [
+      'hero',
+      'about',
+      'skills',
+      'projects',
+      'tools',
+      'resume',
+      'contacts',
+    ]) {
+      assert.ok(
+        document.querySelector(`section#${id}`)?.textContent.trim(),
+        `Missing ${id} content`,
+      )
+    }
+    assert.equal(document.querySelectorAll('#projects article').length, 6)
+    assert.equal(document.querySelectorAll('#resume button:disabled').length, 6)
     for (const language of ['en', 'ru'])
       assert.ok(document.querySelector(`a[href="/${language}/"]`))
     const canonical = document.querySelector('link[rel="canonical"]')
