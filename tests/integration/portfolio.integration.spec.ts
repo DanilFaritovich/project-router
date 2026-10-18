@@ -25,6 +25,25 @@ afterEach(() => {
 })
 
 describe('portfolio', () => {
+  it.each(['en', 'ru'])(
+    'shows Instagram only in Contacts for %s',
+    async (locale) => {
+      const { wrapper } = await render(`/${locale}/`)
+      const instagram = wrapper.get(
+        '#contacts a[href="https://www.instagram.com/daniel_de_casto"]',
+      )
+      expect(instagram.text()).toBe('Instagram')
+      expect(instagram.classes()).toContain('action')
+      expect(instagram.classes()).not.toContain('action-primary')
+      expect(wrapper.findAll('#contacts .social-links a')).toHaveLength(4)
+      expect(wrapper.findAll('#hero .social-links a')).toHaveLength(3)
+      expect(wrapper.find('#hero a[href*="instagram.com"]').exists()).toBe(
+        false,
+      )
+      wrapper.unmount()
+    },
+  )
+
   it('renders all seven named sections, reviewed cards and unavailable PDF controls', async () => {
     const { wrapper } = await render()
     for (const id of sections) {

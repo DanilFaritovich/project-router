@@ -118,6 +118,7 @@ export default {
   github: 'GitHub',
   linkedin: 'LinkedIn',
   telegram: 'Telegram',
+  instagram: 'Instagram',
   release: 'Latest Release',
   resumeEyebrow: '06 / Resume',
   resumeTitle: 'Resume',

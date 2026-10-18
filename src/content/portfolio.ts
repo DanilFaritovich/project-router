@@ -26,6 +26,11 @@ export const socialLinks = [
     href: 'https://www.linkedin.com/in/danil-miftakhov-55468b399/',
   },
   { label: 'telegram', href: 'https://t.me/Daniel_De_Casto' },
+  {
+    label: 'instagram',
+    href: 'https://www.instagram.com/daniel_de_casto',
+    contactsOnly: true,
+  },
 ]
 export interface PortfolioItem {
   id: string

@@ -8,6 +8,6 @@ const { t } = useI18n()
 <template>
   <PortfolioSection id="contacts" prefix="contacts"
     ><p class="contacts-copy">{{ t('contactsCopy') }}</p>
-    <SocialLinks buttons
+    <SocialLinks buttons section="contacts"
   /></PortfolioSection>
 </template>
