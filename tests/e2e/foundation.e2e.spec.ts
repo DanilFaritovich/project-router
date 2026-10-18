@@ -1,0 +1,42 @@
+import { test, expect } from '@playwright/test'
+
+test('production direct entry, refresh, language switching and root redirect', async ({
+  page,
+}) => {
+  const errors: string[] = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  page.on('console', (message) => {
+    if (message.type() === 'warning' || message.type() === 'error')
+      errors.push(message.text())
+  })
+  for (const locale of ['en', 'ru']) {
+    await page.goto(`/${locale}/`)
+    await page.reload()
+    await expect(page.locator('html')).toHaveAttribute('lang', locale)
+    await expect(page.locator('main')).toContainText(
+      locale === 'en'
+        ? 'Engineering portfolio of Danil'
+        : 'Инженерное портфолио Данила',
+    )
+  }
+  await page.getByRole('link', { name: 'English' }).click()
+  await expect(page).toHaveURL(/\/en\/$/)
+  await expect(page).toHaveTitle(/Engineering portfolio/)
+  await page.goto('/')
+  await expect(page).toHaveURL(/\/en\/$/)
+  expect(errors).toEqual([])
+})
+
+test('Russian production HTML works with JavaScript disabled', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false })
+  const page = await context.newPage()
+  await page.goto('http://127.0.0.1:4173/ru/')
+  await expect(page.locator('main')).toContainText(
+    'Инженерное портфолио Данила',
+  )
+  await page.getByRole('link', { name: 'English' }).click()
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+  await context.close()
+})

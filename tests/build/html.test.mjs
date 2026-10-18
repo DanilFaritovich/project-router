@@ -1,0 +1,82 @@
+import process from 'node:process'
+import { URL } from 'node:url'
+import { readFile, access } from 'node:fs/promises'
+import assert from 'node:assert/strict'
+import { test } from 'node:test'
+import { JSDOM } from 'jsdom'
+
+for (const locale of ['en', 'ru']) {
+  test(`built /${locale}/ contains localized HTML without JavaScript`, async () => {
+    const html = await readFile(`dist/${locale}/index.html`, 'utf8')
+    const document = new JSDOM(html).window.document
+    assert.equal(document.documentElement.lang, locale)
+    assert.match(
+      document.title,
+      locale === 'en' ? /Engineering portfolio/ : /Инженерное портфолио/,
+    )
+    assert.match(
+      document.querySelector('main').textContent,
+      locale === 'en'
+        ? /Engineering portfolio of Danil/
+        : /Инженерное портфолио Данила/,
+    )
+    assert.match(
+      document.querySelector('meta[name="description"]').content,
+      locale === 'en'
+        ? /engineering portfolio of Danil/
+        : /инженерное портфолио Данила/,
+    )
+    assert.equal(
+      document.querySelector('meta[property="og:title"]').content,
+      document.title,
+    )
+    assert.equal(
+      document.querySelector('meta[property="og:description"]').content,
+      document.querySelector('meta[name="description"]').content,
+    )
+    assert.equal(document.querySelectorAll('h1').length, 1)
+    for (const language of ['en', 'ru'])
+      assert.ok(document.querySelector(`a[href="/${language}/"]`))
+    const canonical = document.querySelector('link[rel="canonical"]')
+    if (process.env.VITE_SITE_ORIGIN)
+      assert.ok(canonical, 'Configured origin must produce canonical links')
+    if (canonical) {
+      const origin = new URL(canonical.href).origin
+      assert.equal(canonical.href, `${origin}/${locale}/`)
+      assert.equal(
+        document.querySelector('meta[property="og:url"]').content,
+        canonical.href,
+      )
+      for (const language of ['en', 'ru'])
+        assert.equal(
+          document.querySelector(`link[hreflang="${language}"]`).href,
+          `${origin}/${language}/`,
+        )
+      const sitemap = await readFile('dist/sitemap.xml', 'utf8')
+      assert.ok(
+        sitemap.includes(`${origin}/en/`) && sitemap.includes(`${origin}/ru/`),
+      )
+    } else {
+      assert.equal(document.querySelectorAll('link[hreflang]').length, 0)
+      await assert.rejects(access('dist/sitemap.xml'))
+    }
+    for (const asset of document.querySelectorAll(
+      'script[src], link[rel="stylesheet"]',
+    )) {
+      const path = asset.getAttribute('src') ?? asset.getAttribute('href')
+      assert.ok(path.startsWith('/assets/'))
+      await access(`dist${path}`)
+    }
+  })
+}
+test('static root redirects and missing page is excluded from indexing', async () => {
+  const root = new JSDOM(await readFile('dist/index.html', 'utf8')).window
+    .document
+  assert.equal(
+    root.querySelector('meta[http-equiv="refresh"]').content,
+    '0;url=/en/',
+  )
+  const missing = new JSDOM(await readFile('dist/404.html', 'utf8')).window
+    .document
+  assert.equal(missing.querySelector('meta[name="robots"]').content, 'noindex')
+})
