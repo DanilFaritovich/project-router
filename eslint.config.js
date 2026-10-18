@@ -20,6 +20,8 @@ export default ts.config(
   {
     files: ['**/*.vue'],
     languageOptions: { parserOptions: { parser: ts.parser } },
+    // TypeScript resolves identifiers, including browser types, inside Vue SFCs.
+    rules: { 'no-undef': 'off' },
   },
   prettier,
 )

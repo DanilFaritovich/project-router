@@ -2,9 +2,11 @@
 
 ## Current implementation
 
-Stage 02 implements Vue 3, TypeScript, Vite 8, Tailwind CSS 4, Vue Router,
-Vue I18n, Vite SSG and Unhead. A minimal localized page and language navigation
-are implemented; portfolio design/content and PDF interactions remain planned.
+Stage 03 implements the responsive seven-section portfolio on the Stage 02
+Vue 3, TypeScript, Vite 8, Tailwind CSS 4, Vue Router, Vue I18n, Vite SSG and
+Unhead foundation. Desktop and mobile navigation, localized layout copy and
+unavailable resume controls are implemented. Catalog enrichment and PDF
+interactions remain planned.
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
@@ -16,24 +18,30 @@ generates `dist/en/index.html` and `dist/ru/index.html`, with nested route outpu
 The browser hydrates that HTML; no request-time SSR, backend or database is used.
 This keeps the foundation close to Vue + Vite without a second routing framework.
 
-| Existing area                       | Responsibility                                                |
-| ----------------------------------- | ------------------------------------------------------------- |
-| `src/main.ts`, `src/App.vue`        | Per-app i18n, locale guard, hydration, reactive document head |
-| `src/views/`                        | Minimal localized foundation page                             |
-| `src/components/`                   | Accessible language navigation with real links                |
-| `src/locales/`                      | Typed EN/RU copy, locale paths, fresh i18n instances          |
-| `src/router/`                       | Explicit routes and URL-driven locale guard                   |
-| `src/seo/`                          | Origin validation and localized head construction             |
-| `src/styles/`                       | Tailwind import and minimal global styles                     |
-| `tests/unit/`, `tests/integration/` | Metadata contracts and component/router/i18n behavior         |
-| `tests/build/`, `tests/e2e/`        | Actual HTML/asset inspection and production Chromium smoke    |
-| `vite.config.ts`                    | SSG routes, root redirect, 404, robots and optional sitemap   |
+| Existing area                       | Responsibility                                                    |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| `src/main.ts`, `src/App.vue`        | Per-app i18n, locale guard, hydration, reactive document head     |
+| `src/views/`                        | Seven-section portfolio composition                               |
+| `src/components/`                   | Section/card/action primitives, navigation and section components |
+| `src/locales/`                      | Typed EN/RU copy, locale paths, fresh i18n instances              |
+| `src/router/`                       | Explicit routes and URL-driven locale guard                       |
+| `src/seo/`                          | Origin validation and localized head construction                 |
+| `src/styles/`                       | Tailwind theme tokens and responsive portfolio styles             |
+| `tests/unit/`, `tests/integration/` | Metadata contracts and component/router/i18n behavior             |
+| `tests/build/`, `tests/e2e/`        | Actual HTML/asset inspection and production Chromium smoke        |
+| `vite.config.ts`                    | SSG routes, root redirect, 404, robots and optional sitemap       |
 
-`src/content/`, `src/composables/` and `public/` will be introduced when real
-content, reusable behavior and licensed assets need them. No empty feature
-modules, API layer or store are introduced. Later content will flow from reviewed
-Git catalogs and locale files into HTML and components; local state will own
-presentation interactions. Public configuration and repository data contain no secrets.
+`src/content/portfolio.ts` holds centralized Stage 03 layout fixtures: section
+identities, project/tool order, repository actions and skill group keys. Visible
+copy, including compact mobile variants and technology labels, comes from EN/RU
+locale files. Stage 04 will enrich and verify the full typed catalog.
+`src/composables/useActiveSection.ts` tracks section positions using throttled
+scroll/resize updates. Navigation owns mobile dialog state, background inertness,
+scroll locking, focus containment, Escape and focus restoration. Locale links
+preserve query parameters and the visible section; router scrolling handles
+localized direct anchors and history positions. No API layer, store or backend
+is introduced. `public/` remains unnecessary until actual assets are supplied.
+Public configuration and repository data contain no secrets.
 
 ## Routes, localization and SEO
 
@@ -58,15 +66,19 @@ presentation interactions. Public configuration and repository data contain no s
   release. Verify HTTPS, redirects and response status against a real deployment
   only when separately authorized. Optional structured data must reflect facts.
 
-## Portfolio content and interactions (planned)
+## Portfolio content and interactions
 
-Follow [design/DESIGN.md](design/DESIGN.md): seven sections, three Featured
-Projects, More Projects, Developer Tools, EN/RU, conditional Live Demo and a PDF
-modal. GitHub links are required for catalog entries; stable release and demo
-links appear only when real destinations have been verified. Optional media
-must degrade to an intentional text-first card.
+The layout follows [design/DESIGN.md](design/DESIGN.md): Hero, About, Skills,
+Projects, Developer Tools, Resume and Contacts. Three Featured Projects use
+intentional MC/AI/ETL typography previews; three More Projects and three tools
+use compact cards, with Infrastructure emphasized. No invented screenshots or
+Live Demo actions are supplied. GitHub links use confirmed repository addresses;
+the four stable-release actions were confirmed for this layout. Full catalog
+verification remains Stage 04. Three resume roles expose disabled preview and
+download controls with a shared unavailable explanation; no PDF modal or viewer
+is implemented in Stage 03.
 
-Use PDF.js for configured resume PDF preview, loaded lazily when needed. Keep
+Stage 06 will use PDF.js for configured resume PDF preview, loaded lazily when needed. Keep
 PDF asset metadata separate from the viewer. Track unavailable, loading, ready
 and error states, with retry, page/zoom/fit controls where appropriate and a
 direct download of the same configured document. Do not synthesize resume files
@@ -89,8 +101,14 @@ close. A missing PDF keeps preview/download unavailable with explanatory copy.
 Tests cover both direct localized entries, root redirection, query/hash-preserving
 language switching, head metadata, optional origin links, build HTML without JS,
 assets, root fallback and browser hydration/refresh/navigation. Stage 07 will
-expand coverage to actual portfolio interactions and visual QA. No design
-screenshots, PDF viewer tests or live-domain verification are claimed yet.
+expand visual and accessibility coverage. Stage 03 adds component/integration
+coverage for the seven sections, menu focus/Escape/selection, locale switching,
+unavailable controls and fractional anchor positions; production Chromium checks
+cover desktop section tracking and mobile navigation. Built HTML checks assert
+all seven sections and six project cards in both languages without JavaScript.
+Manual browser QA compared selected renders with PNG references at 1440, 1024,
+768, 390 and 320 pixels in EN/RU, including the narrow mobile menu and overflow.
+No PDF viewer tests or live-domain verification are claimed.
 Repository administrators should require the `Quality and static build` CI check
 in branch protection; repository settings are not changed by this task.
 
