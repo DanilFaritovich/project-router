@@ -63,15 +63,17 @@
 
 @layer components {
   .portfolio-main {
-    margin-left: 224px;
+    margin-left: var(--rail-width, 224px);
     padding: 0 48px 48px 0;
     max-width: 1280px;
   }
   .desktop-rail {
     position: fixed;
-    inset: 0 auto auto 0;
-    width: 176px;
+    inset: 0 auto 0 0;
+    width: var(--rail-width, 224px);
     padding: 36px 24px 48px;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
     background: var(--color-panel);
   }
   .brand {
@@ -95,13 +97,22 @@
   }
   .section-navigation a {
     padding: 14px 12px;
+    border-radius: 7px;
     font-size: 13px;
     line-height: 1.4;
     font-weight: 600;
     overflow-wrap: normal;
   }
   .section-navigation a[aria-current='location'] {
-    background: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+    box-shadow: inset 3px 0 var(--color-accent);
+  }
+  .section-navigation a:hover {
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  }
+  .section-navigation a:focus-visible,
+  .language-switcher a:focus-visible {
+    outline-offset: 2px;
   }
   .rail-location {
     margin-top: 34px;
@@ -112,13 +123,14 @@
     display: inline-flex;
     align-items: center;
     border: 1px solid var(--color-line);
-    border-radius: 5px;
-    background: white;
-    padding: 8px 4px;
+    border-radius: 8px;
+    background: var(--color-surface);
+    padding: 4px;
     line-height: 1;
   }
   .language-switcher a {
     padding: 5px 10px;
+    border-radius: 4px;
     color: var(--color-muted);
     font-size: 13px;
   }
@@ -128,11 +140,11 @@
   .language-switcher a[aria-current='page'] {
     font-weight: 700;
     color: var(--color-ink);
+    background: var(--color-panel);
   }
-  .language-globe {
-    padding-left: 7px;
+  .language-switcher a:hover {
+    background: var(--color-page);
     color: var(--color-accent-ink);
-    font-size: 20px;
   }
   .desktop-rail .language-switcher {
     padding: 3px;
@@ -140,10 +152,6 @@
   .desktop-rail .language-switcher a {
     font-size: 11px;
     padding: 5px 8px;
-  }
-  .desktop-rail .language-globe {
-    font-size: 17px;
-    padding-left: 3px;
   }
   .mobile-topbar {
     display: none;
@@ -476,6 +484,7 @@
   }
   .menu-panel .section-navigation a[aria-current] {
     background: none;
+    box-shadow: none;
     color: var(--color-accent-ink);
   }
   .menu-language {
@@ -490,18 +499,21 @@
 }
 
 @media (min-width: 1600px) {
+  :root {
+    --rail-width: max(224px, calc((100vw - 1168px) / 2));
+  }
   .portfolio-main {
     margin-right: auto;
-    margin-left: max(224px, calc((100vw - 1168px) / 2));
   }
 }
 @media (min-width: 768px) and (max-width: 1199px) {
+  :root {
+    --rail-width: 176px;
+  }
   .desktop-rail {
-    width: 144px;
     padding: 24px 16px;
   }
   .portfolio-main {
-    margin-left: 176px;
     padding-right: 32px;
   }
   .hero-section {

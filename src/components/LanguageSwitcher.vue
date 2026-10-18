@@ -10,7 +10,6 @@ defineEmits<{ navigate: [] }>()
 
 <template>
   <nav :aria-label="t('language')" class="language-switcher">
-    <span class="language-globe" aria-hidden="true">⊕</span>
     <RouterLink
       v-for="language in locales"
       :key="language"
