@@ -1,5 +1,15 @@
 import { test, expect, type Page } from '@playwright/test'
+import { loadEnv } from 'vite'
 import { messages, type Locale } from '../../src/locales'
+
+const originValue = loadEnv(
+  'production',
+  process.cwd(),
+  'VITE_',
+).VITE_SITE_ORIGIN
+const origin = originValue?.trim()
+  ? new URL(originValue.trim()).origin
+  : undefined
 
 async function expectMetadata(page: Page, locale: Locale) {
   const copy = messages[locale]
@@ -20,6 +30,33 @@ async function expectMetadata(page: Page, locale: Locale) {
     await expect(page.locator(selector)).toHaveCount(1)
     await expect(page.locator(selector)).toHaveAttribute('content', content)
   }
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(
+    origin ? 1 : 0,
+  )
+  await expect(page.locator('link[hreflang]')).toHaveCount(origin ? 3 : 0)
+  await expect(page.locator('meta[property="og:url"]')).toHaveCount(
+    origin ? 1 : 0,
+  )
+  if (origin) {
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      `${origin}/${locale}/`,
+    )
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+      'content',
+      `${origin}/${locale}/`,
+    )
+    for (const [language, path] of Object.entries({
+      en: '/en/',
+      ru: '/ru/',
+      'x-default': '/en/',
+    })) {
+      const link = page.locator(`link[hreflang="${language}"]`)
+      await expect(link).toHaveCount(1)
+      await expect(link).toHaveAttribute('rel', 'alternate')
+      await expect(link).toHaveAttribute('href', `${origin}${path}`)
+    }
+  }
 }
 
 test('production direct entry, refresh, language switching and root redirect', async ({
@@ -32,7 +69,7 @@ test('production direct entry, refresh, language switching and root redirect', a
       errors.push(message.text())
   })
   for (const locale of ['en', 'ru'] as const) {
-    await page.goto(`/${locale}/`)
+    await page.goto(`/${locale}/?utm_source=seo#skills`)
     await page.reload()
     await expectMetadata(page, locale)
     await expect(page.locator('main')).toContainText(
@@ -43,7 +80,7 @@ test('production direct entry, refresh, language switching and root redirect', a
     .getByRole('link', { name: 'English' })
     .filter({ visible: true })
     .click()
-  await expect(page).toHaveURL(/\/en\/$/)
+  await expect(page).toHaveURL(/\/en\//)
   await expectMetadata(page, 'en')
   await page
     .getByRole('link', { name: 'Русский' })
@@ -52,7 +89,10 @@ test('production direct entry, refresh, language switching and root redirect', a
   await expectMetadata(page, 'ru')
   await page.goBack()
   await expectMetadata(page, 'en')
+  await page.goForward()
+  await expectMetadata(page, 'ru')
   await page.goto('/')
+  await expectMetadata(page, 'en')
   await expect(page).toHaveURL(/\/en\/$/)
   expect(errors).toEqual([])
 })

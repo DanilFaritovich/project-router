@@ -1,11 +1,22 @@
 import process from 'node:process'
 import { URL } from 'node:url'
+import { loadEnv } from 'vite'
 import { readFile, access } from 'node:fs/promises'
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { JSDOM } from 'jsdom'
 import en from '../../src/locales/en.ts'
 import ru from '../../src/locales/ru.ts'
+
+const originValue = loadEnv(
+  'production',
+  process.cwd(),
+  'VITE_',
+).VITE_SITE_ORIGIN
+const origin = originValue?.trim()
+  ? new URL(originValue.trim()).origin
+  : undefined
+const alternatePaths = { en: '/en/', ru: '/ru/', 'x-default': '/en/' }
 
 for (const locale of ['en', 'ru']) {
   test(`built /${locale}/ contains localized HTML without JavaScript`, async () => {
@@ -189,29 +200,33 @@ for (const locale of ['en', 'ru']) {
     assert.equal(document.querySelectorAll('#resume button:disabled').length, 6)
     for (const language of ['en', 'ru'])
       assert.ok(document.querySelector(`a[href="/${language}/"]`))
-    const canonical = document.querySelector('link[rel="canonical"]')
-    if (process.env.VITE_SITE_ORIGIN)
-      assert.ok(canonical, 'Configured origin must produce canonical links')
-    if (canonical) {
-      const origin = new URL(canonical.href).origin
-      assert.equal(canonical.href, `${origin}/${locale}/`)
-      assert.equal(
-        document.querySelector('meta[property="og:url"]').content,
-        canonical.href,
-      )
-      for (const language of ['en', 'ru'])
-        assert.equal(
-          document.querySelector(`link[hreflang="${language}"]`).href,
-          `${origin}/${language}/`,
+    const canonicals = document.querySelectorAll('link[rel="canonical"]')
+    const alternates = document.querySelectorAll(
+      'link[rel="alternate"][hreflang]',
+    )
+    const ogUrls = document.querySelectorAll('meta[property="og:url"]')
+    assert.equal(canonicals.length, origin ? 1 : 0)
+    assert.equal(alternates.length, origin ? 3 : 0)
+    assert.equal(
+      document.querySelectorAll('link[hreflang]').length,
+      alternates.length,
+    )
+    assert.equal(ogUrls.length, origin ? 1 : 0)
+    if (origin) {
+      const canonical = `${origin}/${locale}/`
+      assert.equal(canonicals[0].href, canonical)
+      assert.equal(ogUrls[0].content, canonical)
+      for (const [language, path] of Object.entries(alternatePaths)) {
+        const links = document.querySelectorAll(
+          `link[rel="alternate"][hreflang="${language}"]`,
         )
-      const sitemap = await readFile('dist/sitemap.xml', 'utf8')
-      assert.ok(
-        sitemap.includes(`${origin}/en/`) && sitemap.includes(`${origin}/ru/`),
-      )
-    } else {
-      assert.equal(document.querySelectorAll('link[hreflang]').length, 0)
-      await assert.rejects(access('dist/sitemap.xml'))
+        assert.equal(links.length, 1)
+        assert.equal(links[0].href, `${origin}${path}`)
+        // Every alternate, including x-default, names a generated document.
+        await access(`dist${new URL(links[0].href).pathname}index.html`)
+      }
     }
+    assert.equal(document.querySelectorAll('meta[name="robots"]').length, 0)
     for (const asset of document.querySelectorAll(
       'script[src], link[rel="stylesheet"]',
     )) {
@@ -228,7 +243,63 @@ test('static root redirects and missing page is excluded from indexing', async (
     root.querySelector('meta[http-equiv="refresh"]').content,
     '0;url=/en/',
   )
+  assert.equal(root.querySelectorAll('meta[http-equiv="refresh"]').length, 1)
+  assert.equal(root.querySelector('a').getAttribute('href'), '/en/')
   const missing = new JSDOM(await readFile('dist/404.html', 'utf8')).window
     .document
-  assert.equal(missing.querySelector('meta[name="robots"]').content, 'noindex')
+  for (const document of [root, missing]) {
+    const robots = document.querySelectorAll('meta[name="robots"]')
+    assert.equal(robots.length, 1)
+    assert.equal(robots[0].content, 'noindex')
+    assert.equal(
+      document.querySelectorAll(
+        'link[rel="canonical"], link[hreflang], meta[property="og:url"]',
+      ).length,
+      0,
+    )
+  }
+  assert.equal(missing.querySelector('h1').textContent, 'Page not found')
+})
+
+test('crawl files agree with the indexable documents and optional origin', async () => {
+  const robots = await readFile('dist/robots.txt', 'utf8')
+  // This public site needs no exclusions or private paths.
+  assert.deepEqual(robots.trim().split('\n'), [
+    'User-agent: *',
+    'Allow: /',
+    ...(origin ? [`Sitemap: ${origin}/sitemap.xml`] : []),
+  ])
+  if (!origin) {
+    await assert.rejects(access('dist/sitemap.xml'), { code: 'ENOENT' })
+    return
+  }
+  const xml = await readFile('dist/sitemap.xml', 'utf8')
+  // XML parsing fails on malformed/unescaped content instead of matching substrings.
+  const sitemap = new JSDOM(xml, { contentType: 'application/xml' }).window
+    .document
+  const namespace = 'http://www.sitemaps.org/schemas/sitemap/0.9'
+  assert.equal(sitemap.documentElement.localName, 'urlset')
+  assert.equal(sitemap.documentElement.namespaceURI, namespace)
+  const entries = [...sitemap.documentElement.children]
+  assert.equal(entries.length, 2)
+  const urls = entries.map((entry) => {
+    assert.equal(entry.localName, 'url')
+    assert.equal(entry.namespaceURI, namespace)
+    assert.equal(entry.children.length, 1)
+    assert.equal(entry.firstElementChild.localName, 'loc')
+    assert.equal(entry.firstElementChild.namespaceURI, namespace)
+    return entry.firstElementChild.textContent
+  })
+  assert.deepEqual(urls, [`${origin}/en/`, `${origin}/ru/`])
+  assert.equal(new Set(urls).size, 2)
+  for (const address of urls) {
+    const url = new URL(address)
+    assert.equal(url.protocol, 'https:')
+    assert.equal(url.search, '')
+    assert.equal(url.hash, '')
+    const document = new JSDOM(
+      await readFile(`dist${url.pathname}index.html`, 'utf8'),
+    ).window.document
+    assert.equal(document.querySelector('link[rel="canonical"]').href, address)
+  }
 })

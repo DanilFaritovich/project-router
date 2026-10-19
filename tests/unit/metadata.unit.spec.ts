@@ -44,29 +44,73 @@ describe('localized metadata', () => {
         expect(tags[0]?.content).toBe(content)
         expect(content.trim()).not.toBe('')
       }
-      expect(head.link).toContainEqual({
-        rel: 'canonical',
-        href: `https://portfolio.test/${locale}/`,
-      })
-      expect(
-        head.link
-          .filter((link) => link.rel === 'alternate')
-          .map((link) => link.hreflang),
-      ).toEqual(['en', 'ru', 'x-default'])
+      expect(head.link).toEqual([
+        { rel: 'canonical', href: `https://portfolio.test/${locale}/` },
+        {
+          rel: 'alternate',
+          hreflang: 'en',
+          href: 'https://portfolio.test/en/',
+        },
+        {
+          rel: 'alternate',
+          hreflang: 'ru',
+          href: 'https://portfolio.test/ru/',
+        },
+        {
+          rel: 'alternate',
+          hreflang: 'x-default',
+          href: 'https://portfolio.test/en/',
+        },
+      ])
+      expect(head.meta.filter((meta) => meta.property === 'og:url')).toEqual([
+        { property: 'og:url', content: `https://portfolio.test/${locale}/` },
+      ])
+      for (const link of head.link) {
+        const url = new URL(link.href)
+        expect(url.protocol).toBe('https:')
+        expect(url.search).toBe('')
+        expect(url.hash).toBe('')
+      }
     },
   )
-  it('omits absolute links until an origin is configured', () => {
-    expect(pageMetadata('ru').link).toEqual([])
-    expect(
-      pageMetadata('ru').meta.some((meta) => meta.property === 'og:url'),
-    ).toBe(false)
+  it.each(['en', 'ru'] as const)(
+    'omits origin-dependent metadata for %s without losing localized copy',
+    (locale) => {
+      for (const origin of [undefined, '', '  ']) {
+        const head = pageMetadata(locale, origin)
+        expect(head.link).toEqual([])
+        expect(head.meta.some((meta) => meta.property === 'og:url')).toBe(false)
+        expect(head.title).toBe(expectedMetadata[locale].title)
+        expect(head.meta).toContainEqual({
+          name: 'description',
+          content: expectedMetadata[locale].description,
+        })
+      }
+    },
+  )
+  it.each([
+    'https://portfolio.test',
+    'https://portfolio.test/',
+    '  https://PORTFOLIO.test/  ',
+  ])('normalizes a valid origin %s', (origin) => {
+    expect(parseSiteOrigin(origin)).toBe('https://portfolio.test')
+    expect(pageMetadata('ru', origin).link[0]?.href).toBe(
+      'https://portfolio.test/ru/',
+    )
   })
   it.each([
+    'not a URL',
+    '/en/',
+    'ftp://portfolio.test',
     'http://portfolio.test',
     'https://portfolio.test/path',
     'https://user:pass@portfolio.test',
+    'https://user@portfolio.test',
+    'https://:pass@portfolio.test',
     'https://portfolio.test/?q=1',
     'https://portfolio.test/#section',
+    'https://portfolio.test/?',
+    'https://portfolio.test/#',
   ])('rejects invalid origin %s', (origin) => {
     expect(() => parseSiteOrigin(origin)).toThrow()
   })

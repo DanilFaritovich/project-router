@@ -6,8 +6,9 @@ export function parseSiteOrigin(value?: string): string | undefined {
     url.username ||
     url.password ||
     url.pathname !== '/' ||
-    url.search ||
-    url.hash
+    // search/hash omit empty delimiters, which still are not part of an origin.
+    url.href.includes('?') ||
+    url.href.includes('#')
   ) {
     throw new Error(
       'VITE_SITE_ORIGIN must be a public HTTPS origin without credentials, path, query or hash',
