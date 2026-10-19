@@ -37,7 +37,7 @@ test('external social and release links preserve the portfolio tab and scroll po
   expect(context.pages()).toHaveLength(1)
 })
 
-for (const width of [320, 390, 768, 1024, 1440]) {
+for (const width of [320, 375, 390, 768, 1024, 1440]) {
   test(`layout keeps consistent content spacing without overflow at ${width}px`, async ({
     page,
   }) => {
@@ -56,6 +56,47 @@ for (const width of [320, 390, 768, 1024, 1440]) {
         }
       })
       expect(geometry.overflow).toBe(false)
+      for (const card of await page.locator('.portfolio-card').all()) {
+        await card.scrollIntoViewIfNeeded()
+        const image = card.locator('img')
+        if (await image.count()) {
+          await image.evaluate((el) => (el as HTMLImageElement).decode())
+        }
+        const copy = await card.locator('.card-copy').boundingBox()
+        const stack = await card.locator('.stack').boundingBox()
+        const actions = await card.locator('.card-actions').boundingBox()
+        expect(stack!.y).toBeGreaterThanOrEqual(copy!.y + copy!.height)
+        expect(actions!.y).toBeGreaterThanOrEqual(stack!.y + stack!.height)
+        expect(actions!.x).toBeCloseTo(copy!.x, 0)
+        const buttons = await card.locator('.card-actions a').all()
+        if (buttons.length === 2) {
+          const first = await buttons[0]!.boundingBox()
+          const second = await buttons[1]!.boundingBox()
+          expect(second!.y).toBe(first!.y)
+          expect(second!.x).toBeGreaterThan(first!.x)
+        }
+        if (await image.count()) {
+          await expect(image).toHaveJSProperty('complete', true)
+          expect(
+            await image.evaluate((el) => (el as HTMLImageElement).naturalWidth),
+          ).toBeGreaterThan(0)
+          await expect(image).not.toHaveAttribute('alt', '')
+          const preview = await card.locator('.project-preview').boundingBox()
+          if (width >= 1200) {
+            expect(preview!.x).toBeGreaterThanOrEqual(copy!.x + copy!.width)
+            expect(actions!.x + actions!.width).toBeLessThanOrEqual(preview!.x)
+          } else {
+            expect(preview!.y).toBeGreaterThanOrEqual(stack!.y + stack!.height)
+            expect(actions!.y).toBeGreaterThanOrEqual(
+              preview!.y + preview!.height,
+            )
+          }
+        } else {
+          await expect(card.locator('.project-preview')).toHaveCount(0)
+          expect(stack!.width).toBeCloseTo(copy!.width, 0)
+        }
+      }
+
       const expectedLeft =
         width >= 768
           ? geometry.railRight + (width >= 1200 ? 48 : 32)

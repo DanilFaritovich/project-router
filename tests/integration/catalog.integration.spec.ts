@@ -41,7 +41,7 @@ describe.each(['en', 'ru'] as const)('catalog cards in %s', (locale) => {
     }
   })
 
-  it('keeps the featured monogram when an image is missing or fails to load', async () => {
+  it('keeps readable text-only cards when an image is missing or fails to load', async () => {
     const i18n = createAppI18n()
     i18n.global.locale.value = locale
     for (const item of featured) {
@@ -51,11 +51,13 @@ describe.each(['en', 'ru'] as const)('catalog cards in %s', (locale) => {
       })
       await wrapper.get('img').trigger('error')
       expect(wrapper.find('img').exists()).toBe(false)
-      expect(wrapper.get('.preview-monogram').text()).toBe(item.preview)
+      expect(wrapper.find('.project-preview').exists()).toBe(false)
+      expect(wrapper.classes()).not.toContain('media-card')
       expect(wrapper.get('.card-summary').isVisible()).toBe(true)
       expect(wrapper.findAll('a').length).toBe(item.releaseUrl ? 2 : 1)
       await wrapper.setProps({ item: { ...item, image: undefined } })
-      expect(wrapper.get('.preview-monogram').text()).toBe(item.preview)
+      expect(wrapper.find('.project-preview').exists()).toBe(false)
+      expect(wrapper.classes()).not.toContain('media-card')
       wrapper.unmount()
     }
   })

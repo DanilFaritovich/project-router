@@ -46,20 +46,17 @@ for (const locale of ['en', 'ru']) {
   }
 }
 
-test('failed screenshots keep readable cards and the original featured monograms', async ({
+test('failed screenshots keep readable cards without empty media or placeholders', async ({
   page,
 }) => {
   await page.route('**/assets/*.webp', (route) => route.abort())
   await page.setViewportSize({ width: 320, height: 900 })
   await page.goto('/ru/')
-  for (const [id, monogram] of [
-    ['moon', 'MC'],
-    ['support', 'AI'],
-    ['geocoder', 'ETL'],
-  ]) {
+  for (const id of ['moon', 'support', 'geocoder']) {
     const card = page.locator(`#project-${id}`)
     await card.scrollIntoViewIfNeeded()
-    await expect(card.locator('.preview-monogram')).toHaveText(monogram!)
+    await expect(card.locator('.project-preview')).toHaveCount(0)
+    await expect(card).not.toHaveClass(/media-card/)
     await expect(card.locator('img')).toHaveCount(0)
     await expect(card.locator('a').first()).toBeVisible()
   }

@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { PortfolioItem } from '../content/projects'
 import UiAction from './UiAction.vue'
-defineProps<{ item: PortfolioItem; tool?: boolean }>()
+const props = defineProps<{ item: PortfolioItem; tool?: boolean }>()
 const { t } = useI18n()
 const failedImageSrc = ref<string>()
+const hasImage = computed(
+  () => props.item.image && failedImageSrc.value !== props.item.image.src,
+)
 </script>
 
 <template>
@@ -15,6 +18,7 @@ const failedImageSrc = ref<string>()
     class="portfolio-card"
     :class="{
       'featured-card': item.preview,
+      'media-card': hasImage,
       'emphasized-card': item.emphasized,
       'tool-card': tool,
     }"
@@ -28,23 +32,13 @@ const failedImageSrc = ref<string>()
       <p class="card-detail">
         {{ t(`${item.id}Detail`) }}
       </p>
-      <img
-        v-if="!item.preview && item.image && failedImageSrc !== item.image.src"
-        :src="item.image.src"
-        :alt="t(item.image.altKey)"
-        :width="item.image.width"
-        :height="item.image.height"
-        class="project-screenshot compact-screenshot"
-        loading="lazy"
-        decoding="async"
-        @error="failedImageSrc = item.image?.src"
-      />
-      <p v-if="!item.preview" class="stack">{{ item.stack.join(' · ') }}</p>
     </div>
-    <div v-if="item.preview" class="project-preview">
-      <span class="preview-category">{{ t(`${item.id}Category`) }}</span>
+    <p class="stack">{{ item.stack.join(' · ') }}</p>
+    <div v-if="hasImage && item.image" class="project-preview">
+      <span v-if="item.preview" class="preview-category">{{
+        t(`${item.id}Category`)
+      }}</span>
       <img
-        v-if="item.image && failedImageSrc !== item.image.src"
         :src="item.image.src"
         :alt="t(item.image.altKey)"
         :width="item.image.width"
@@ -54,14 +48,10 @@ const failedImageSrc = ref<string>()
         decoding="async"
         @error="failedImageSrc = item.image?.src"
       />
-      <span v-else class="preview-monogram" aria-hidden="true">{{
-        item.preview
+      <span v-if="item.preview" class="preview-caption">{{
+        t(`${item.id}Caption`)
       }}</span>
-      <span class="preview-caption">{{ t(`${item.id}Caption`) }}</span>
     </div>
-    <p v-if="item.preview" class="stack featured-stack">
-      {{ item.stack.join(' · ') }}
-    </p>
     <div class="card-actions">
       <UiAction :href="item.repositoryUrl">{{ t('github') }}</UiAction>
       <UiAction v-if="item.releaseUrl" :href="item.releaseUrl">{{
