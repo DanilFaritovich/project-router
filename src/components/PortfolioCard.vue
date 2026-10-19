@@ -1,13 +1,17 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { PortfolioItem } from '../content/portfolio'
+import type { PortfolioItem } from '../content/projects'
 import UiAction from './UiAction.vue'
 defineProps<{ item: PortfolioItem; tool?: boolean }>()
-const { t, te } = useI18n()
+const { t } = useI18n()
+const failedImageSrc = ref<string>()
 </script>
 
 <template>
   <article
+    :id="`project-${item.id}`"
+    :aria-labelledby="`project-${item.id}-title`"
     class="portfolio-card"
     :class="{
       'featured-card': item.preview,
@@ -19,38 +23,50 @@ const { t, te } = useI18n()
       <p v-if="tool && item.emphasized" class="eyebrow">
         {{ t('featuredTool') }}
       </p>
-      <h3>{{ t(`${item.id}Title`) }}</h3>
-      <p class="card-summary desktop-copy">{{ t(`${item.id}Summary`) }}</p>
-      <p v-if="item.preview" class="card-detail desktop-copy">
+      <h3 :id="`project-${item.id}-title`">{{ t(`${item.id}Title`) }}</h3>
+      <p class="card-summary">{{ t(`${item.id}Summary`) }}</p>
+      <p class="card-detail">
         {{ t(`${item.id}Detail`) }}
       </p>
-      <p class="card-summary mobile-copy">
-        {{
-          t(
-            te(`${item.id}SummaryMobile`)
-              ? `${item.id}SummaryMobile`
-              : `${item.id}Summary`,
-          )
-        }}
-      </p>
-      <p v-if="item.preview" class="card-detail mobile-copy">
-        {{ t(`${item.id}DetailMobile`) }}
-      </p>
-      <p v-if="!item.preview" class="stack">{{ t(item.stack) }}</p>
+      <img
+        v-if="!item.preview && item.image && failedImageSrc !== item.image.src"
+        :src="item.image.src"
+        :alt="t(item.image.altKey)"
+        :width="item.image.width"
+        :height="item.image.height"
+        class="project-screenshot compact-screenshot"
+        loading="lazy"
+        decoding="async"
+        @error="failedImageSrc = item.image?.src"
+      />
+      <p v-if="!item.preview" class="stack">{{ item.stack.join(' · ') }}</p>
     </div>
-    <div v-if="item.preview" class="project-preview" aria-hidden="true">
+    <div v-if="item.preview" class="project-preview">
       <span class="preview-category">{{ t(`${item.id}Category`) }}</span>
-      <span class="preview-monogram">{{ item.preview }}</span>
+      <img
+        v-if="item.image && failedImageSrc !== item.image.src"
+        :src="item.image.src"
+        :alt="t(item.image.altKey)"
+        :width="item.image.width"
+        :height="item.image.height"
+        class="project-screenshot"
+        loading="lazy"
+        decoding="async"
+        @error="failedImageSrc = item.image?.src"
+      />
+      <span v-else class="preview-monogram" aria-hidden="true">{{
+        item.preview
+      }}</span>
       <span class="preview-caption">{{ t(`${item.id}Caption`) }}</span>
     </div>
-    <p v-if="item.preview" class="stack featured-stack">{{ t(item.stack) }}</p>
+    <p v-if="item.preview" class="stack featured-stack">
+      {{ item.stack.join(' · ') }}
+    </p>
     <div class="card-actions">
-      <UiAction :href="item.repository">{{ t('github') }}</UiAction>
-      <UiAction
-        v-if="item.release"
-        :href="`${item.repository}/releases/latest`"
-        >{{ t('release') }}</UiAction
-      >
+      <UiAction :href="item.repositoryUrl">{{ t('github') }}</UiAction>
+      <UiAction v-if="item.releaseUrl" :href="item.releaseUrl">{{
+        t('release')
+      }}</UiAction>
     </div>
   </article>
 </template>

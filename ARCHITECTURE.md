@@ -2,11 +2,11 @@
 
 ## Current implementation
 
-Stage 03 implements the responsive seven-section portfolio on the Stage 02
+Stage 04 adds the approved nine-project catalog to the responsive Stage 03
+seven-section portfolio on the Stage 02
 Vue 3, TypeScript, Vite 8, Tailwind CSS 4, Vue Router, Vue I18n, Vite SSG and
 Unhead foundation. Desktop and mobile navigation, localized layout copy and
-unavailable resume controls are implemented. Catalog enrichment and PDF
-interactions remain planned.
+unavailable resume controls are implemented. PDF interactions remain planned.
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
@@ -31,16 +31,21 @@ This keeps the foundation close to Vue + Vite without a second routing framework
 | `tests/build/`, `tests/e2e/`        | Actual HTML/asset inspection and production Chromium smoke        |
 | `vite.config.ts`                    | SSG routes, root redirect, 404, robots and optional sitemap       |
 
-`src/content/portfolio.ts` holds centralized Stage 03 layout fixtures: section
-identities, project/tool order, repository actions and skill group keys. Visible
-copy, including compact mobile variants and technology labels, comes from EN/RU
-locale files. Stage 04 will enrich and verify the full typed catalog.
+`src/content/portfolio.ts` holds section identities, social destinations and skill
+group keys. `src/content/projects.ts` is the single typed catalog for three
+Featured Projects, three More Projects and three Developer Tools, with ordered
+technology labels, explicit repository/release URLs and optional local image
+metadata. Project titles, both description paragraphs and image alternatives
+come from EN/RU locale files; technology labels are shared metadata. Four
+owner-approved source screenshots are optimized WebP assets in
+`src/assets/projects/`, imported and fingerprinted by Vite. No runtime or
+build-time network request populates the catalog.
 `src/composables/useActiveSection.ts` tracks section positions using throttled
 scroll/resize updates. Navigation owns mobile dialog state, background inertness,
 scroll locking, focus containment, Escape and focus restoration. Locale links
 preserve query parameters and the visible section; router scrolling handles
 localized direct anchors and history positions. No API layer, store or backend
-is introduced. `public/` remains unnecessary until actual assets are supplied.
+is introduced. Project screenshots use `src/assets/`; no `public/` directory is needed.
 Public configuration and repository data contain no secrets.
 
 ## Routes, localization and SEO
@@ -69,12 +74,15 @@ Public configuration and repository data contain no secrets.
 ## Portfolio content and interactions
 
 The layout follows [design/DESIGN.md](design/DESIGN.md): Hero, About, Skills,
-Projects, Developer Tools, Resume and Contacts. Three Featured Projects use
-intentional MC/AI/ETL typography previews; three More Projects and three tools
-use compact cards, with Infrastructure emphasized. No invented screenshots or
-Live Demo actions are supplied. GitHub links use confirmed repository addresses;
-the four stable-release actions were confirmed for this layout. Full catalog
-verification remains Stage 04. Three resume roles expose disabled preview and
+Projects, Developer Tools, Resume and Contacts. Featured Projects retain the
+MC/AI/ETL typography previews as fallbacks for missing or failed images; real
+screenshots occupy their existing preview panels. More Projects and tools keep
+compact cards, with an optional MaximML screenshot and Infrastructure emphasized.
+All nine cards render both approved paragraphs at every breakpoint. GitHub
+actions use the approved repository or development-branch addresses, and only
+four cards expose explicit versioned release URLs. External actions open new
+tabs with `noopener noreferrer`; no Live Demo actions are supplied.
+Three resume roles expose disabled preview and
 download controls with a shared unavailable explanation; no PDF modal or viewer
 is implemented in Stage 03.
 
@@ -105,7 +113,10 @@ expand visual and accessibility coverage. Stage 03 adds component/integration
 coverage for the seven sections, menu focus/Escape/selection, locale switching,
 unavailable controls and fractional anchor positions; production Chromium checks
 cover desktop section tracking and mobile navigation. Built HTML checks assert
-all seven sections and six project cards in both languages without JavaScript.
+all seven sections and nine catalog cards in both languages without JavaScript,
+including complete descriptions, local images and available actions. Stage 04
+adds catalog contracts, localized card/image-failure tests and production browser
+checks for loaded images, readable mobile cards and keyboard action navigation.
 Manual browser QA compared selected renders with PNG references at 1440, 1024,
 768, 390 and 320 pixels in EN/RU, including the narrow mobile menu and overflow.
 No PDF viewer tests or live-domain verification are claimed.

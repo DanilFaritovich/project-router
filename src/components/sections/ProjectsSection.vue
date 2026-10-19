@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { featured, more } from '../../content/portfolio'
+import { featured, more } from '../../content/projects'
 import PortfolioSection from '../PortfolioSection.vue'
 import PortfolioCard from '../PortfolioCard.vue'
 const { t } = useI18n()

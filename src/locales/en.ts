@@ -73,53 +73,73 @@ export default {
   moreTitle: 'More Projects',
   moreIntro: 'Additional backend, ML and automation work.',
   moonTitle: 'Moon Courier Crisis',
+  moonImageAlt:
+    'Moon Courier Crisis mission map with the lunar base, delivery routes and rover battery and cargo status.',
   moonSummary:
-    'A playable full-stack lunar logistics simulation. Manage rovers, deliveries, routes and battery limits.',
+    'A turn-based lunar logistics game where players assign rovers to delivery contracts while managing routes, cargo capacity and battery limits.',
   moonDetail:
-    'Backend-owned game rules and state transitions, with a typed Vue interface and browser-level tests.',
+    'The FastAPI backend controls game rules and state transitions, using SQLAlchemy repositories, a Unit of Work and NetworkX for route calculations.',
   moonCategory: '01 / Full-stack',
   moonCaption: 'Lunar logistics',
   supportTitle: 'Support Assistant',
+  supportImageAlt:
+    'Support Assistant ticket input form and department directory for routing IT requests.',
   supportSummary:
-    'AI-assisted routing and drafting of IT support requests. A human confirms the department before final output.',
+    'AI-assisted IT ticket processing with department routing, human approval and structured description generation.',
   supportDetail:
-    'Schema-validated LLM outputs, backend-only provider integration and shared Redis quotas.',
+    'Built with a Ports & Adapters architecture, schema-validated LLM responses and shared Redis quotas for controlled API usage.',
   supportCategory: '02 / AI / Backend',
   supportCaption: 'Ticket workflows',
   geocoderTitle: 'Yandex Geocoder Region Parser',
+  geocoderImageAlt:
+    'Apache Airflow dashboard listing the four geocoding DAGs and their recent task runs.',
   geocoderSummary:
-    'A geospatial pipeline that enriches district datasets using polygon sampling and geocoder requests.',
+    'A geospatial ETL pipeline that discovers districts by generating coordinate grids within geographic polygons and processing Yandex Geocoder API responses.',
   geocoderDetail:
-    'Four linked Airflow DAGs; intermediate data in MinIO/S3 with repeatable ETL stages.',
+    'Built with four event-driven Apache Airflow DAGs, PostgreSQL, MinIO/S3, parallel task mapping and API-key quota management.',
   geocoderCategory: '03 / Data engineering',
   geocoderCaption: 'Geospatial pipeline',
   taskTitle: 'Task Service API',
   taskSummary:
-    'Async REST API for tasks, services and users. Layered logic, PostgreSQL and database migrations.',
+    'An asynchronous REST API for managing tasks, users, services and related records with PostgreSQL.',
+  taskDetail:
+    'Built with FastAPI, SQLAlchemy 2.x and Alembic, featuring layered application logic, database triggers, input validation and API integration tests.',
   maximTitle: 'MaximML',
+  maximImageAlt:
+    'MaximML prediction form with housing features, a price estimate and prediction feedback controls.',
   maximSummary:
-    'Housing-price prediction with model training, saved scikit-learn pipelines and a React UI.',
+    'A full-stack machine learning application for California housing price prediction using Linear Regression and Gradient Boosting.',
+  maximDetail:
+    'Features reusable scikit-learn pipelines, API-driven model training, prediction feedback and a React interface backed by FastAPI.',
   avitoTitle: 'Avito Parser',
   avitoSummary:
-    'Search product listings by article number, filter offers and export selected results to CSV.',
+    'A Python web scraping prototype for collecting Avito listings by product article numbers using Playwright and Camoufox.',
+  avitoDetail:
+    'Includes SQLite storage, URL-based deduplication, price ranking and CSV export of up to five lowest-priced listings per search query.',
   toolsEyebrow: '05 / Tools',
   toolsTitle: 'Developer Tools',
   toolsIntro: 'A compact catalog of reusable engineering tools.',
   featuredTool: 'Featured tool / Infrastructure',
   serverTitle: 'Portfolio Server Infrastructure',
   serverSummary:
-    'Reusable Ansible toolkit for Ubuntu VPS setup, SSH/UFW hardening, Docker and independent verification across seven infrastructure stages.',
+    'An Infrastructure as Code toolkit for secure, reproducible Ubuntu VPS provisioning through Ansible and a Python CLI.',
+  serverDetail:
+    'Automates seven initialization stages with independent verification, guarded SSH and firewall changes, Docker setup and isolated VM end-to-end testing. Validated on a real VPS.',
   workerTitle: 'Codex Free Worker MCP',
   workerSummary:
-    'Delegate bounded Codex execution loops to OpenCode; return compact structured results without raw test or build logs.',
+    'A local MCP server that delegates bounded development tasks from Codex to configurable OpenCode or isolated Codex CLI workers.',
+  workerDetail:
+    "Supports test and CI diagnostics, mechanical fixes, structured results and controlled permission handoff while keeping verbose execution logs out of the primary agent's context.",
   standardsTitle: 'Codex Development Standards',
   standardsSummary:
-    'Reusable agent skills and rules for architecture, testing, quality checks and CI/CD across software projects.',
+    'A modular collection of reusable engineering standards and workflows for Codex-assisted software development.',
+  standardsDetail:
+    'Includes stack-specific skill profiles, incremental standards synchronization, Git and CI/CD conventions, testing guidelines and context-efficient agent workflows.',
   github: 'GitHub',
   linkedin: 'LinkedIn',
   telegram: 'Telegram',
   instagram: 'Instagram',
-  release: 'Latest Release',
+  release: 'Release',
   resumeEyebrow: '06 / Resume',
   resumeTitle: 'Resume',
   resumeIntro:
@@ -137,41 +157,12 @@ export default {
   contactsCopy:
     'Have an engineering role or a project to discuss? Contact me on Telegram or LinkedIn, or explore my work on GitHub.',
   footer: 'Danil Miftakhov · Yerevan, Armenia',
-  moonSummaryMobile:
-    'Lunar delivery game with rovers, routes and battery limits.',
-  moonDetailMobile:
-    'Backend-owned game logic; Vue interface and browser E2E tests.',
-  supportSummaryMobile:
-    'AI-assisted IT ticket routing and human-approved descriptions.',
-  supportDetailMobile:
-    'Schema-validated LLM outputs; Redis rate limits and a Vue UI.',
-  geocoderSummaryMobile:
-    'Polygon sampling and geocoding for district enrichment.',
-  geocoderDetailMobile:
-    'Four linked Airflow DAGs with intermediate MinIO/S3 artifacts.',
-  taskSummaryMobile:
-    'Async REST API for tasks, services and users, with PostgreSQL and migrations.',
-  maximSummaryMobile:
-    'Full-stack housing-price prediction and model training application.',
-  avitoSummaryMobile:
-    'Find and filter product listings; export selected offers to CSV.',
-  serverSummaryMobile:
-    'Automate Ubuntu VPS setup, hardening and verification with seven tested infrastructure stages.',
   projectsIntroMobile: 'Three selected engineering applications.',
   moreIntroMobile: 'Backend, ML and applied automation.',
   english: 'English',
   russian: 'Русский',
   resumeBackendStack: 'Python · FastAPI · PostgreSQL',
   resumeDataStack: 'SQL · PostgreSQL · Apache Airflow',
-  moonStack: 'FastAPI · Vue 3 · TypeScript · SQLAlchemy · Docker',
-  supportStack: 'FastAPI · Vue 3 · OpenRouter · Redis · SQLite',
-  geocoderStack: 'Python · Airflow · PostgreSQL · MinIO/S3 · Shapely',
-  taskStack: 'FastAPI · PostgreSQL · SQLAlchemy · Alembic',
-  maximStack: 'FastAPI · scikit-learn · React · Docker',
-  avitoStack: 'Python · Playwright · SQLite · CSV',
-  serverStack: 'Python · Ansible · Ubuntu · Docker · GitHub Actions',
-  workerStack: 'Python · MCP · OpenCode · Codex',
-  standardsStack: 'Agent Skills · YAML · GitHub Actions',
   backendSkillStack:
     'Python · FastAPI · Flask · asyncio\nPydantic · SQLAlchemy · Alembic',
   databaseSkillStack:
