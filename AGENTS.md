@@ -1,15 +1,22 @@
 # ProjectRouter agent instructions
 
-ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–04,
-content refinement and Hero Portrait integration are implemented, including the
-responsive seven-section layout, nine-item catalog, localized static HTML, quality
-tooling and CI. Stage 05 — Localization & SEO is implemented in
-`feature/i18n-seo`, awaiting review/merge into `develop`, including social previews,
-JSON-LD and built-HTML AI readability checks. Stages 06–09, PDF interactions and
-production delivery remain planned; the site is not deployed.
+ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–05 are
+complete and merged into `develop`: seven responsive sections, nine catalog items,
+owner portrait, localized static HTML, SEO/social previews/JSON-LD, quality tooling
+and CI. Stage 06 — Resume & Interactions is implemented in
+`feature/resume-interactions`, PR #10, awaiting review/merge into `develop`.
+Stages 07–09 and production delivery remain planned; the site is not deployed.
 
 - Stack: Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Vue I18n,
-  Vite SSG/Unhead; PDF.js is planned. Git-tracked content; no backend or database.
+  Vite SSG/Unhead and PDF.js. Git-tracked content; no backend or database.
+- Key paths: `src/content/` and `src/locales/` own catalog/copy;
+  `src/seo/` owns metadata; `src/components/resume/` and `src/pdf/` own the lazy,
+  client-only PDF modal. Six original EN/RU PDFs in `public/resumes/` must remain
+  unchanged. The viewer supports independent document language, pages, zoom,
+  fit width, download, retry and safe clickable URL annotations. Keep PDF.js and
+  browser APIs out of SSG; preserve focus, disposal and responsive alignment.
+  Permit only HTTP(S)/mailto PDF links, use safe new-tab attributes for HTTP(S),
+  and never execute PDF scripts/actions. Text Layer/search/selection are out of scope.
 - Read relevant local `.agents/skills/<name>/SKILL.md`. Start development with
   `task-development-workflow`; use `standards-sync` for updates and the exact
   `.codex-standards.lock.yaml` revision. Install complete packages; read optional
