@@ -28,6 +28,16 @@ describe('localized navigation', () => {
       })
       await flushPromises()
       expect(wrapper.text()).toContain(messages[locale].intro)
+      const portraitAlt = {
+        en: 'Portrait of Danil Miftakhov',
+        ru: 'Портрет Данила Мифтахова',
+      }
+      expect(wrapper.get('#hero img').attributes('alt')).toBe(
+        portraitAlt[locale],
+      )
+      expect(wrapper.find('#hero [aria-hidden="true"] img').exists()).toBe(
+        false,
+      )
       expect(
         wrapper.get('a[lang][aria-current="page"]').attributes('lang'),
       ).toBe(locale)
@@ -38,6 +48,9 @@ describe('localized navigation', () => {
       await flushPromises()
       expect(router.currentRoute.value.path).toBe(`/${target}/`)
       expect(wrapper.text()).toContain(messages[target].contactsCopy)
+      expect(wrapper.get('#hero img').attributes('alt')).toBe(
+        portraitAlt[target],
+      )
       wrapper.unmount()
     },
   )

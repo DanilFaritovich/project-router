@@ -72,7 +72,7 @@ describe('portfolio', () => {
     expect(wrapper.findAll('#tools article')).toHaveLength(3)
     expect(wrapper.findAll('#resume button:disabled')).toHaveLength(6)
     expect(wrapper.get('#pdf-unavailable').text()).toContain('unavailable')
-    expect(wrapper.findAll('img')).toHaveLength(4)
+    expect(wrapper.findAll('#projects img')).toHaveLength(4)
     expect(wrapper.text()).not.toContain('Live Demo')
     wrapper.unmount()
   })

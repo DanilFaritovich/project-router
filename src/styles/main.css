@@ -192,6 +192,14 @@
     background: var(--color-panel);
     height: 316px;
     border-radius: 8px;
+    overflow: hidden;
+  }
+  .hero-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
   }
   .social-links {
     display: flex;

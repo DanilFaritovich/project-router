@@ -1,4 +1,5 @@
 export default {
+  heroPortraitAlt: 'Portrait of Danil Miftakhov',
   title: 'ProjectRouter — Engineering portfolio',
   description:
     'ProjectRouter is the engineering portfolio of Danil Miftakhov. Python backend, data engineering and integration work.',

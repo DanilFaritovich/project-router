@@ -1,5 +1,6 @@
 import type en from './en'
 export default {
+  heroPortraitAlt: 'Портрет Данила Мифтахова',
   title: 'ProjectRouter — Инженерное портфолио',
   description:
     'ProjectRouter — инженерное портфолио Данила Мифтахова. Python backend, инженерия данных и интеграции.',
