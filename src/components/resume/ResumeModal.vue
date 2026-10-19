@@ -2,6 +2,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type {
+  AnnotationLayer,
   PDFDocumentLoadingTask,
   PDFDocumentProxy,
   RenderTask,
@@ -12,6 +13,7 @@ import {
   type ResumeLanguage,
 } from '../../content/resumes'
 import { loadPdf } from '../../pdf/loadPdf'
+import { createLinkAnnotations } from '../../pdf/linkAnnotations'
 
 const props = defineProps<{ resume: Resume; initialLanguage: ResumeLanguage }>()
 const emit = defineEmits<{ close: [] }>()
@@ -22,6 +24,8 @@ const dialog = ref<HTMLDialogElement>()
 const closer = ref<HTMLButtonElement>()
 const viewport = ref<HTMLElement>()
 const canvas = ref<HTMLCanvasElement>()
+const annotations = ref<HTMLElement>()
+let linkLayer: AnnotationLayer | undefined
 const state = ref<'loading' | 'ready' | 'error'>('loading')
 const page = ref(1)
 const pages = ref(0)
@@ -38,7 +42,16 @@ let observer: ResizeObserver | undefined
 let opener: HTMLElement | null = null
 let previousOverflow = ''
 
+function clearAnnotations() {
+  if (annotations.value?.contains(document.activeElement))
+    viewport.value?.focus()
+  linkLayer?.destroy()
+  linkLayer = undefined
+  annotations.value?.replaceChildren()
+}
+
 function release() {
+  clearAnnotations()
   rendering?.cancel()
   rendering = undefined
   pdf = undefined
@@ -52,6 +65,7 @@ async function renderPage() {
   if (!documentPdf || !canvas.value || !viewport.value) return
   const current = ++renderGeneration
   rendering?.cancel()
+  clearAnnotations()
   state.value = 'loading'
   try {
     const pdfPage = await documentPdf.getPage(page.value)
@@ -89,7 +103,15 @@ async function renderPage() {
       transform: [ratio, 0, 0, ratio, 0, 0],
     })
     await rendering.promise
-    if (!disposed && current === renderGeneration) state.value = 'ready'
+    if (disposed || current !== renderGeneration) return
+    const layer = await createLinkAnnotations(pdfPage, view)
+    if (disposed || current !== renderGeneration) {
+      layer.destroy()
+      return
+    }
+    linkLayer = layer
+    annotations.value?.replaceChildren(layer.div)
+    state.value = 'ready'
   } catch {
     if (!disposed && current === renderGeneration) state.value = 'error'
   }
@@ -136,7 +158,12 @@ function onKey(event: KeyboardEvent) {
   if (event.key !== 'Tab' || !dialog.value) return
   const items = Array.from(
     dialog.value.querySelectorAll<HTMLElement>('a, button, [tabindex]'),
-  ).filter((item) => item.tabIndex >= 0 && !item.hasAttribute('disabled'))
+  ).filter(
+    (item) =>
+      item.tabIndex >= 0 &&
+      !item.hasAttribute('disabled') &&
+      !item.closest('[hidden]'),
+  )
   const first = items[0]
   const last = items[items.length - 1]
   if (event.shiftKey && document.activeElement === first) {
@@ -293,13 +320,15 @@ onUnmounted(() => {
             {{ t('pdfRetry') }}
           </button>
         </div>
-        <canvas
-          v-show="state === 'ready'"
-          ref="canvas"
-          role="img"
-          :aria-label="t('pdfPage', { page, pages })"
-          :lang="language"
-        />
+        <div class="pdf-page" :hidden="state !== 'ready'">
+          <canvas
+            ref="canvas"
+            role="img"
+            :aria-label="t('pdfPage', { page, pages })"
+            :lang="language"
+          />
+          <div ref="annotations" class="pdf-annotations" :lang="language" />
+        </div>
       </div>
       <footer class="pdf-footer">
         <a class="action" :href="url" target="_blank" rel="noopener noreferrer"
@@ -388,6 +417,35 @@ onUnmounted(() => {
   scrollbar-gutter: stable both-edges;
   overscroll-behavior: contain;
   padding: 16px;
+}
+.pdf-page {
+  position: relative;
+  width: max-content;
+  margin-inline: auto;
+}
+.pdf-page[hidden] {
+  display: none;
+}
+.pdf-annotations,
+.pdf-annotations :deep(.pdf-link-layer) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+.pdf-annotations :deep(section) {
+  position: absolute;
+  box-sizing: border-box;
+  transform-origin: 0 0;
+}
+.pdf-annotations :deep(a) {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+.pdf-annotations :deep(a:focus-visible) {
+  outline: 2px solid var(--color-accent-ink);
+  outline-offset: 2px;
 }
 .pdf-viewport canvas {
   display: block;

@@ -5,6 +5,7 @@ import ResumeSection from '../../src/components/sections/ResumeSection.vue'
 import { resumes } from '../../src/content/resumes'
 import { createAppI18n } from '../../src/locales'
 import { loadPdf } from '../../src/pdf/loadPdf'
+import { createLinkAnnotations } from '../../src/pdf/linkAnnotations'
 
 vi.mock('../../src/content/resumes', async (original) => ({
   ...(await original<typeof import('../../src/content/resumes')>()),
@@ -12,6 +13,10 @@ vi.mock('../../src/content/resumes', async (original) => ({
 }))
 
 vi.mock('../../src/pdf/loadPdf', () => ({ loadPdf: vi.fn() }))
+vi.mock('../../src/pdf/linkAnnotations', () => ({
+  createLinkAnnotations: vi.fn(),
+}))
+const destroyAnnotations = vi.fn()
 const destroy = vi.fn().mockResolvedValue(undefined)
 const cancel = vi.fn()
 const render = vi.fn(() => ({ promise: Promise.resolve(), cancel }))
@@ -64,6 +69,11 @@ beforeEach(() => {
   HTMLDialogElement.prototype.close = function () {
     this.removeAttribute('open')
   }
+  vi.mocked(createLinkAnnotations).mockImplementation(async () => {
+    const div = document.createElement('div')
+    div.innerHTML = '<a href="https://example.com/">Project</a>'
+    return { div, destroy: destroyAnnotations } as never
+  })
   success()
 })
 afterEach(() => {
@@ -112,7 +122,9 @@ describe('resume preview', () => {
     const wrapper = mountViewer('ru')
     await flushPromises()
     expect(loadPdf).toHaveBeenLastCalledWith('/resumes/backend-ru.pdf')
-    const links = () => [...document.querySelectorAll('dialog a')]
+    const links = () => [
+      ...document.querySelectorAll('dialog .card-actions a, dialog footer a'),
+    ]
     expect(
       links().every(
         (link) => link.getAttribute('href') === '/resumes/backend-ru.pdf',
@@ -160,7 +172,9 @@ describe('resume preview', () => {
     expect(
       document.querySelector('[aria-busy]')?.getAttribute('aria-busy'),
     ).toBe('false')
-    expect(document.querySelector('canvas')?.style.display).not.toBe('none')
+    expect(
+      document.querySelector('.pdf-page')?.getAttribute('hidden'),
+    ).toBeNull()
     wrapper.unmount()
   })
 
@@ -281,6 +295,44 @@ describe('resume preview', () => {
     expect(document.activeElement).toBe(opener)
     expect(document.body.style.overflow).toBe('')
     expect(destroy).toHaveBeenCalledOnce()
+  })
+
+  it('removes stale links and keeps focus inside the dialog during rerenders', async () => {
+    const wrapper = mountViewer()
+    await flushPromises()
+    const link = document.querySelector(
+      '.pdf-annotations a',
+    ) as HTMLAnchorElement
+    link.focus()
+    resize()
+    expect(document.activeElement).toBe(document.querySelector('.pdf-viewport'))
+    expect(document.querySelector('.pdf-annotations a')).toBeNull()
+    await flushPromises()
+    expect(destroyAnnotations).toHaveBeenCalledOnce()
+    expect(document.querySelector('.pdf-annotations a')).not.toBeNull()
+    wrapper.unmount()
+    expect(destroyAnnotations).toHaveBeenCalledTimes(2)
+  })
+
+  it('destroys an annotation layer that finishes after document replacement', async () => {
+    let resolve!: (value: never) => void
+    vi.mocked(createLinkAnnotations).mockReturnValueOnce(
+      new Promise((done) => {
+        resolve = done
+      }),
+    )
+    const wrapper = mountViewer()
+    await flushPromises()
+    ;(document.querySelector('button[lang="ru"]') as HTMLButtonElement).click()
+    await flushPromises()
+    const staleDiv = document.createElement('div')
+    staleDiv.innerHTML = '<a href="https://stale.example/">Stale</a>'
+    const destroyStale = vi.fn()
+    resolve({ div: staleDiv, destroy: destroyStale } as never)
+    await flushPromises()
+    expect(destroyStale).toHaveBeenCalledOnce()
+    expect(document.querySelector('[href="https://stale.example/"]')).toBeNull()
+    wrapper.unmount()
   })
 
   it('disposes a document that finishes loading after the viewer closes', async () => {

@@ -1,5 +1,76 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Locator } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
+
+type PdfLink = { id: string; url: string; rect: number[] }
+const sourceLinks = new Map<
+  string,
+  Promise<{ width: number; links: PdfLink[] }>
+>()
+async function expectPdfLinks(
+  dialog: Locator,
+  name: string,
+  pageNumber: number,
+) {
+  const key = `${name}:${pageNumber}`
+  if (!sourceLinks.has(key))
+    sourceLinks.set(
+      key,
+      (async () => {
+        const { getDocument, AnnotationType } =
+          await import('pdfjs-dist/legacy/build/pdf.mjs')
+        const task = getDocument({
+          data: new Uint8Array(await readFile(`public/resumes/${name}`)),
+          standardFontDataUrl: `${process.cwd()}/node_modules/pdfjs-dist/standard_fonts/`,
+        })
+        try {
+          const pdf = await task.promise
+          const source = await pdf.getPage(pageNumber)
+          const viewport = source.getViewport({ scale: 1 })
+          const annotations = await source.getAnnotations()
+          return {
+            width: viewport.width,
+            links: annotations
+              .filter((a) => a.annotationType === AnnotationType.LINK && a.url)
+              .map((a) => ({
+                id: a.id,
+                url: a.url,
+                rect: [
+                  ...viewport.convertToViewportPoint(a.rect[0], a.rect[1]),
+                  ...viewport.convertToViewportPoint(a.rect[2], a.rect[3]),
+                ],
+              })),
+          }
+        } finally {
+          await task.destroy()
+        }
+      })(),
+    )
+  const expected = await sourceLinks.get(key)!
+  const links = dialog.locator('.pdf-annotations a')
+  await expect(links).toHaveCount(expected.links.length)
+  const canvas = await dialog.locator('canvas').boundingBox()
+  expect(canvas).not.toBeNull()
+  const scale = canvas!.width / expected.width
+  for (const annotation of expected.links) {
+    const link = dialog.locator(`[data-annotation-id="${annotation.id}"] a`)
+    await expect(link).toHaveAttribute('href', annotation.url)
+    await expect(link).toHaveAttribute('aria-label', annotation.url)
+    if (!annotation.url.startsWith('mailto:')) {
+      await expect(link).toHaveAttribute('target', '_blank')
+      await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    }
+    const bounds = (await link.boundingBox())!
+    const [x1, y1, x2, y2] = annotation.rect as [number, number, number, number]
+    expect(
+      Math.abs(bounds.x - canvas!.x - Math.min(x1, x2) * scale),
+    ).toBeLessThan(1)
+    expect(
+      Math.abs(bounds.y - canvas!.y - Math.min(y1, y2) * scale),
+    ).toBeLessThan(1)
+    expect(Math.abs(bounds.width - Math.abs(x2 - x1) * scale)).toBeLessThan(1)
+    expect(Math.abs(bounds.height - Math.abs(y2 - y1) * scale)).toBeLessThan(1)
+  }
+}
 
 test.describe('real resume viewer', () => {
   for (const width of [320, 390, 768, 1440]) {
@@ -37,6 +108,7 @@ test.describe('real resume viewer', () => {
             overflow: el.scrollWidth > el.clientWidth,
           }
         })
+      await expectPdfLinks(dialog, 'backend-en.pdf', 1)
       const initial = await geometry()
       expect(initial.overflow).toBe(false)
       expect(initial.width).toBeLessThanOrEqual(initial.available)
@@ -65,12 +137,14 @@ test.describe('real resume viewer', () => {
         dialog.getByRole('link', { name: 'Download PDF' }),
       ).toHaveAttribute('href', '/resumes/backend-ru.pdf')
       await expect(dialog.locator('.pdf-page-count')).toHaveText('Page 1 / 2')
+      await expectPdfLinks(dialog, 'backend-ru.pdf', 1)
       await dialog.getByRole('button', { name: 'Next page' }).click()
       await expect(dialog.locator('[aria-busy]')).toHaveAttribute(
         'aria-busy',
         'false',
       )
       await expect(dialog.locator('.pdf-page-count')).toHaveText('Page 2 / 2')
+      await expectPdfLinks(dialog, 'backend-ru.pdf', 2)
       await expect(
         dialog.getByRole('button', { name: 'Next page' }),
       ).toBeDisabled()
@@ -91,6 +165,7 @@ test.describe('real resume viewer', () => {
         'aria-busy',
         'false',
       )
+      await expectPdfLinks(dialog, 'backend-ru.pdf', 1)
       await dialog.getByRole('button', { name: 'Fit width' }).click()
       await expect(dialog.locator('[aria-busy]')).toHaveAttribute(
         'aria-busy',
@@ -104,6 +179,7 @@ test.describe('real resume viewer', () => {
       expect(
         await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth),
       ).toBe(true)
+      await expectPdfLinks(dialog, 'backend-ru.pdf', 1)
       const fitted = await geometry()
       expect(fitted.available - fitted.width).toBeGreaterThanOrEqual(-0.1)
       expect(fitted.available - fitted.width).toBeLessThan(1)
@@ -123,6 +199,7 @@ test.describe('real resume viewer', () => {
             async () => (await geometry()).available - (await geometry()).width,
           )
           .toBeLessThan(1)
+        await expectPdfLinks(dialog, 'backend-ru.pdf', 1)
         await dialog.getByRole('button', { name: 'Zoom out' }).click()
         await expect(dialog.locator('[aria-busy]')).toHaveAttribute(
           'aria-busy',
@@ -133,6 +210,7 @@ test.describe('real resume viewer', () => {
         await page.setViewportSize({ width: 1440, height: 900 })
         await expect(dialog.locator('.pdf-zoom')).toHaveText(manualZoom!)
         expect((await geometry()).width).toBe(manualWidth)
+        await expectPdfLinks(dialog, 'backend-ru.pdf', 1)
       }
       const fallback = dialog.getByRole('link', { name: /Open original PDF/ })
       await fallback.focus()
@@ -151,9 +229,19 @@ test.describe('real resume viewer', () => {
   test('opens all six original documents with the matching download and fallback', async ({
     page,
   }) => {
+    await page.context().route('https://**', (route) =>
+      route.fulfill({
+        contentType: 'text/html',
+        body: '<p>External destination intercepted</p>',
+      }),
+    )
     const errors: string[] = []
     page.on('pageerror', (error) => errors.push(error.message))
     for (const language of ['en', 'ru']) {
+      await page.setViewportSize({
+        width: language === 'en' ? 390 : 1440,
+        height: 900,
+      })
       await page.goto(`/${language}/#resume`)
       const cards = page.locator('#resume article')
       for (const [index, id] of ['backend', 'ai', 'data'].entries()) {
@@ -168,10 +256,49 @@ test.describe('real resume viewer', () => {
         await expect(dialog.locator('canvas')).toHaveAttribute('lang', language)
         await expect(dialog.locator('.pdf-page-count')).toContainText('1 / 2')
         await expect(dialog.locator('a[download]')).toHaveAttribute('href', url)
-        await expect(dialog.locator('a[target="_blank"]')).toHaveAttribute(
-          'href',
-          url,
+        await expect(
+          dialog.locator('footer a[target="_blank"]'),
+        ).toHaveAttribute('href', url)
+        await expectPdfLinks(dialog, `${id}-${language}.pdf`, 1)
+        const email = dialog.locator('.pdf-annotations a[href^="mailto:"]')
+        await email.evaluate((el) =>
+          el.addEventListener('click', (event) => {
+            event.preventDefault()
+            el.setAttribute('data-clicked', 'true')
+          }),
         )
+        await email.click()
+        await expect(email).toHaveAttribute('data-clicked', 'true')
+        // Real pointer/keyboard activation without contacting external services.
+        for (const pageNumber of [1, 2]) {
+          if (pageNumber === 2) {
+            await dialog
+              .getByRole('button', {
+                name: language === 'en' ? 'Next page' : 'Следующая страница',
+              })
+              .click()
+            await expect(dialog.locator('[aria-busy]')).toHaveAttribute(
+              'aria-busy',
+              'false',
+            )
+          }
+          await expectPdfLinks(dialog, `${id}-${language}.pdf`, pageNumber)
+          const link = dialog
+            .locator('.pdf-annotations a[href^="https:"]')
+            .first()
+          const href = await link.getAttribute('href')
+          const popupEvent = page.waitForEvent('popup')
+          if (pageNumber === 1) await link.click()
+          else {
+            await link.focus()
+            await page.keyboard.press('Enter')
+          }
+          const popup = await popupEvent
+          await popup.waitForURL(href!)
+          expect(await popup.evaluate(() => window.opener)).toBeNull()
+          await popup.close()
+          await expect(dialog).toBeVisible()
+        }
         // Assert that the rendered canvas contains document content, beyond its white background.
         expect(
           await dialog
