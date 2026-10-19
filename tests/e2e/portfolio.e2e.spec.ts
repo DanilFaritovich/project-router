@@ -50,10 +50,20 @@ for (const width of [1440, 390, 320]) {
       const hero = page.locator('#hero')
       const links = hero.locator('.social-links a')
       await expect(links).toHaveText([
+        'LinkedIn↗',
+        'GitHub↗',
+        locale === 'en' ? 'Contact↘' : 'Контакты↘',
+      ])
+      for (const [index, name] of [
         'LinkedIn',
         'GitHub',
         locale === 'en' ? 'Contact' : 'Контакты',
-      ])
+      ].entries()) {
+        await expect(links.nth(index)).toHaveAccessibleName(name)
+        await expect(
+          links.nth(index).locator('.external-indicator'),
+        ).toHaveAttribute('aria-hidden', 'true')
+      }
       await expect(links.nth(0)).toHaveAttribute(
         'href',
         'https://www.linkedin.com/in/danil-miftakhov-55468b399/',

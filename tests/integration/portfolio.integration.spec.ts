@@ -101,7 +101,9 @@ describe('portfolio', () => {
         wrapper.findAll('.contact-profiles [aria-hidden="true"]'),
       ).toHaveLength(3)
       expect(
-        wrapper.findAll('#hero .social-links a').map((link) => link.text()),
+        wrapper
+          .findAll('#hero .social-links a')
+          .map((link) => link.text().replace(/[↗↘]/g, '').trim()),
       ).toEqual(['LinkedIn', 'GitHub', messages[locale].heroContact])
       expect(wrapper.find('#hero a[href*="instagram.com"]').exists()).toBe(
         false,

@@ -141,7 +141,7 @@ for (const locale of ['en', 'ru']) {
     )
     const heroLinks = [...document.querySelectorAll('#hero .social-links a')]
     assert.deepEqual(
-      heroLinks.map((link) => link.textContent.trim()),
+      heroLinks.map((link) => link.textContent.replace(/[↗↘]/g, '').trim()),
       ['LinkedIn', 'GitHub', copy.heroContact],
     )
     assert.deepEqual(

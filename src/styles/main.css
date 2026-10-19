@@ -209,6 +209,16 @@
     font-weight: 600;
     font-size: 14px;
   }
+  .hero-section .social-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hero-section .external-indicator {
+    color: var(--color-muted);
+    font-size: 13px;
+    font-weight: 400;
+  }
   .social-links a:hover {
     text-decoration: underline;
     text-underline-offset: 4px;

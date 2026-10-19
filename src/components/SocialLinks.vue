@@ -46,7 +46,7 @@ async function focusContacts(event: MouseEvent) {
       <a v-else :href="link.href" target="_blank" rel="noopener noreferrer"
         >{{ t(link.label)
         }}<span
-          v-if="group === 'profiles'"
+          v-if="!group || group === 'profiles'"
           class="external-indicator"
           aria-hidden="true"
           >↗</span
@@ -57,7 +57,8 @@ async function focusContacts(event: MouseEvent) {
       v-if="!group"
       :to="{ path: route.path, query, hash: '#contacts' }"
       @click="focusContacts"
-      >{{ t('heroContact') }}</RouterLink
+      >{{ t('heroContact')
+      }}<span class="external-indicator" aria-hidden="true">↘</span></RouterLink
     >
   </div>
 </template>
