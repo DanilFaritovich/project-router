@@ -14,9 +14,9 @@ test('external social and release links preserve the portfolio tab and scroll po
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/en/')
   for (const selector of [
-    '#hero .social-links a',
+    '#hero .social-links a[href^="https://"]',
     '#projects a[href*="/releases/tag/"]',
-    '#contacts .social-links a',
+    '#contacts .social-links a[href^="https://"]',
   ]) {
     const links = page.locator(selector)
     for (const link of await links.all()) {
@@ -36,6 +36,161 @@ test('external social and release links preserve the portfolio tab and scroll po
   }
   expect(context.pages()).toHaveLength(1)
 })
+
+for (const width of [1440, 390, 320]) {
+  test(`Hero contact navigation, history and layout at ${width}px`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width, height: 1000 })
+    const errors: string[] = []
+    page.on('pageerror', (error) => errors.push(error.message))
+    for (const locale of ['en', 'ru']) {
+      const initial = `/${locale}/?source=hero#hero`
+      await page.goto(initial)
+      const hero = page.locator('#hero')
+      const links = hero.locator('.social-links a')
+      await expect(links).toHaveText([
+        'LinkedIn↗',
+        'GitHub↗',
+        locale === 'en' ? 'Contact↘' : 'Контакты↘',
+      ])
+      for (const [index, name] of [
+        'LinkedIn',
+        'GitHub',
+        locale === 'en' ? 'Contact' : 'Контакты',
+      ].entries()) {
+        await expect(links.nth(index)).toHaveAccessibleName(name)
+        await expect(
+          links.nth(index).locator('.external-indicator'),
+        ).toHaveAttribute('aria-hidden', 'true')
+      }
+      await expect(links.nth(0)).toHaveAttribute(
+        'href',
+        'https://www.linkedin.com/in/danil-miftakhov-55468b399/',
+      )
+      await expect(links.nth(1)).toHaveAttribute(
+        'href',
+        'https://github.com/DanilFaritovich',
+      )
+      for (const index of [0, 1])
+        await expect(links.nth(index)).toHaveAttribute('target', '_blank')
+      const contact = links.nth(2)
+      await expect(contact).toHaveAttribute(
+        'href',
+        `/${locale}/?source=hero#contacts`,
+      )
+      await expect(contact).not.toHaveAttribute('target')
+      await expect(contact).not.toHaveClass(/action/)
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth > innerWidth,
+        ),
+      ).toBe(false)
+      await hero.screenshot({
+        path: testInfo.outputPath(`hero-${locale}-${width}.png`),
+      })
+      await links.nth(0).focus()
+      await page.keyboard.press('Tab')
+      await expect(links.nth(1)).toBeFocused()
+      await page.keyboard.press('Tab')
+      await expect(contact).toBeFocused()
+      await expect(contact).toHaveCSS('outline-style', 'solid')
+      await page.keyboard.press('Enter')
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#contacts$`),
+      )
+      await expect(page.locator('#contacts-heading')).toBeFocused()
+      await expect(page.locator('#contacts-heading')).toBeInViewport()
+      await page.goBack()
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#hero$`),
+      )
+      await expect(hero).toBeInViewport()
+      await page.goForward()
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#contacts$`),
+      )
+      await expect(page.locator('#contacts-heading')).toBeInViewport()
+      await page.reload()
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#contacts$`),
+      )
+      await expect(page.locator('html')).toHaveAttribute('lang', locale)
+    }
+    expect(errors).toEqual([])
+  })
+}
+
+for (const width of [1440, 768, 390, 320]) {
+  test(`Contacts groups, keyboard navigation and wrapping at ${width}px`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width, height: 1000 })
+    for (const locale of ['en', 'ru']) {
+      await page.goto(`/${locale}/`)
+      const contacts = page.locator('#contacts')
+      const links = contacts.locator('a')
+      await expect(links).toHaveCount(6)
+      await expect(contacts.locator('.action-primary')).toHaveText('Email')
+      await expect(contacts.locator('.contact-profiles .action')).toHaveCount(0)
+      await expect(
+        contacts.locator('.contact-profiles [aria-hidden="true"]'),
+      ).toHaveCount(3)
+      await expect(links.first()).toHaveAttribute(
+        'href',
+        'mailto:danilfaritovichwork@gmail.com',
+      )
+      await links.first().focus()
+      for (let index = 0; index < 6; index++) {
+        const link = links.nth(index)
+        await expect(link).toBeFocused()
+        const geometry = await link.evaluate((element) => {
+          const box = element.getBoundingClientRect()
+          const style = getComputedStyle(element)
+          return {
+            left: box.left,
+            right: box.right,
+            height: box.height,
+            outline: style.outlineStyle,
+          }
+        })
+        expect(geometry.left).toBeGreaterThanOrEqual(0)
+        expect(geometry.right).toBeLessThanOrEqual(width)
+        expect(geometry.height).toBeGreaterThanOrEqual(44)
+        // Tab navigation must expose the shared visible focus indicator.
+        if (index > 0) expect(geometry.outline).toBe('solid')
+        if (index < 5) await page.keyboard.press('Tab')
+      }
+      await page.keyboard.press('Shift+Tab')
+      await expect(links.nth(4)).toBeFocused()
+      await expect(links.nth(4)).toHaveCSS('outline-style', 'solid')
+      await links.nth(4).evaluate((element) => (element as HTMLElement).blur())
+      const layout = await contacts.evaluate((section) => {
+        const direct = section
+          .querySelector('.contact-group')!
+          .getBoundingClientRect()
+        const profiles = section
+          .querySelector('.contact-profiles')!
+          .getBoundingClientRect()
+        return {
+          overflow: document.documentElement.scrollWidth > innerWidth,
+          separated: profiles.top >= direct.bottom,
+          clipped: [...section.querySelectorAll('p, h2, h3')].some(
+            (element) => element.scrollWidth > element.clientWidth,
+          ),
+        }
+      })
+      expect(layout).toEqual({
+        overflow: false,
+        separated: true,
+        clipped: false,
+      })
+      await contacts.screenshot({
+        path: testInfo.outputPath(`contacts-${locale}-${width}.png`),
+      })
+    }
+  })
+}
 
 for (const width of [320, 375, 390, 768, 1024, 1440]) {
   test(`layout keeps consistent content spacing without overflow at ${width}px`, async ({

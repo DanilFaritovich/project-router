@@ -1,25 +1,37 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
+import { useNavigationQuery } from '../composables/useNavigationQuery'
 import { useI18n } from 'vue-i18n'
-import { contactSocialOrder, socialLinks } from '../content/portfolio'
+import {
+  contactSocialGroups,
+  heroSocialOrder,
+  socialLinks,
+} from '../content/portfolio'
 import UiAction from './UiAction.vue'
 const props = defineProps<{
   buttons?: boolean
-  section?: 'hero' | 'contacts'
+  group?: keyof typeof contactSocialGroups
 }>()
 const links = computed(() => {
-  const visible = socialLinks.filter(
-    (link) => !('contactsOnly' in link) || props.section === 'contacts',
-  )
-  return props.section === 'contacts'
-    ? visible.sort(
-        (a, b) =>
-          contactSocialOrder.indexOf(a.label) -
-          contactSocialOrder.indexOf(b.label),
-      )
-    : visible
+  const order = props.group ? contactSocialGroups[props.group] : heroSocialOrder
+  return order.map((label) => socialLinks.find((link) => link.label === label)!)
 })
 const { t } = useI18n()
+const route = useRoute()
+const query = useNavigationQuery()
+async function focusContacts(event: MouseEvent) {
+  if (
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey
+  )
+    return
+  await nextTick()
+  document.getElementById('contacts-heading')?.focus({ preventScroll: true })
+}
 </script>
 
 <template>
@@ -28,12 +40,25 @@ const { t } = useI18n()
       <UiAction
         v-if="buttons"
         :href="link.href"
-        :primary="link.label === 'telegram'"
+        :primary="link.label === 'email'"
         >{{ t(link.label) }}</UiAction
       >
-      <a v-else :href="link.href" target="_blank" rel="noopener noreferrer">{{
-        t(link.label)
-      }}</a>
+      <a v-else :href="link.href" target="_blank" rel="noopener noreferrer"
+        >{{ t(link.label)
+        }}<span
+          v-if="!group || group === 'profiles'"
+          class="external-indicator"
+          aria-hidden="true"
+          >↗</span
+        ></a
+      >
     </template>
+    <RouterLink
+      v-if="!group"
+      :to="{ path: route.path, query, hash: '#contacts' }"
+      @click="focusContacts"
+      >{{ t('heroContact')
+      }}<span class="external-indicator" aria-hidden="true">↘</span></RouterLink
+    >
   </div>
 </template>
