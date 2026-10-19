@@ -2,29 +2,38 @@
 
 [English](README.md) · [Русский](README.ru.md)
 
-ProjectRouter is Danil Miftakhov's planned EN/RU engineering portfolio: projects,
-developer tools, resume documents and contacts, with content tracked in Git.
+ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio, with projects,
+developer tools, resume placeholders and contacts. Content is tracked in Git.
 
-## Current state — Stage 02
+## Current state — Stages 01–04
 
-The Vue 3/TypeScript/Vite foundation includes Tailwind CSS, Vue Router and Vue
-I18n. Vite SSG generates separate HTML containing localized EN/RU copy and
-metadata. A minimal page is available at `/en/` and `/ru/`; `/` goes to `/en/`.
-Quality tooling, tests and GitHub Actions CI are configured. Portfolio design,
-catalogs, PDF.js and deployment remain future stages. Original design references
-are preserved.
+Stages 01–04, Portfolio Content Refinement and Hero Portrait Integration are
+implemented and merged into `develop`. The responsive Vue 3/TypeScript/Vite
+portfolio includes Tailwind CSS, Vue Router and Vue I18n. Vite SSG generates
+localized HTML and basic metadata at `/en/` and `/ru/`; `/` goes to `/en/`.
 
-## Planned website
+- Seven sections: Hero, About, Skills, Projects, Developer Tools, Resume and Contacts.
+- Hero uses the owner's photograph as local optimized WebP images, with localized
+  alt text and responsive `srcset`/sizes. About separates commercial experience,
+  freelance work and personal engineering projects; Skills has eight groups.
+- The catalog contains three Featured Projects, three More Projects and three
+  Developer Tools, with verified GitHub destinations and four explicit versioned
+  Release links. Four real project screenshots are optimized locally as WebP.
+- Desktop section navigation and a mobile menu support EN/RU switching while
+  preserving the visible section; contacts link to the owner's social profiles.
+- ESLint, Prettier, TypeScript, Vitest, Playwright, SSG/build checks and GitHub
+  Actions provide automated quality checks. Original design references are preserved.
 
-Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router and Vue I18n, with SSG/prerender
-at `/en/` and `/ru/`, SEO, PDF.js, Vitest and Playwright. No dedicated backend
-or database is planned. The responsive portfolio will have seven sections,
-three Featured Projects, More Projects and Developer Tools. Demo/release links
-and resume actions depend on verified destinations and real PDF files.
+Real resume PDFs are absent: three role placeholders have disabled preview and
+download controls, and PDF.js integration remains planned. No public Live Demo
+is confirmed or linked. Production deployment has not been performed. Existing
+localization and SEO mechanisms are a foundation; their audit and completion
+belong to Stage 05, the next stage. No backend or database is used.
 
 ## Development roadmap
 
-Stages 01–02 are implemented; stages 03–09 remain planned.
+Stages 01–04 are implemented; stages 05–09 remain planned. Documentation sync
+is a maintenance task outside the nine-stage roadmap.
 
 | Stage | Branch                          | Scope                      |
 | ----- | ------------------------------- | -------------------------- |
@@ -78,7 +87,7 @@ belong to the delivery stage. Administrators should require the
 settings are configured manually.
 
 - [AGENTS.md](AGENTS.md): Codex workflow and project instructions.
-- [ARCHITECTURE.md](ARCHITECTURE.md): implemented foundation, planned boundaries, routing and quality.
+- [ARCHITECTURE.md](ARCHITECTURE.md): implemented portfolio, system boundaries, routing and quality.
 - [design/DESIGN.md](design/DESIGN.md) and [reference notes](design/reference/README.md): visual specification.
 - [.agents/skills/](.agents/skills/) and [standards lock](.codex-standards.lock.yaml): nine complete packages from
   [Codex Development Standards](https://github.com/DanilFaritovich/codex-development-standards),
@@ -89,6 +98,7 @@ settings are configured manually.
 
 Code and technical documentation use the standard [MIT License](LICENSE),
 copyright 2026 Danil Miftakhov, permitting modification and commercial reuse.
-Personal assets and branding in `design/reference/` follow
+Personal photographs, resume documents and branding, including materials in
+`design/reference/`, follow
 [ASSETS-LICENSE.md](ASSETS-LICENSE.md): public availability grants no reuse or
 impersonation rights. No copyright is claimed over unprotected facts or ideas.

@@ -1,8 +1,10 @@
 # ProjectRouter agent instructions
 
-ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stage 02 provides
-a minimal Vue application, localized static HTML, quality tooling and CI.
-Portfolio design, catalog, PDF interactions and delivery remain later stages.
+ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–04,
+content refinement and Hero Portrait integration are implemented, including the
+responsive seven-section layout, nine-item catalog, localized static HTML, quality
+tooling and CI. Stage 05 — Localization & SEO is next; PDF interactions and
+production delivery remain planned.
 
 - Stack: Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Vue I18n,
   Vite SSG/Unhead; PDF.js is planned. Git-tracked content; no backend or database.
