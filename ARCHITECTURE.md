@@ -2,13 +2,13 @@
 
 ## Current implementation
 
-Stages 01–05 are complete and merged into `develop`, including content refinement,
-Hero Portrait Integration and Localization & SEO. The responsive seven-section
-portfolio and nine-item catalog use Vue 3, TypeScript, Vite 8, Tailwind CSS 4,
-Vue Router, Vue I18n, Vite SSG and Unhead. Stage 06 — Resume & Interactions is
-implemented in `feature/resume-interactions`, [PR #10](https://github.com/DanilFaritovich/project-router/pull/10),
-awaiting review/merge. It adds six owner-supplied PDFs and a client-only PDF.js
-viewer with clickable links. Stages 07–09 and production delivery remain planned.
+Stages 01–06 are complete and merged into `develop`, including content refinement,
+Hero Portrait Integration, Localization & SEO and Resume & Interactions. The
+responsive seven-section portfolio and nine-item catalog use Vue 3, TypeScript,
+Vite 8, Tailwind CSS 4, Vue Router, Vue I18n, Vite SSG and Unhead. Six owner-supplied
+PDFs use a client-only PDF.js viewer with clickable links. Stage 07 — Testing &
+Visual QA is prepared for manual review in `test/portfolio-quality`; see the
+[QA report](docs/qa/STAGE07-REPORT.md). Stages 08–09 and production delivery remain planned.
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
@@ -172,7 +172,7 @@ intercepted on mobile/desktop; no third-party site is contacted. Unit tests use
 the installed AnnotationLayer with safe/unsafe annotations and verify URL policy,
 accessible anchors and destruction; component tests cover stale asynchronous
 layers and focus during removal.
-Responsive checks at 320, 390, 768 and 1440px assert no page/dialog overflow and
+Responsive checks at 320, 390, 768, 1024 and 1440px assert no page/dialog overflow and
 no document overflow in fit-width mode; 390px and 1440px screenshots are saved
 as ignored Playwright artifacts for visual inspection.
 
@@ -208,12 +208,15 @@ EN/RU alt text on entry and after switching languages.
 Built HTML checks assert localized copy without JavaScript, all seven sections,
 three About blocks, eight skill groups, nine complete catalog cards, four local
 screenshots and available actions, plus root fallback, 404 and metadata output.
+Section headings stack above content throughout the tablet range (768–1199px),
+preventing longer EN/RU titles from intersecting cards.
 Production-build Chromium tests cover hydration/refresh, JavaScript-disabled
 Russian content, desktop section tracking, mobile menu behavior, keyboard actions,
 loaded/failed catalog images and layout without overflow at widths from 320 to
 1440 pixels in EN/RU. External popup destinations are intercepted in browser tests;
 these checks do not establish live availability or deployment of linked projects.
-Stage 07 will expand visual and accessibility coverage. Live-domain verification
+Stage 07 adds axe-core scans, a viewport/locale screenshot matrix, heading-overlap
+regression checks and delayed-response/resize interaction tests. Live-domain verification
 remains pending. Stage 05 adds built-HTML professional
 evidence extraction and a limited accessibility/performance smoke; it does not
 replace Stage 07 visual QA or real search-engine testing.
@@ -252,7 +255,7 @@ parallel professional-content store.
 
 `User-agent: *` / `Allow: /` permits crawling. Search/training bot-specific policy
 is unchanged. No concrete consumer for `llms.txt` has been identified, so it is
-intentionally absent. Stage 07 will expand visual/accessibility QA. Local smoke
+intentionally absent. Stage 07 visual/accessibility evidence and limitations are recorded in the QA report. Local smoke
 results are not production Core Web Vitals or performance guarantees.
 
 After authorized deployment, verify public HTTPS and the real origin, root HTTP

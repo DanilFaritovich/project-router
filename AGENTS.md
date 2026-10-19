@@ -1,11 +1,10 @@
 # ProjectRouter agent instructions
 
-ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–05 are
-complete and merged into `develop`: seven responsive sections, nine catalog items,
-owner portrait, localized static HTML, SEO/social previews/JSON-LD, quality tooling
-and CI. Stage 06 — Resume & Interactions is implemented in
-`feature/resume-interactions`, PR #10, awaiting review/merge into `develop`.
-Stages 07–09 and production delivery remain planned; the site is not deployed.
+ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–06 are
+complete and merged into `develop`. Stage 07 — Testing & Visual QA is prepared
+in `test/portfolio-quality`, awaiting manual review/merge; see
+[the QA report](docs/qa/STAGE07-REPORT.md) for evidence and the owner checklist.
+Stages 08–09 and production delivery remain planned; the site is not deployed.
 
 - Stack: Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Vue I18n,
   Vite SSG/Unhead and PDF.js. Git-tracked content; no backend or database.
