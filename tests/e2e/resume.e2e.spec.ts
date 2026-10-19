@@ -46,6 +46,11 @@ async function expectPdfLinks(
       })(),
     )
   const expected = await sourceLinks.get(key)!
+  await expect(dialog.locator('[aria-busy]')).toHaveAttribute(
+    'aria-busy',
+    'false',
+  )
+  await expect(dialog.locator('canvas')).toBeVisible()
   const links = dialog.locator('.pdf-annotations a')
   await expect(links).toHaveCount(expected.links.length)
   const canvas = await dialog.locator('canvas').boundingBox()
@@ -195,9 +200,10 @@ test.describe('real resume viewer', () => {
       if (width === 1440) {
         await page.setViewportSize({ width: 768, height: 900 })
         await expect
-          .poll(
-            async () => (await geometry()).available - (await geometry()).width,
-          )
+          .poll(async () => {
+            const { available, width } = await geometry()
+            return Math.abs(available - width)
+          })
           .toBeLessThan(1)
         await expectPdfLinks(dialog, 'backend-ru.pdf', 1)
         await dialog.getByRole('button', { name: 'Zoom out' }).click()
