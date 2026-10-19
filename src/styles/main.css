@@ -652,8 +652,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 60px;
-    padding: 22px 0 56px;
+    gap: 32px;
+    padding: 22px 0 32px;
   }
   .hero-section .eyebrow {
     font-size: 13px;
@@ -673,8 +673,11 @@
     margin-bottom: 24px;
   }
   .hero-media {
-    width: 196px;
-    height: 220px;
+    align-self: center;
+    width: clamp(240px, 72vw, 280px);
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
   }
   .hero-section .social-links {
     margin-top: 34px;

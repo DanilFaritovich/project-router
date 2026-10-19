@@ -24,7 +24,7 @@ const { t } = useI18n()
       <img
         :src="portrait"
         :srcset="`${portraitSmall} 288w, ${portrait} 576w`"
-        sizes="(max-width: 899px) 196px, (max-width: 1199px) 180px, 264px"
+        sizes="(max-width: 767px) clamp(240px, 72vw, 280px), (max-width: 899px) 196px, (max-width: 1199px) 180px, 264px"
         :alt="t('heroPortraitAlt')"
         width="576"
         height="768"
