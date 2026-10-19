@@ -6,9 +6,10 @@ Stages 01–04, Portfolio Content Refinement and Hero Portrait Integration are
 implemented and merged into `develop`. The responsive seven-section portfolio
 and nine-item catalog use Vue 3, TypeScript, Vite 8, Tailwind CSS 4, Vue Router,
 Vue I18n, Vite SSG and Unhead. Desktop/mobile navigation, EN/RU content and the
-owner portrait are implemented; resume controls remain unavailable. Stage 05 —
+owner portrait are implemented. Resume controls reflect supplied PDF availability. Stage 05 —
 Localization & SEO is implemented in `feature/i18n-seo`, awaiting review/merge
-into `develop`. Stages 06–09, PDF interactions and production delivery remain planned.
+into `develop`. Stage 06 viewer code is prepared pending the owner resume assets;
+Stages 07–09 and production delivery remain planned.
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
@@ -112,17 +113,31 @@ cards render both approved paragraphs at every breakpoint. GitHub actions use
 the verified repository or development-branch addresses, and only four cards
 expose explicit versioned release URLs. External actions open new tabs with
 `noopener noreferrer`. No public Live Demo is confirmed or linked.
-Three resume roles expose disabled preview and download controls with a shared
-unavailable explanation; no real resume PDFs, PDF modal or viewer are present.
+Three resume roles use `src/content/resumes.ts` for typed specialization metadata,
+EN/RU asset paths and build-time availability. Owner-supplied documents belong in
+`public/resumes/{backend,ai,data}-{en,ru}.pdf` and are copied unchanged by Vite.
+Missing files keep the affected card actions disabled with localized explanation.
+The requested resume ZIP and six PDFs were absent during Stage 06 implementation;
+real-document acceptance and completion of Stage 06 remain blocked on these assets.
 
-Stage 06 will use PDF.js for configured resume PDF preview, loaded lazily when needed. Keep
-PDF asset metadata separate from the viewer. Track unavailable, loading, ready
-and error states, with retry, page/zoom/fit controls where appropriate and a
-direct download of the same configured document. Do not synthesize resume files
-from mockups. The current reference package supplies no actual PDFs.
-The modal must support keyboard focus containment, Escape, focus restoration,
-accessible names and responsive usable controls. Release viewer resources on
-close. A missing PDF keeps preview/download unavailable with explanatory copy.
+`ResumeSection.vue` loads `components/resume/ResumeModal.vue` asynchronously on
+preview. Its client mount calls `src/pdf/loadPdf.ts`, which dynamically imports
+PDF.js and the Vite-emitted local worker URL; neither PDF.js nor browser/Canvas
+APIs execute during SSG. The native modal dialog provides background inertness;
+the component contains Tab focus, handles cancel/Escape, locks body scrolling,
+restores the opener and destroys loading/rendering resources on unmount.
+Document language initializes from the site locale and then stays independent.
+Preview, download and new-tab fallback derive from the same selected asset URL.
+Loading, ready and error/retry states accompany single-page canvas rendering,
+previous/next, zoom and responsive fit-width controls. The viewport scrolls
+independently, including horizontally when deliberately zoomed beyond its width.
+
+Unit/component tests cover mapping, language selection, resource URL alignment,
+loading/error/retry, pages/zoom, focus containment/restoration and disposal.
+A build test requires all six PDFs and compares source/build bytes. Real-PDF
+Chromium scenarios at 320, 390, 768 and 1440px run when all owner files are supplied;
+they are explicitly skipped while the archive is missing. This is pending
+acceptance, not evidence of successful rendering of the actual resumes.
 
 ## Responsive Hero and local image optimization
 
@@ -161,8 +176,8 @@ Russian content, desktop section tracking, mobile menu behavior, keyboard action
 loaded/failed catalog images and layout without overflow at widths from 320 to
 1440 pixels in EN/RU. External popup destinations are intercepted in browser tests;
 these checks do not establish live availability or deployment of linked projects.
-Stage 07 will expand visual and accessibility coverage. No PDF viewer tests,
-live-domain verification are claimed. Stage 05 adds built-HTML professional
+Stage 07 will expand visual and accessibility coverage. Real-resume browser
+acceptance and live-domain verification remain pending. Stage 05 adds built-HTML professional
 evidence extraction and a limited accessibility/performance smoke; it does not
 replace Stage 07 visual QA or real search-engine testing.
 Repository administrators should require the `Quality and static build` CI check
