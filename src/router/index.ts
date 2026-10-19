@@ -19,7 +19,8 @@ export function installLocaleRouting(
   router: Router,
   i18n: ReturnType<typeof createAppI18n>,
 ) {
-  router.beforeEach((to) => {
-    i18n.global.locale.value = localeFromPath(to.path)
+  router.afterEach((to, _from, failure) => {
+    // Let Router save the outgoing scroll position before translated copy reflows.
+    if (!failure) i18n.global.locale.value = localeFromPath(to.path)
   })
 }

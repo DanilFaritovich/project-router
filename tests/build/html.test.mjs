@@ -58,6 +58,10 @@ for (const locale of ['en', 'ru']) {
         copy[`${key}Title`],
       )
       assert.equal(
+        skills[index].querySelector('.skill-stack').textContent,
+        copy[`${key}SkillStack`],
+      )
+      assert.equal(
         skills[index].querySelector('.skill-detail').textContent,
         copy[`${key}Detail`],
       )
@@ -114,6 +118,32 @@ for (const locale of ['en', 'ru']) {
       assert.ok(image.getAttribute('src').startsWith('/assets/'))
       assert.ok(Number(image.width) > 0 && Number(image.height) > 0)
       await access(`dist${image.getAttribute('src')}`)
+    }
+    assert.equal(document.querySelector('#hero img').alt, copy.heroPortraitAlt)
+    assert.equal(
+      document.querySelector('#pdf-unavailable').textContent,
+      copy.pdfUnavailable,
+    )
+    assert.equal(
+      document.querySelector('.contacts-copy').textContent,
+      copy.contactsCopy,
+    )
+    for (const button of document.querySelectorAll('#resume button')) {
+      assert.ok(
+        [copy.viewPdf, copy.downloadPdf].includes(button.textContent.trim()),
+      )
+      assert.equal(button.getAttribute('aria-describedby'), 'pdf-unavailable')
+    }
+    for (const nav of document.querySelectorAll('.language-switcher')) {
+      assert.equal(nav.getAttribute('aria-label'), copy.language)
+      assert.equal(
+        nav.querySelector('[lang="en"]').getAttribute('aria-label'),
+        copy.english,
+      )
+      assert.equal(
+        nav.querySelector('[lang="ru"]').getAttribute('aria-label'),
+        copy.russian,
+      )
     }
     assert.equal(document.documentElement.lang, locale)
     assert.match(

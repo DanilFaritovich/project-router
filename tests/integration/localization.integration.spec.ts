@@ -19,6 +19,8 @@ describe('localized navigation', () => {
       })
       const router = createRouter({ history: createMemoryHistory(), routes })
       const i18n = createAppI18n()
+      const missing = vi.fn()
+      i18n.global.setMissingHandler(missing)
       installLocaleRouting(router, i18n)
       await router.push(`/${locale}/?source=test#resume`)
       await router.isReady()
@@ -46,11 +48,42 @@ describe('localized navigation', () => {
       expect(link.attributes('href')).toBe(`/${target}/?source=test#resume`)
       await link.trigger('click')
       await flushPromises()
-      expect(router.currentRoute.value.path).toBe(`/${target}/`)
+      expect(router.currentRoute.value.fullPath).toBe(
+        `/${target}/?source=test#resume`,
+      )
       expect(wrapper.text()).toContain(messages[target].contactsCopy)
       expect(wrapper.get('#hero img').attributes('alt')).toBe(
         portraitAlt[target],
       )
+      for (const current of [target, locale] as const) {
+        if (current === locale) {
+          router.back()
+          await flushPromises()
+        }
+        const copy = messages[current]
+        expect(wrapper.get('.skip-link').text()).toBe(copy.skip)
+        expect(wrapper.get('.menu-trigger').text()).toBe(copy.menu)
+        expect(
+          wrapper
+            .get('.desktop-rail .section-navigation')
+            .attributes('aria-label'),
+        ).toBe(copy.navigation)
+        for (const nav of wrapper.findAll('.language-switcher')) {
+          expect(nav.attributes('aria-label')).toBe(copy.language)
+          expect(nav.get('a[lang="en"]').attributes('aria-label')).toBe(
+            copy.english,
+          )
+          expect(nav.get('a[lang="ru"]').attributes('aria-label')).toBe(
+            copy.russian,
+          )
+        }
+        await wrapper.get('.menu-trigger').trigger('click')
+        expect(wrapper.get('[role="dialog"] button').text()).toBe(
+          copy.closeMenu,
+        )
+        await wrapper.get('[role="dialog"] button').trigger('click')
+      }
+      expect(missing).not.toHaveBeenCalled()
       wrapper.unmount()
     },
   )

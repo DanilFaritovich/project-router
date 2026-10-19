@@ -2,8 +2,10 @@
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { locales, localePath } from '../locales'
+import { useNavigationQuery } from '../composables/useNavigationQuery'
 const { t, locale } = useI18n()
 const route = useRoute()
+const query = useNavigationQuery()
 defineProps<{ section?: string }>()
 defineEmits<{ navigate: [] }>()
 </script>
@@ -15,7 +17,7 @@ defineEmits<{ navigate: [] }>()
       :key="language"
       :to="{
         path: localePath(language),
-        query: route.query,
+        query,
         hash: section ? (section === 'hero' ? '' : `#${section}`) : route.hash,
       }"
       :lang="language"
