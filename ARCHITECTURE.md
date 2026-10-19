@@ -2,11 +2,12 @@
 
 ## Current implementation
 
-Stage 04 adds the approved nine-project catalog to the responsive Stage 03
-seven-section portfolio on the Stage 02
-Vue 3, TypeScript, Vite 8, Tailwind CSS 4, Vue Router, Vue I18n, Vite SSG and
-Unhead foundation. Desktop and mobile navigation, localized layout copy and
-unavailable resume controls are implemented. PDF interactions remain planned.
+Stages 01–04, Portfolio Content Refinement and Hero Portrait Integration are
+implemented and merged into `develop`. The responsive seven-section portfolio
+and nine-item catalog use Vue 3, TypeScript, Vite 8, Tailwind CSS 4, Vue Router,
+Vue I18n, Vite SSG and Unhead. Desktop/mobile navigation, EN/RU content and the
+owner portrait are implemented; resume controls remain unavailable. Stage 05 —
+Localization & SEO is next. PDF interactions and production delivery remain planned.
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
@@ -31,12 +32,14 @@ This keeps the foundation close to Vue + Vite without a second routing framework
 | `tests/build/`, `tests/e2e/`        | Actual HTML/asset inspection and production Chromium smoke        |
 | `vite.config.ts`                    | SSG routes, root redirect, 404, robots and optional sitemap       |
 
-`src/content/portfolio.ts` holds section identities, social destinations and skill
-group keys. `src/content/projects.ts` is the single typed catalog for three
+`src/content/portfolio.ts` holds section identities, social destinations and eight
+skill group keys. `src/locales/en.ts` and `src/locales/ru.ts` provide section copy,
+professional profile, skill stacks/details, resume labels, project descriptions
+and image alternatives; `src/locales/index.ts` creates fresh per-app i18n instances.
+`src/content/projects.ts` is the single typed catalog for three
 Featured Projects, three More Projects and three Developer Tools, with ordered
 technology labels, explicit repository/release URLs and optional local image
-metadata. Project titles, both description paragraphs and image alternatives
-come from EN/RU locale files; technology labels are shared metadata. Four
+metadata. Technology labels are shared metadata. Four
 owner-approved source screenshots are optimized WebP assets in
 `src/assets/projects/`, imported and fingerprinted by Vite. No runtime or
 build-time network request populates the catalog.
@@ -44,11 +47,16 @@ build-time network request populates the catalog.
 scroll/resize updates. Navigation owns mobile dialog state, background inertness,
 scroll locking, focus containment, Escape and focus restoration. Locale links
 preserve query parameters and the visible section; router scrolling handles
-localized direct anchors and history positions. No API layer, store or backend
-is introduced. Project screenshots use `src/assets/`; no `public/` directory is needed.
+localized direct anchors and history positions. No API layer, global store or
+backend is introduced. Portrait and project images use `src/assets/`; no `public/`
+directory is needed.
 Public configuration and repository data contain no secrets.
 
 ## Routes, localization and SEO
+
+These mechanisms are implemented foundations. Stage 05 will audit and complete
+localization and SEO; production SEO has not been verified and no production
+deployment has been performed.
 
 - `/en/` and `/ru/` are independently loadable, indexable portfolio documents.
   `/` redirects to `/en/` as the default entry; persisted preferences must not
@@ -74,17 +82,24 @@ Public configuration and repository data contain no secrets.
 ## Portfolio content and interactions
 
 The layout follows [design/DESIGN.md](design/DESIGN.md): Hero, About, Skills,
-Projects, Developer Tools, Resume and Contacts. Featured Projects retain the
-MC/AI/ETL typography previews as fallbacks for missing or failed images; real
-screenshots occupy their existing preview panels. More Projects and tools keep
-compact cards, with an optional MaximML screenshot and Infrastructure emphasized.
-All nine cards render both approved paragraphs at every breakpoint. GitHub
-actions use the approved repository or development-branch addresses, and only
-four cards expose explicit versioned release URLs. External actions open new
-tabs with `noopener noreferrer`; no Live Demo actions are supplied.
-Three resume roles expose disabled preview and
-download controls with a shared unavailable explanation; no PDF modal or viewer
-is implemented in Stage 03.
+Projects, Developer Tools, Resume and Contacts. About has an introduction, separate
+Commercial Experience, Freelance & Client Work and Personal Engineering Projects
+blocks, and a current-focus panel. Skills renders eight groups: Backend & APIs,
+Databases & Geospatial, Data Engineering & ML, Automation & Integrations,
+Infrastructure & Delivery, Testing & Quality, AI & Developer Workflows, and
+Architecture & Interfaces. These describe the owner's experience, not services
+or infrastructure running inside ProjectRouter.
+
+The catalog renders three Featured Projects, three More Projects and three
+Developer Tools. Four real screenshots occupy the three featured cards and
+MaximML; cards without an image or with a failed image remain readable without
+an empty media panel. Infrastructure is emphasized among the tools. All nine
+cards render both approved paragraphs at every breakpoint. GitHub actions use
+the verified repository or development-branch addresses, and only four cards
+expose explicit versioned release URLs. External actions open new tabs with
+`noopener noreferrer`. No public Live Demo is confirmed or linked.
+Three resume roles expose disabled preview and download controls with a shared
+unavailable explanation; no real resume PDFs, PDF modal or viewer are present.
 
 Stage 06 will use PDF.js for configured resume PDF preview, loaded lazily when needed. Keep
 PDF asset metadata separate from the viewer. Track unavailable, loading, ready
@@ -94,6 +109,18 @@ from mockups. The current reference package supplies no actual PDFs.
 The modal must support keyboard focus containment, Escape, focus restoration,
 accessible names and responsive usable controls. Release viewer resources on
 close. A missing PDF keeps preview/download unavailable with explanatory copy.
+
+## Responsive Hero and local image optimization
+
+`HeroSection.vue` imports two local WebP variants from `src/assets/portrait/`:
+288×384 and 576×768. The owner's photograph is supplied as optimized local assets;
+no image service or runtime transformation is used. Vite fingerprints both files.
+The image uses `srcset` with 288w/576w candidates and breakpoint-specific `sizes`,
+localized `heroPortraitAlt`, explicit 576×768 dimensions and `fetchpriority="high"`.
+CSS uses `object-fit: cover` and a fixed focal position; mobile preserves a 3:4
+frame at a width clamped between 240 and 280 pixels, while tablet and desktop
+use their layout-specific dimensions. Project screenshots are separately stored
+as four optimized WebP files in `src/assets/projects/` and load lazily.
 
 ## Quality and development interface
 
@@ -106,20 +133,22 @@ close. A missing PDF keeps preview/download unavailable with explanatory copy.
   artifacts change. GitHub Actions installs locked dependencies with `npm ci`
   and Chromium, then runs this interface for PRs to `develop`/`main` and base pushes.
 
-Tests cover both direct localized entries, root redirection, query/hash-preserving
-language switching, head metadata, optional origin links, build HTML without JS,
-assets, root fallback and browser hydration/refresh/navigation. Stage 07 will
-expand visual and accessibility coverage. Stage 03 adds component/integration
-coverage for the seven sections, menu focus/Escape/selection, locale switching,
-unavailable controls and fractional anchor positions; production Chromium checks
-cover desktop section tracking and mobile navigation. Built HTML checks assert
-all seven sections and nine catalog cards in both languages without JavaScript,
-including complete descriptions, local images and available actions. Stage 04
-adds catalog contracts, localized card/image-failure tests and production browser
-checks for loaded images, readable mobile cards and keyboard action navigation.
-Manual browser QA compared selected renders with PNG references at 1440, 1024,
-768, 390 and 320 pixels in EN/RU, including the narrow mobile menu and overflow.
-No PDF viewer tests or live-domain verification are claimed.
+Unit and integration tests cover catalog order and exact action URLs, localized
+card content and image failures, metadata and optional origin links, both direct
+localized entries, root redirection and query/hash-preserving language switching.
+They also cover About's three experience blocks, seven sections, unavailable PDF
+controls and menu focus/Escape/selection. Localization tests assert the portrait's
+EN/RU alt text on entry and after switching languages.
+Built HTML checks assert localized copy without JavaScript, all seven sections,
+three About blocks, eight skill groups, nine complete catalog cards, four local
+screenshots and available actions, plus root fallback, 404 and metadata output.
+Production-build Chromium tests cover hydration/refresh, JavaScript-disabled
+Russian content, desktop section tracking, mobile menu behavior, keyboard actions,
+loaded/failed catalog images and layout without overflow at widths from 320 to
+1440 pixels in EN/RU. External popup destinations are intercepted in browser tests;
+these checks do not establish live availability or deployment of linked projects.
+Stage 07 will expand visual and accessibility coverage. No PDF viewer tests,
+comprehensive SEO audit or live-domain verification are claimed.
 Repository administrators should require the `Quality and static build` CI check
 in branch protection; repository settings are not changed by this task.
 
