@@ -101,7 +101,10 @@ Fix commits:
 
 No arbitrary sleeps, increased timeouts or real external dependencies were added.
 Delayed requests use explicit promise gates and UI state assertions. GitHub
-Actions runs the independent read-only `make ci` on the PR; consult its
+Actions independently passed read-only `make ci` and the clean-source guard at
+`158cf99` ([run 39320158336](https://github.com/DanilFaritovich/project-router/actions/runs/39320158336)).
+[PR #11](https://github.com/DanilFaritovich/project-router/pull/11) targets `develop`.
+This evidence update changes documentation only; consult its
 [branch checks](https://github.com/DanilFaritovich/project-router/actions?query=branch%3Atest%2Fportfolio-quality)
 for the final documentation commit. Merge remains manual.
 
@@ -147,7 +150,7 @@ reading application content at mobile size.
 axe scans use WCAG 2 A/AA, 2.1 AA and 2.2 AA tags: ten pages, ten ready PDF
 modals and four mobile menus. No non-exempt violations remained, including
 contrast and accessible-name checks. The inline PDF target-size exception is
-explicit and narrow. Automated results do not prove all WCAG criteria.
+explicit and narrow, following the [W3C explanation of SC 2.5.8](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html). Automated results do not prove all WCAG criteria.
 
 Semantic sections, single H1, ordered headings, image alternatives, link/button
 names, ARIA selection/expanded states, visible focus, skip navigation, keyboard
