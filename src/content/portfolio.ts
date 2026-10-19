@@ -18,14 +18,10 @@ export const sectionLabel = {
   contacts: 'navContacts',
 } as const
 const github = 'https://github.com/DanilFaritovich/'
-export const contactSocialOrder = [
-  'email',
-  'whatsapp',
-  'telegram',
-  'linkedin',
-  'github',
-  'instagram',
-]
+export const contactSocialGroups = {
+  direct: ['email', 'whatsapp', 'telegram'],
+  profiles: ['linkedin', 'github', 'instagram'],
+}
 export const socialLinks = [
   {
     label: 'email',

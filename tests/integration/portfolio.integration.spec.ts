@@ -3,7 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createHead } from '@unhead/vue/client'
 import App from '../../src/App.vue'
-import { createAppI18n } from '../../src/locales'
+import { createAppI18n, messages } from '../../src/locales'
 import { routes, installLocaleRouting } from '../../src/router'
 import { sections } from '../../src/content/portfolio'
 
@@ -25,8 +25,8 @@ afterEach(() => {
 })
 
 describe('portfolio', () => {
-  it.each(['en', 'ru'])(
-    'keeps the Contacts and Hero social order and highlights only Telegram for %s',
+  it.each(['en', 'ru'] as const)(
+    'groups Contacts, highlights only Email and preserves Hero for %s',
     async (locale) => {
       const { wrapper } = await render(`/${locale}/`)
       for (const link of wrapper.findAll('a[href^="https://"]')) {
@@ -49,11 +49,13 @@ describe('portfolio', () => {
       const instagram = wrapper.get(
         '#contacts a[href="https://www.instagram.com/daniel_de_casto"]',
       )
-      expect(instagram.text()).toBe('Instagram')
-      expect(instagram.classes()).toContain('action')
+      expect(instagram.text()).toBe('Instagram↗')
+      expect(instagram.classes()).not.toContain('action')
       expect(instagram.classes()).not.toContain('action-primary')
       expect(
-        wrapper.findAll('#contacts .social-links a').map((link) => link.text()),
+        wrapper
+          .findAll('#contacts .social-links a')
+          .map((link) => link.text().replace('↗', '').trim()),
       ).toEqual([
         'Email',
         'WhatsApp',
@@ -66,7 +68,38 @@ describe('portfolio', () => {
         wrapper
           .findAll('#contacts .social-links .action-primary')
           .map((link) => link.text()),
-      ).toEqual(['Telegram'])
+      ).toEqual(['Email'])
+      expect(wrapper.get('.contacts-copy').text()).toBe(
+        messages[locale].contactsCopy,
+      )
+      for (const [group, heading, labels] of [
+        [
+          'direct',
+          messages[locale].contactsDirect,
+          ['Email', 'WhatsApp', 'Telegram'],
+        ],
+        [
+          'profiles',
+          messages[locale].contactsProfiles,
+          ['LinkedIn', 'GitHub', 'Instagram'],
+        ],
+      ] as const) {
+        const container = wrapper.get(
+          `[aria-labelledby="contacts-${group}-heading"]`,
+        )
+        expect(container.get('h3').text()).toBe(heading)
+        expect(
+          container
+            .findAll('a')
+            .map((link) => link.text().replace('↗', '').trim()),
+        ).toEqual(labels)
+        expect(container.findAll('.action')).toHaveLength(
+          group === 'direct' ? 3 : 0,
+        )
+      }
+      expect(
+        wrapper.findAll('.contact-profiles [aria-hidden="true"]'),
+      ).toHaveLength(3)
       expect(
         wrapper.findAll('#hero .social-links a').map((link) => link.text()),
       ).toEqual(['GitHub', 'LinkedIn', 'Telegram'])

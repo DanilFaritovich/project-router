@@ -166,8 +166,9 @@ export default {
   contactsEyebrow: '07 / Contact',
   contactsTitle: 'Let’s Get in Touch',
   contactsIntro: 'Python backend, data engineering and integration work.',
-  contactsCopy:
-    'Have an engineering role or a project to discuss? Contact me on Telegram or LinkedIn, or explore my work on GitHub.',
+  contactsCopy: 'Have a role or project in mind? Let’s discuss how I can help.',
+  contactsDirect: 'Direct contact',
+  contactsProfiles: 'Professional profiles',
   footer: 'Danil Miftakhov · Yerevan, Armenia',
   projectsIntroMobile: 'Three selected engineering applications.',
   moreIntroMobile: 'Backend, ML and applied automation.',

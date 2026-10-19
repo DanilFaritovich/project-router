@@ -1,23 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { contactSocialOrder, socialLinks } from '../content/portfolio'
+import { contactSocialGroups, socialLinks } from '../content/portfolio'
 import UiAction from './UiAction.vue'
 const props = defineProps<{
   buttons?: boolean
-  section?: 'hero' | 'contacts'
+  group?: keyof typeof contactSocialGroups
 }>()
 const links = computed(() => {
-  const visible = socialLinks.filter(
-    (link) => !('contactsOnly' in link) || props.section === 'contacts',
-  )
-  return props.section === 'contacts'
-    ? visible.sort(
-        (a, b) =>
-          contactSocialOrder.indexOf(a.label) -
-          contactSocialOrder.indexOf(b.label),
-      )
-    : visible
+  if (props.group) {
+    const order = contactSocialGroups[props.group]
+    return order.map((label) =>
+      socialLinks.find((link) => link.label === label)!,
+    )
+  }
+  return socialLinks.filter((link) => !('contactsOnly' in link))
 })
 const { t } = useI18n()
 </script>
@@ -28,12 +25,18 @@ const { t } = useI18n()
       <UiAction
         v-if="buttons"
         :href="link.href"
-        :primary="link.label === 'telegram'"
+        :primary="link.label === 'email'"
         >{{ t(link.label) }}</UiAction
       >
-      <a v-else :href="link.href" target="_blank" rel="noopener noreferrer">{{
-        t(link.label)
-      }}</a>
+      <a v-else :href="link.href" target="_blank" rel="noopener noreferrer"
+        >{{ t(link.label)
+        }}<span
+          v-if="group === 'profiles'"
+          class="external-indicator"
+          aria-hidden="true"
+          >↗</span
+        ></a
+      >
     </template>
   </div>
 </template>

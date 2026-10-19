@@ -167,7 +167,9 @@ export default {
   contactsTitle: 'Давайте свяжемся',
   contactsIntro: 'Python backend, инженерия данных и интеграции.',
   contactsCopy:
-    'Хотите обсудить инженерную роль или проект? Напишите мне в Telegram или LinkedIn или посмотрите мои работы на GitHub.',
+    'Хотите обсудить работу или проект? Давайте поговорим о том, чем я могу помочь.',
+  contactsDirect: 'Прямая связь',
+  contactsProfiles: 'Профессиональные профили',
   footer: 'Данил Мифтахов · Ереван, Армения',
   projectsIntroMobile: 'Три избранных инженерных приложения.',
   moreIntroMobile: 'Backend, ML и прикладная автоматизация.',

@@ -171,8 +171,22 @@ for (const locale of ['en', 'ru']) {
               external ? 'noopener noreferrer' : null,
             )
           }
-          assert.match(text('.contacts-copy'), /Telegram/)
-          assert.match(text('.contacts-copy'), /LinkedIn/)
+          assert.equal(
+            text('#contacts-direct-heading'),
+            locale === 'en' ? 'Direct contact' : 'Прямая связь',
+          )
+          assert.equal(
+            text('#contacts-profiles-heading'),
+            locale === 'en'
+              ? 'Professional profiles'
+              : 'Профессиональные профили',
+          )
+          assert.equal(document.querySelectorAll('#contacts .action').length, 3)
+          assert.equal(text('#contacts .action-primary'), 'Email')
+          assert.equal(
+            document.querySelectorAll('.contact-profiles .action').length,
+            0,
+          )
         },
       )
       await t.test(

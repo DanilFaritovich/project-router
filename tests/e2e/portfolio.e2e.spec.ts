@@ -37,6 +37,77 @@ test('external social and release links preserve the portfolio tab and scroll po
   expect(context.pages()).toHaveLength(1)
 })
 
+for (const width of [1440, 768, 390, 320]) {
+  test(`Contacts groups, keyboard navigation and wrapping at ${width}px`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width, height: 1000 })
+    for (const locale of ['en', 'ru']) {
+      await page.goto(`/${locale}/`)
+      const contacts = page.locator('#contacts')
+      const links = contacts.locator('a')
+      await expect(links).toHaveCount(6)
+      await expect(contacts.locator('.action-primary')).toHaveText('Email')
+      await expect(contacts.locator('.contact-profiles .action')).toHaveCount(0)
+      await expect(
+        contacts.locator('.contact-profiles [aria-hidden="true"]'),
+      ).toHaveCount(3)
+      await expect(links.first()).toHaveAttribute(
+        'href',
+        'mailto:danilfaritovichwork@gmail.com',
+      )
+      await links.first().focus()
+      for (let index = 0; index < 6; index++) {
+        const link = links.nth(index)
+        await expect(link).toBeFocused()
+        const geometry = await link.evaluate((element) => {
+          const box = element.getBoundingClientRect()
+          const style = getComputedStyle(element)
+          return {
+            left: box.left,
+            right: box.right,
+            height: box.height,
+            outline: style.outlineStyle,
+          }
+        })
+        expect(geometry.left).toBeGreaterThanOrEqual(0)
+        expect(geometry.right).toBeLessThanOrEqual(width)
+        expect(geometry.height).toBeGreaterThanOrEqual(44)
+        // Tab navigation must expose the shared visible focus indicator.
+        if (index > 0) expect(geometry.outline).toBe('solid')
+        if (index < 5) await page.keyboard.press('Tab')
+      }
+      await page.keyboard.press('Shift+Tab')
+      await expect(links.nth(4)).toBeFocused()
+      await expect(links.nth(4)).toHaveCSS('outline-style', 'solid')
+      await links.nth(4).evaluate((element) => (element as HTMLElement).blur())
+      const layout = await contacts.evaluate((section) => {
+        const direct = section
+          .querySelector('.contact-group')!
+          .getBoundingClientRect()
+        const profiles = section
+          .querySelector('.contact-profiles')!
+          .getBoundingClientRect()
+        return {
+          overflow: document.documentElement.scrollWidth > innerWidth,
+          separated: profiles.top >= direct.bottom,
+          clipped: [...section.querySelectorAll('p, h2, h3')].some(
+            (element) => element.scrollWidth > element.clientWidth,
+          ),
+        }
+      })
+      expect(layout).toEqual({
+        overflow: false,
+        separated: true,
+        clipped: false,
+      })
+      await contacts.screenshot({
+        path: testInfo.outputPath(`contacts-${locale}-${width}.png`),
+      })
+    }
+  })
+}
+
 for (const width of [320, 375, 390, 768, 1024, 1440]) {
   test(`layout keeps consistent content spacing without overflow at ${width}px`, async ({
     page,
