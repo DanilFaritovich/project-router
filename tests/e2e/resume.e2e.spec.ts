@@ -19,6 +19,36 @@ test.describe('real resume viewer', () => {
         'false',
       )
       await expect(dialog.locator('canvas')).toBeVisible()
+      const viewport = dialog.locator('.pdf-viewport')
+      const geometry = () =>
+        viewport.evaluate((el) => {
+          const style = getComputedStyle(el)
+          const canvas = el.querySelector('canvas')!.getBoundingClientRect()
+          const available =
+            el.clientWidth -
+            parseFloat(style.paddingLeft) -
+            parseFloat(style.paddingRight)
+          const left = canvas.left - el.getBoundingClientRect().left
+          const right = el.getBoundingClientRect().right - canvas.right
+          return {
+            available,
+            width: canvas.width,
+            centered: Math.abs(left - right),
+            overflow: el.scrollWidth > el.clientWidth,
+          }
+        })
+      const initial = await geometry()
+      expect(initial.overflow).toBe(false)
+      expect(initial.width).toBeLessThanOrEqual(initial.available)
+      expect(initial.centered).toBeLessThanOrEqual(1)
+      await page.screenshot({
+        path: testInfo.outputPath(`resume-initial-${width}.png`),
+      })
+      if (width === 1440)
+        await expect(dialog.locator('.pdf-zoom')).toHaveText('125%')
+      if (width <= 600)
+        expect(initial.available - initial.width).toBeLessThan(1)
+
       await expect(
         dialog.getByRole('button', { name: 'Close', exact: true }),
       ).toBeFocused()
@@ -74,7 +104,10 @@ test.describe('real resume viewer', () => {
       expect(
         await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth),
       ).toBe(true)
-      const viewport = dialog.locator('.pdf-viewport')
+      const fitted = await geometry()
+      expect(fitted.available - fitted.width).toBeGreaterThanOrEqual(-0.1)
+      expect(fitted.available - fitted.width).toBeLessThan(1)
+      expect(fitted.centered).toBeLessThanOrEqual(1)
       expect(
         await viewport.evaluate((el) => el.scrollWidth <= el.clientWidth),
       ).toBe(true)
@@ -82,6 +115,24 @@ test.describe('real resume viewer', () => {
         await page.screenshot({
           path: testInfo.outputPath(`resume-modal-${width}.png`),
         })
+      }
+      if (width === 1440) {
+        await page.setViewportSize({ width: 768, height: 900 })
+        await expect
+          .poll(
+            async () => (await geometry()).available - (await geometry()).width,
+          )
+          .toBeLessThan(1)
+        await dialog.getByRole('button', { name: 'Zoom out' }).click()
+        await expect(dialog.locator('[aria-busy]')).toHaveAttribute(
+          'aria-busy',
+          'false',
+        )
+        const manualZoom = await dialog.locator('.pdf-zoom').textContent()
+        const manualWidth = (await geometry()).width
+        await page.setViewportSize({ width: 1440, height: 900 })
+        await expect(dialog.locator('.pdf-zoom')).toHaveText(manualZoom!)
+        expect((await geometry()).width).toBe(manualWidth)
       }
       const fallback = dialog.getByRole('link', { name: /Open original PDF/ })
       await fallback.focus()

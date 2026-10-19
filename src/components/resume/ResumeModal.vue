@@ -26,7 +26,8 @@ const state = ref<'loading' | 'ready' | 'error'>('loading')
 const page = ref(1)
 const pages = ref(0)
 const zoom = ref(1)
-const fit = ref(true)
+const zoomMode = ref<'initial' | 'fit' | 'manual'>('initial')
+const fit = ref(false)
 let loading: PDFDocumentLoadingTask | undefined
 let pdf: PDFDocumentProxy | undefined
 let rendering: RenderTask | undefined
@@ -56,9 +57,19 @@ async function renderPage() {
     const pdfPage = await documentPdf.getPage(page.value)
     if (disposed || current !== renderGeneration) return
     const base = pdfPage.getViewport({ scale: 1 })
-    const scale = fit.value
-      ? Math.max(0.1, (viewport.value.clientWidth - 32) / base.width)
-      : zoom.value
+    const style = getComputedStyle(viewport.value)
+    const availableWidth =
+      viewport.value.clientWidth -
+      (parseFloat(style.paddingLeft) || 0) -
+      (parseFloat(style.paddingRight) || 0)
+    const widthScale = Math.max(0.01, Math.floor(availableWidth) / base.width)
+    const scale =
+      zoomMode.value === 'manual'
+        ? zoom.value
+        : zoomMode.value === 'initial' && window.innerWidth > 600
+          ? Math.min(1.25, widthScale)
+          : widthScale
+    fit.value = zoomMode.value !== 'manual' && scale === widthScale
     zoom.value = scale
     const view = pdfPage.getViewport({ scale })
     // Bound the bitmap allocation on small devices and at high zoom levels.
@@ -90,7 +101,7 @@ async function openDocument() {
   state.value = 'loading'
   pages.value = 0
   page.value = 1
-  fit.value = true
+  zoomMode.value = 'initial'
   await release()
   try {
     const task = await loadPdf(url.value)
@@ -113,11 +124,11 @@ function changePage(delta: number) {
   viewport.value?.scrollTo?.(0, 0)
 }
 function fitWidth() {
-  fit.value = true
+  zoomMode.value = 'fit'
   void renderPage()
 }
 function changeZoom(delta: number) {
-  fit.value = false
+  zoomMode.value = 'manual'
   zoom.value = Math.max(0.25, Math.min(3, zoom.value + delta))
   void renderPage()
 }
@@ -145,7 +156,7 @@ onMounted(() => {
   dialog.value?.showModal()
   closer.value?.focus()
   observer = new ResizeObserver(() => {
-    if (fit.value) void renderPage()
+    if (zoomMode.value !== 'manual') void renderPage()
   })
   if (viewport.value) observer.observe(viewport.value)
   void openDocument()
@@ -374,6 +385,7 @@ onUnmounted(() => {
   min-height: 80px;
   min-width: 0;
   overflow: auto;
+  scrollbar-gutter: stable both-edges;
   overscroll-behavior: contain;
   padding: 16px;
 }

@@ -23,6 +23,8 @@ const getPage = vi.fn().mockResolvedValue({
   render,
 })
 const result = { numPages: 3, getPage }
+let viewerWidth = 1000
+let resize: () => void
 function success() {
   vi.mocked(loadPdf).mockResolvedValue({
     promise: Promise.resolve(result),
@@ -30,17 +32,28 @@ function success() {
   } as never)
 }
 function mountViewer(language: 'en' | 'ru' = 'en') {
-  return mount(ResumeModal, {
+  const wrapper = mount(ResumeModal, {
     attachTo: document.body,
     props: { resume: resumes[0], initialLanguage: language },
     global: { plugins: [createAppI18n()] },
   })
+  ;(document.querySelector('.pdf-viewport') as HTMLElement).style.padding =
+    '16px 24px'
+  return wrapper
 }
 beforeEach(() => {
   vi.clearAllMocks()
+  viewerWidth = 1000
+  vi.stubGlobal('innerWidth', 1440)
+  vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(
+    () => viewerWidth,
+  )
   vi.stubGlobal(
     'ResizeObserver',
     class {
+      constructor(callback: () => void) {
+        resize = callback
+      }
       observe() {}
       disconnect() {}
     },
@@ -57,6 +70,7 @@ afterEach(() => {
   document.body.innerHTML = ''
   document.body.style.overflow = ''
   vi.unstubAllGlobals()
+  vi.restoreAllMocks()
 })
 
 describe('resume preview', () => {
@@ -165,13 +179,66 @@ describe('resume preview', () => {
       document.querySelector('[aria-label="Zoom in"]') as HTMLButtonElement
     ).click()
     await flushPromises()
-    expect(document.querySelector('.pdf-zoom')?.textContent).toBe('35%')
+    expect(document.querySelector('.pdf-zoom')?.textContent).toBe('150%')
     const fit = [...document.querySelectorAll('dialog button')].find(
       (button) => button.textContent === 'Fit width',
     ) as HTMLButtonElement
     fit.click()
     await flushPromises()
     expect(fit.getAttribute('aria-pressed')).toBe('true')
+    wrapper.unmount()
+  })
+
+  it('caps the initial desktop zoom and recalculates automatic modes without resetting manual zoom', async () => {
+    const wrapper = mountViewer()
+    await flushPromises()
+    const canvas = document.querySelector('canvas')!
+    const fit = [...document.querySelectorAll('dialog button')].find(
+      (button) => button.textContent === 'Fit width',
+    ) as HTMLButtonElement
+    expect(canvas.style.width).toBe('750px')
+    viewerWidth = 500
+    resize()
+    await flushPromises()
+    expect(parseFloat(canvas.style.width)).toBeCloseTo(452)
+    viewerWidth = 1000
+    resize()
+    await flushPromises()
+    expect(canvas.style.width).toBe('750px')
+    fit.click()
+    await flushPromises()
+    expect(parseFloat(canvas.style.width)).toBeCloseTo(952)
+    viewerWidth = 800
+    resize()
+    await flushPromises()
+    expect(parseFloat(canvas.style.width)).toBeCloseTo(752)
+    ;(
+      document.querySelector('[aria-label="Zoom out"]') as HTMLButtonElement
+    ).click()
+    await flushPromises()
+    const manualWidth = canvas.style.width
+    viewerWidth = 400
+    resize()
+    await flushPromises()
+    expect(canvas.style.width).toBe(manualWidth)
+    wrapper.unmount()
+  })
+
+  it('starts mobile in fit width even when a small PDF could fit at 125%', async () => {
+    vi.stubGlobal('innerWidth', 390)
+    getPage.mockResolvedValueOnce({
+      getViewport: ({ scale }: { scale: number }) => ({
+        width: 200 * scale,
+        height: 300 * scale,
+      }),
+      render,
+    })
+    viewerWidth = 350
+    const wrapper = mountViewer()
+    await flushPromises()
+    expect(
+      parseFloat(document.querySelector('canvas')!.style.width),
+    ).toBeCloseTo(302)
     wrapper.unmount()
   })
 
