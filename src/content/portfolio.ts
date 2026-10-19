@@ -19,12 +19,24 @@ export const sectionLabel = {
 } as const
 const github = 'https://github.com/DanilFaritovich/'
 export const contactSocialOrder = [
+  'email',
+  'whatsapp',
   'telegram',
   'linkedin',
   'github',
   'instagram',
 ]
 export const socialLinks = [
+  {
+    label: 'email',
+    href: 'mailto:danilfaritovichwork@gmail.com',
+    contactsOnly: true,
+  },
+  {
+    label: 'whatsapp',
+    href: 'https://wa.me/message/KTYC4R25VAXMF1',
+    contactsOnly: true,
+  },
   { label: 'github', href: github.slice(0, -1) },
   {
     label: 'linkedin',

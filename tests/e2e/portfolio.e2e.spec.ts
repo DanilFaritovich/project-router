@@ -16,7 +16,7 @@ test('external social and release links preserve the portfolio tab and scroll po
   for (const selector of [
     '#hero .social-links a',
     '#projects a[href*="/releases/tag/"]',
-    '#contacts .social-links a',
+    '#contacts .social-links a[href^="https://"]',
   ]) {
     const links = page.locator(selector)
     for (const link of await links.all()) {

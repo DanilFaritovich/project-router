@@ -36,6 +36,16 @@ describe('portfolio', () => {
       for (const link of wrapper.findAll('a:not([href^="https://"])')) {
         expect(link.attributes('target')).toBeUndefined()
       }
+      expect(
+        wrapper
+          .get('#contacts a[href="mailto:danilfaritovichwork@gmail.com"]')
+          .text(),
+      ).toBe('Email')
+      expect(
+        wrapper
+          .get('#contacts a[href="https://wa.me/message/KTYC4R25VAXMF1"]')
+          .text(),
+      ).toBe('WhatsApp')
       const instagram = wrapper.get(
         '#contacts a[href="https://www.instagram.com/daniel_de_casto"]',
       )
@@ -44,7 +54,14 @@ describe('portfolio', () => {
       expect(instagram.classes()).not.toContain('action-primary')
       expect(
         wrapper.findAll('#contacts .social-links a').map((link) => link.text()),
-      ).toEqual(['Telegram', 'LinkedIn', 'GitHub', 'Instagram'])
+      ).toEqual([
+        'Email',
+        'WhatsApp',
+        'Telegram',
+        'LinkedIn',
+        'GitHub',
+        'Instagram',
+      ])
       expect(
         wrapper
           .findAll('#contacts .social-links .action-primary')

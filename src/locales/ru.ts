@@ -149,6 +149,8 @@ export default {
   linkedin: 'LinkedIn',
   telegram: 'Telegram',
   instagram: 'Instagram',
+  email: 'Email',
+  whatsapp: 'WhatsApp',
   release: 'Релиз',
   resumeEyebrow: '06 / Резюме',
   resumeTitle: 'Резюме',

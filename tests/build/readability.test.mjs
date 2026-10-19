@@ -16,11 +16,13 @@ const repositories = {
   worker: 'codex-free-worker-mcp/tree/develop',
   standards: 'codex-development-standards/tree/develop',
 }
-const profiles = [
-  'https://github.com/DanilFaritovich',
-  'https://www.linkedin.com/in/danil-miftakhov-55468b399/',
-  'https://t.me/Daniel_De_Casto',
-  'https://www.instagram.com/daniel_de_casto',
+const contacts = [
+  ['Email', 'mailto:danilfaritovichwork@gmail.com'],
+  ['WhatsApp', 'https://wa.me/message/KTYC4R25VAXMF1'],
+  ['Telegram', 'https://t.me/Daniel_De_Casto'],
+  ['LinkedIn', 'https://www.linkedin.com/in/danil-miftakhov-55468b399/'],
+  ['GitHub', 'https://github.com/DanilFaritovich'],
+  ['Instagram', 'https://www.instagram.com/daniel_de_casto'],
 ]
 
 for (const locale of ['en', 'ru']) {
@@ -148,14 +150,25 @@ for (const locale of ['en', 'ru']) {
       await t.test(
         'Q5: public profiles and contact destinations — #contacts',
         () => {
-          for (const address of profiles) {
-            const link = document.querySelector(
-              `#contacts a[href="${address}"]`,
+          const links = [
+            ...document.querySelectorAll('#contacts .social-links a'),
+          ]
+          assert.deepEqual(
+            links.map((link) => [
+              link.textContent.trim(),
+              link.getAttribute('href'),
+            ]),
+            contacts,
+          )
+          for (const link of links) {
+            const external = link.getAttribute('href').startsWith('https://')
+            assert.equal(
+              link.getAttribute('target'),
+              external ? '_blank' : null,
             )
-            assert.ok(link, `Missing contact: ${address}`)
-            assert.ok(
-              link.textContent.trim() ||
-                link.getAttribute('aria-label')?.trim(),
+            assert.equal(
+              link.getAttribute('rel'),
+              external ? 'noopener noreferrer' : null,
             )
           }
           assert.match(text('.contacts-copy'), /Telegram/)
