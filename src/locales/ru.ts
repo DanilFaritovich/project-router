@@ -73,53 +73,73 @@ export default {
   moreTitle: 'Другие проекты',
   moreIntro: 'Backend, машинное обучение и автоматизация.',
   moonTitle: 'Moon Courier Crisis',
+  moonImageAlt:
+    'Карта миссии Moon Courier Crisis с лунной базой, маршрутами доставки, зарядом и грузом роверов.',
   moonSummary:
-    'Симулятор лунной логистики. Управление роверами, доставками, маршрутами и ограничениями заряда.',
+    'Пошаговый симулятор лунной логистики: управление роверами и контрактами с учётом маршрутов, грузоподъёмности и заряда батареи.',
   moonDetail:
-    'Правила игры и переходы состояний на backend, типизированный интерфейс Vue и браузерные тесты.',
+    'Backend на FastAPI управляет игровой логикой и состояниями, использует SQLAlchemy, Unit of Work и NetworkX для расчёта маршрутов.',
   moonCategory: '01 / Full-stack',
   moonCaption: 'Лунная логистика',
   supportTitle: 'Support Assistant',
+  supportImageAlt:
+    'Форма IT-заявки Support Assistant и справочник отделов для выбора ответственного подразделения.',
   supportSummary:
-    'Маршрутизация и подготовка IT-обращений с помощью AI. Перед итоговым ответом человек подтверждает отдел.',
+    'AI-ассистент для обработки IT-заявок: определение ответственного отдела, подтверждение человеком и генерация структурированного описания.',
   supportDetail:
-    'Валидация ответов LLM по схеме, интеграция провайдера только на backend и общие квоты в Redis.',
+    'Архитектура Ports & Adapters, валидация ответов LLM по схеме и общие Redis-квоты для контроля запросов к API.',
   supportCategory: '02 / AI / Backend',
   supportCaption: 'Обработка обращений',
   geocoderTitle: 'Yandex Geocoder Region Parser',
+  geocoderImageAlt:
+    'Панель Apache Airflow с четырьмя DAG геокодирования и результатами последних запусков задач.',
   geocoderSummary:
-    'Геопространственный пайплайн обогащает данные районов с помощью выборки точек в полигонах и запросов к геокодеру.',
+    'Геопространственный ETL-пайплайн для получения районов населённых пунктов через генерацию сетки координат внутри полигонов и обработку ответов Yandex Geocoder API.',
   geocoderDetail:
-    'Четыре связанных DAG в Airflow; промежуточные данные в MinIO/S3 и воспроизводимые этапы ETL.',
+    'Четыре связанных через события DAG в Apache Airflow, PostgreSQL, MinIO/S3, параллельная обработка и управление лимитами API-ключей.',
   geocoderCategory: '03 / Инженерия данных',
   geocoderCaption: 'Геопространственный пайплайн',
   taskTitle: 'Task Service API',
   taskSummary:
-    'Асинхронный REST API для задач, сервисов и пользователей. Слои логики, PostgreSQL и миграции базы данных.',
+    'Асинхронный REST API для управления задачами, пользователями, сервисами и связанными данными в PostgreSQL.',
+  taskDetail:
+    'Реализован на FastAPI, SQLAlchemy 2.x и Alembic с разделением слоёв приложения, триггерами базы данных, валидацией данных и интеграционными тестами API.',
   maximTitle: 'MaximML',
+  maximImageAlt:
+    'Форма MaximML с характеристиками жилья, прогнозом стоимости и кнопками обратной связи.',
   maximSummary:
-    'Прогнозирование стоимости жилья: обучение моделей, сохранённые пайплайны scikit-learn и интерфейс React.',
+    'Full-stack ML-приложение для прогнозирования стоимости жилья в Калифорнии с помощью линейной регрессии и градиентного бустинга.',
+  maximDetail:
+    'Реализованы переиспользуемые scikit-learn пайплайны, обучение моделей через API, сбор обратной связи и интерфейс на React с backend на FastAPI.',
   avitoTitle: 'Avito Parser',
   avitoSummary:
-    'Поиск товаров по артикулу, фильтрация предложений и экспорт выбранных результатов в CSV.',
+    'Прототип Python-парсера для сбора объявлений Avito по артикулам товаров с использованием Playwright и Camoufox.',
+  avitoDetail:
+    'Реализованы хранение данных в SQLite, исключение дубликатов по URL, сортировка по цене и экспорт до пяти самых дешёвых объявлений по каждому запросу в CSV.',
   toolsEyebrow: '05 / Инструменты',
   toolsTitle: 'Инструменты разработчика',
   toolsIntro: 'Компактный каталог переиспользуемых инженерных инструментов.',
   featuredTool: 'Основной инструмент / Инфраструктура',
   serverTitle: 'Portfolio Server Infrastructure',
   serverSummary:
-    'Набор Ansible для настройки Ubuntu VPS, защиты SSH/UFW, Docker и независимой проверки семи этапов инфраструктуры.',
+    'Инструмент Infrastructure as Code для безопасной и воспроизводимой настройки Ubuntu VPS с помощью Ansible и Python CLI.',
+  serverDetail:
+    'Автоматизирует семь этапов инициализации с независимыми проверками, защищённой настройкой SSH и firewall, установкой Docker и E2E-тестированием в изолированной VM. Проверен на реальном VPS.',
   workerTitle: 'Codex Free Worker MCP',
   workerSummary:
-    'Делегирование ограниченных циклов выполнения Codex в OpenCode с компактными структурированными результатами без сырых логов тестов и сборки.',
+    'Локальный MCP-сервер для делегирования ограниченных задач разработки из Codex вспомогательным агентам OpenCode или изолированному Codex CLI.',
+  workerDetail:
+    'Поддерживает диагностику тестов и CI, механические исправления, структурированные результаты и контролируемую передачу запросов на разрешения без передачи объёмных логов основному агенту.',
   standardsTitle: 'Codex Development Standards',
   standardsSummary:
-    'Переиспользуемые навыки и правила для архитектуры, тестирования, проверок качества и CI/CD в программных проектах.',
+    'Модульный набор инженерных стандартов и рабочих процессов для разработки программного обеспечения с помощью Codex.',
+  standardsDetail:
+    'Включает профили навыков для разных стеков, инкрементальную синхронизацию стандартов, правила Git и CI/CD, тестирования и эффективной работы с контекстом AI-агентов.',
   github: 'GitHub',
   linkedin: 'LinkedIn',
   telegram: 'Telegram',
   instagram: 'Instagram',
-  release: 'Последний релиз',
+  release: 'Релиз',
   resumeEyebrow: '06 / Резюме',
   resumeTitle: 'Резюме',
   resumeIntro:
@@ -137,41 +157,12 @@ export default {
   contactsCopy:
     'Хотите обсудить инженерную роль или проект? Напишите мне в Telegram или LinkedIn или посмотрите мои работы на GitHub.',
   footer: 'Данил Мифтахов · Ереван, Армения',
-  moonSummaryMobile:
-    'Симулятор лунной логистики: роверы, маршруты, доставки и ограничения заряда.',
-  moonDetailMobile:
-    'Логика игры — на сервере; интерфейс Vue и браузерные E2E-тесты.',
-  supportSummaryMobile:
-    'Маршрутизация IT-обращений с помощью AI и подтверждением описаний человеком.',
-  supportDetailMobile:
-    'Валидация ответов LLM по схеме; лимиты Redis и интерфейс Vue.',
-  geocoderSummaryMobile:
-    'Выборка точек в полигонах и геокодирование для обогащения данных районов.',
-  geocoderDetailMobile:
-    'Четыре связанных DAG в Airflow с промежуточными артефактами в MinIO/S3.',
-  taskSummaryMobile:
-    'Асинхронный REST API для задач, сервисов и пользователей с PostgreSQL и миграциями.',
-  maximSummaryMobile:
-    'Full-stack приложение для прогнозирования стоимости жилья и обучения моделей.',
-  avitoSummaryMobile:
-    'Поиск и фильтрация товаров; экспорт выбранных предложений в CSV.',
-  serverSummaryMobile:
-    'Настройка Ubuntu VPS, защита и проверка семи этапов инфраструктуры.',
   projectsIntroMobile: 'Три избранных инженерных приложения.',
   moreIntroMobile: 'Backend, ML и прикладная автоматизация.',
   english: 'English',
   russian: 'Русский',
   resumeBackendStack: 'Python · FastAPI · PostgreSQL',
   resumeDataStack: 'SQL · PostgreSQL · Apache Airflow',
-  moonStack: 'FastAPI · Vue 3 · TypeScript · SQLAlchemy · Docker',
-  supportStack: 'FastAPI · Vue 3 · OpenRouter · Redis · SQLite',
-  geocoderStack: 'Python · Airflow · PostgreSQL · MinIO/S3 · Shapely',
-  taskStack: 'FastAPI · PostgreSQL · SQLAlchemy · Alembic',
-  maximStack: 'FastAPI · scikit-learn · React · Docker',
-  avitoStack: 'Python · Playwright · SQLite · CSV',
-  serverStack: 'Python · Ansible · Ubuntu · Docker · GitHub Actions',
-  workerStack: 'Python · MCP · OpenCode · Codex',
-  standardsStack: 'Agent Skills · YAML · GitHub Actions',
   backendSkillStack:
     'Python · FastAPI · Flask · asyncio\nPydantic · SQLAlchemy · Alembic',
   databaseSkillStack:

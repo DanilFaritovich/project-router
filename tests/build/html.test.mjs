@@ -4,11 +4,67 @@ import { readFile, access } from 'node:fs/promises'
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { JSDOM } from 'jsdom'
+import en from '../../src/locales/en.ts'
+import ru from '../../src/locales/ru.ts'
 
 for (const locale of ['en', 'ru']) {
   test(`built /${locale}/ contains localized HTML without JavaScript`, async () => {
     const html = await readFile(`dist/${locale}/index.html`, 'utf8')
     const document = new JSDOM(html).window.document
+    const copy = locale === 'en' ? en : ru
+    const cards = [...document.querySelectorAll('.portfolio-card')]
+    assert.deepEqual(
+      cards.map((card) => card.id),
+      [
+        'project-moon',
+        'project-support',
+        'project-geocoder',
+        'project-task',
+        'project-maxim',
+        'project-avito',
+        'project-server',
+        'project-worker',
+        'project-standards',
+      ],
+    )
+    for (const card of cards) {
+      const id = card.id.replace('project-', '')
+      assert.equal(card.querySelector('h3').textContent, copy[`${id}Title`])
+      assert.equal(
+        card.querySelector('.card-summary').textContent,
+        copy[`${id}Summary`],
+      )
+      assert.equal(
+        card.querySelector('.card-detail').textContent,
+        copy[`${id}Detail`],
+      )
+      assert.ok(card.querySelector('.stack').textContent.length > 40)
+      for (const link of card.querySelectorAll('a')) {
+        assert.equal(link.target, '_blank')
+        assert.equal(link.rel, 'noopener noreferrer')
+      }
+    }
+    assert.equal(
+      document.querySelectorAll('.portfolio-card a[href*="/releases/tag/"]')
+        .length,
+      4,
+    )
+    assert.equal(
+      document.querySelectorAll('.portfolio-card a[href*="/releases/latest"]')
+        .length,
+      0,
+    )
+    assert.equal(document.querySelectorAll('.portfolio-card a').length, 13)
+    assert.ok(!cards.some((card) => card.textContent.includes('Live Demo')))
+    const images = [...document.querySelectorAll('.portfolio-card img')]
+    assert.equal(images.length, 4)
+    for (const image of images) {
+      const id = image.closest('article').id.replace('project-', '')
+      assert.equal(image.alt, copy[`${id}ImageAlt`])
+      assert.ok(image.getAttribute('src').startsWith('/assets/'))
+      assert.ok(Number(image.width) > 0 && Number(image.height) > 0)
+      await access(`dist${image.getAttribute('src')}`)
+    }
     assert.equal(document.documentElement.lang, locale)
     assert.match(
       document.title,

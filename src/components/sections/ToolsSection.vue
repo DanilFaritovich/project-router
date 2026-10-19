@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { tools } from '../../content/portfolio'
+import { tools } from '../../content/projects'
 import PortfolioSection from '../PortfolioSection.vue'
 import PortfolioCard from '../PortfolioCard.vue'
 </script>

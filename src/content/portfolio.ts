@@ -1,4 +1,3 @@
-// Stage 03 layout fixtures. Reviewed catalog enrichment belongs to Stage 04.
 export const sections = [
   'hero',
   'about',
@@ -36,74 +35,6 @@ export const socialLinks = [
     label: 'instagram',
     href: 'https://www.instagram.com/daniel_de_casto',
     contactsOnly: true,
-  },
-]
-export interface PortfolioItem {
-  id: string
-  stack: string
-  repository: string
-  release?: boolean
-  preview?: string
-  emphasized?: boolean
-}
-export const featured: PortfolioItem[] = [
-  {
-    id: 'moon',
-    stack: 'moonStack',
-    repository: github + 'Moon-courier-crisis-game',
-    release: true,
-    preview: 'MC',
-    emphasized: true,
-  },
-  {
-    id: 'support',
-    stack: 'supportStack',
-    repository: github + 'support-assistant-llm',
-    preview: 'AI',
-  },
-  {
-    id: 'geocoder',
-    stack: 'geocoderStack',
-    repository: github + 'yandex-geocoder-region-parser',
-    release: true,
-    preview: 'ETL',
-  },
-]
-export const more: PortfolioItem[] = [
-  {
-    id: 'task',
-    stack: 'taskStack',
-    repository: github + 'task-service-api',
-  },
-  {
-    id: 'maxim',
-    stack: 'maximStack',
-    repository: github + 'maxim-ml',
-    release: true,
-  },
-  {
-    id: 'avito',
-    stack: 'avitoStack',
-    repository: github + 'avito-parser',
-  },
-]
-export const tools: PortfolioItem[] = [
-  {
-    id: 'server',
-    stack: 'serverStack',
-    repository: github + 'portfolio-server-infrastructure',
-    release: true,
-    emphasized: true,
-  },
-  {
-    id: 'worker',
-    stack: 'workerStack',
-    repository: github + 'codex-free-worker-mcp',
-  },
-  {
-    id: 'standards',
-    stack: 'standardsStack',
-    repository: github + 'codex-development-standards',
   },
 ]
 export const skillGroups = [
