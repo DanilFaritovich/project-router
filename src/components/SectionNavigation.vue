@@ -2,10 +2,12 @@
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { sections, sectionLabel, type SectionId } from '../content/portfolio'
+import { useNavigationQuery } from '../composables/useNavigationQuery'
 defineProps<{ active: SectionId }>()
 defineEmits<{ navigate: [id: SectionId] }>()
 const { t } = useI18n()
 const route = useRoute()
+const query = useNavigationQuery()
 </script>
 
 <template>
@@ -13,7 +15,7 @@ const route = useRoute()
     <RouterLink
       v-for="id in sections"
       :key="id"
-      :to="{ path: route.path, query: route.query, hash: `#${id}` }"
+      :to="{ path: route.path, query, hash: `#${id}` }"
       :aria-current="active === id ? 'location' : undefined"
       @click="$emit('navigate', id)"
       >{{ t(sectionLabel[id]) }}</RouterLink

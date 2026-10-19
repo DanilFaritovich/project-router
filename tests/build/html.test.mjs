@@ -1,11 +1,22 @@
 import process from 'node:process'
 import { URL } from 'node:url'
+import { loadEnv } from 'vite'
 import { readFile, access } from 'node:fs/promises'
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { JSDOM } from 'jsdom'
 import en from '../../src/locales/en.ts'
 import ru from '../../src/locales/ru.ts'
+
+const originValue = loadEnv(
+  'production',
+  process.cwd(),
+  'VITE_',
+).VITE_SITE_ORIGIN
+const origin = originValue?.trim()
+  ? new URL(originValue.trim()).origin
+  : undefined
+const alternatePaths = { en: '/en/', ru: '/ru/', 'x-default': '/en/' }
 
 for (const locale of ['en', 'ru']) {
   test(`built /${locale}/ contains localized HTML without JavaScript`, async () => {
@@ -56,6 +67,10 @@ for (const locale of ['en', 'ru']) {
       assert.equal(
         skills[index].querySelector('h3').textContent,
         copy[`${key}Title`],
+      )
+      assert.equal(
+        skills[index].querySelector('.skill-stack').textContent,
+        copy[`${key}SkillStack`],
       )
       assert.equal(
         skills[index].querySelector('.skill-detail').textContent,
@@ -115,28 +130,56 @@ for (const locale of ['en', 'ru']) {
       assert.ok(Number(image.width) > 0 && Number(image.height) > 0)
       await access(`dist${image.getAttribute('src')}`)
     }
-    assert.equal(document.documentElement.lang, locale)
-    assert.match(
-      document.title,
-      locale === 'en' ? /Engineering portfolio/ : /Инженерное портфолио/,
+    assert.equal(document.querySelector('#hero img').alt, copy.heroPortraitAlt)
+    assert.equal(
+      document.querySelector('#pdf-unavailable').textContent,
+      copy.pdfUnavailable,
     )
+    assert.equal(
+      document.querySelector('.contacts-copy').textContent,
+      copy.contactsCopy,
+    )
+    for (const button of document.querySelectorAll('#resume button')) {
+      assert.ok(
+        [copy.viewPdf, copy.downloadPdf].includes(button.textContent.trim()),
+      )
+      assert.equal(button.getAttribute('aria-describedby'), 'pdf-unavailable')
+    }
+    for (const nav of document.querySelectorAll('.language-switcher')) {
+      assert.equal(nav.getAttribute('aria-label'), copy.language)
+      assert.equal(
+        nav.querySelector('[lang="en"]').getAttribute('aria-label'),
+        copy.english,
+      )
+      assert.equal(
+        nav.querySelector('[lang="ru"]').getAttribute('aria-label'),
+        copy.russian,
+      )
+    }
+    assert.equal(document.documentElement.lang, locale)
+    assert.equal(document.querySelectorAll('title').length, 1)
+    assert.equal(document.title, copy.title)
+    assert.ok(document.title.trim())
+    assert.notEqual(en.description, ru.description)
+    for (const [selector, expected] of [
+      ['meta[name="description"]', copy.description],
+      ['meta[property="og:title"]', copy.title],
+      ['meta[property="og:description"]', copy.description],
+      ['meta[property="og:type"]', 'website'],
+      ['meta[property="og:locale"]', locale === 'en' ? 'en_US' : 'ru_RU'],
+      [
+        'meta[property="og:locale:alternate"]',
+        locale === 'en' ? 'ru_RU' : 'en_US',
+      ],
+    ]) {
+      const tags = document.querySelectorAll(selector)
+      assert.equal(tags.length, 1, `Expected exactly one ${selector}`)
+      assert.equal(tags[0].content, expected)
+      assert.ok(tags[0].content.trim(), `Empty ${selector}`)
+    }
     assert.match(
       document.querySelector('main').textContent,
       locale === 'en' ? /Danil Miftakhov/ : /Данил Мифтахов/,
-    )
-    assert.match(
-      document.querySelector('meta[name="description"]').content,
-      locale === 'en'
-        ? /engineering portfolio of Danil/
-        : /инженерное портфолио Данила/,
-    )
-    assert.equal(
-      document.querySelector('meta[property="og:title"]').content,
-      document.title,
-    )
-    assert.equal(
-      document.querySelector('meta[property="og:description"]').content,
-      document.querySelector('meta[name="description"]').content,
     )
     assert.equal(document.querySelectorAll('h1').length, 1)
     for (const id of [
@@ -157,29 +200,73 @@ for (const locale of ['en', 'ru']) {
     assert.equal(document.querySelectorAll('#resume button:disabled').length, 6)
     for (const language of ['en', 'ru'])
       assert.ok(document.querySelector(`a[href="/${language}/"]`))
-    const canonical = document.querySelector('link[rel="canonical"]')
-    if (process.env.VITE_SITE_ORIGIN)
-      assert.ok(canonical, 'Configured origin must produce canonical links')
-    if (canonical) {
-      const origin = new URL(canonical.href).origin
-      assert.equal(canonical.href, `${origin}/${locale}/`)
+    const jsonLd = document.querySelectorAll(
+      'script[type="application/ld+json"]',
+    )
+    assert.equal(jsonLd.length, origin ? 1 : 0)
+    if (origin) {
+      const data = JSON.parse(jsonLd[0].textContent)
+      assert.equal(data['@context'], 'https://schema.org')
+      assert.equal(data['@graph'].length, 2)
+      const [person, website] = data['@graph']
+      assert.equal(person['@type'], 'Person')
+      assert.equal(website['@type'], 'WebSite')
       assert.equal(
-        document.querySelector('meta[property="og:url"]').content,
-        canonical.href,
+        new Set(data['@graph'].map((entity) => entity['@id'])).size,
+        2,
       )
-      for (const language of ['en', 'ru'])
-        assert.equal(
-          document.querySelector(`link[hreflang="${language}"]`).href,
-          `${origin}/${language}/`,
-        )
-      const sitemap = await readFile('dist/sitemap.xml', 'utf8')
-      assert.ok(
-        sitemap.includes(`${origin}/en/`) && sitemap.includes(`${origin}/ru/`),
-      )
-    } else {
-      assert.equal(document.querySelectorAll('link[hreflang]').length, 0)
-      await assert.rejects(access('dist/sitemap.xml'))
+      assert.equal(person['@id'], `${origin}/#person`)
+      assert.equal(website['@id'], `${origin}/#website`)
+      assert.equal(person.name, copy.name)
+      assert.equal(person.jobTitle, copy.role)
+      assert.equal(person.description, copy.intro)
+      assert.equal(person.url, `${origin}/${locale}/`)
+      assert.deepEqual(person.sameAs, [
+        'https://github.com/DanilFaritovich',
+        'https://www.linkedin.com/in/danil-miftakhov-55468b399/',
+      ])
+      for (const profile of person.sameAs) {
+        assert.ok(document.querySelector(`a[href="${profile}"]`))
+        assert.equal(new URL(profile).protocol, 'https:')
+      }
+      assert.equal(website.name, 'ProjectRouter')
+      assert.equal(website.url, `${origin}/`)
+      assert.equal(website.description, copy.description)
+      assert.deepEqual(website.inLanguage, ['en', 'ru'])
+      assert.deepEqual(website.author, { '@id': person['@id'] })
+      for (const entity of data['@graph']) {
+        assert.equal(new URL(entity['@id']).protocol, 'https:')
+        assert.equal(new URL(entity.url).protocol, 'https:')
+        await access(`dist${new URL(entity.url).pathname}index.html`)
+      }
     }
+    const canonicals = document.querySelectorAll('link[rel="canonical"]')
+    const alternates = document.querySelectorAll(
+      'link[rel="alternate"][hreflang]',
+    )
+    const ogUrls = document.querySelectorAll('meta[property="og:url"]')
+    assert.equal(canonicals.length, origin ? 1 : 0)
+    assert.equal(alternates.length, origin ? 3 : 0)
+    assert.equal(
+      document.querySelectorAll('link[hreflang]').length,
+      alternates.length,
+    )
+    assert.equal(ogUrls.length, origin ? 1 : 0)
+    if (origin) {
+      const canonical = `${origin}/${locale}/`
+      assert.equal(canonicals[0].href, canonical)
+      assert.equal(ogUrls[0].content, canonical)
+      for (const [language, path] of Object.entries(alternatePaths)) {
+        const links = document.querySelectorAll(
+          `link[rel="alternate"][hreflang="${language}"]`,
+        )
+        assert.equal(links.length, 1)
+        assert.equal(links[0].href, `${origin}${path}`)
+        // Every alternate, including x-default, names a generated document.
+        await access(`dist${new URL(links[0].href).pathname}index.html`)
+      }
+    }
+    assert.equal(document.querySelectorAll('meta[name="robots"]').length, 0)
     for (const asset of document.querySelectorAll(
       'script[src], link[rel="stylesheet"]',
     )) {
@@ -196,7 +283,63 @@ test('static root redirects and missing page is excluded from indexing', async (
     root.querySelector('meta[http-equiv="refresh"]').content,
     '0;url=/en/',
   )
+  assert.equal(root.querySelectorAll('meta[http-equiv="refresh"]').length, 1)
+  assert.equal(root.querySelector('a').getAttribute('href'), '/en/')
   const missing = new JSDOM(await readFile('dist/404.html', 'utf8')).window
     .document
-  assert.equal(missing.querySelector('meta[name="robots"]').content, 'noindex')
+  for (const document of [root, missing]) {
+    const robots = document.querySelectorAll('meta[name="robots"]')
+    assert.equal(robots.length, 1)
+    assert.equal(robots[0].content, 'noindex')
+    assert.equal(
+      document.querySelectorAll(
+        'link[rel="canonical"], link[hreflang], meta[property="og:url"], script[type="application/ld+json"]',
+      ).length,
+      0,
+    )
+  }
+  assert.equal(missing.querySelector('h1').textContent, 'Page not found')
+})
+
+test('crawl files agree with the indexable documents and optional origin', async () => {
+  const robots = await readFile('dist/robots.txt', 'utf8')
+  // This public site needs no exclusions or private paths.
+  assert.deepEqual(robots.trim().split('\n'), [
+    'User-agent: *',
+    'Allow: /',
+    ...(origin ? [`Sitemap: ${origin}/sitemap.xml`] : []),
+  ])
+  if (!origin) {
+    await assert.rejects(access('dist/sitemap.xml'), { code: 'ENOENT' })
+    return
+  }
+  const xml = await readFile('dist/sitemap.xml', 'utf8')
+  // XML parsing fails on malformed/unescaped content instead of matching substrings.
+  const sitemap = new JSDOM(xml, { contentType: 'application/xml' }).window
+    .document
+  const namespace = 'http://www.sitemaps.org/schemas/sitemap/0.9'
+  assert.equal(sitemap.documentElement.localName, 'urlset')
+  assert.equal(sitemap.documentElement.namespaceURI, namespace)
+  const entries = [...sitemap.documentElement.children]
+  assert.equal(entries.length, 2)
+  const urls = entries.map((entry) => {
+    assert.equal(entry.localName, 'url')
+    assert.equal(entry.namespaceURI, namespace)
+    assert.equal(entry.children.length, 1)
+    assert.equal(entry.firstElementChild.localName, 'loc')
+    assert.equal(entry.firstElementChild.namespaceURI, namespace)
+    return entry.firstElementChild.textContent
+  })
+  assert.deepEqual(urls, [`${origin}/en/`, `${origin}/ru/`])
+  assert.equal(new Set(urls).size, 2)
+  for (const address of urls) {
+    const url = new URL(address)
+    assert.equal(url.protocol, 'https:')
+    assert.equal(url.search, '')
+    assert.equal(url.hash, '')
+    const document = new JSDOM(
+      await readFile(`dist${url.pathname}index.html`, 'utf8'),
+    ).window.document
+    assert.equal(document.querySelector('link[rel="canonical"]').href, address)
+  }
 })

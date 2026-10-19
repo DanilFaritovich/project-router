@@ -41,6 +41,12 @@ for (const width of [320, 375, 390, 768, 1024, 1440]) {
   test(`layout keeps consistent content spacing without overflow at ${width}px`, async ({
     page,
   }) => {
+    const errors: string[] = []
+    page.on('pageerror', (error) => errors.push(error.message))
+    page.on('console', (message) => {
+      if (['warning', 'error'].includes(message.type()))
+        errors.push(message.text())
+    })
     await page.setViewportSize({ width, height: 900 })
     for (const locale of ['en', 'ru']) {
       await page.goto(`/${locale}/`)
@@ -105,6 +111,7 @@ for (const width of [320, 375, 390, 768, 1024, 1440]) {
             : 24
       for (const left of geometry.sectionLefts) expect(left).toBe(expectedLeft)
     }
+    expect(errors).toEqual([])
   })
 }
 

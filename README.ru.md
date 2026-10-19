@@ -5,12 +5,14 @@
 ProjectRouter — EN/RU инженерное портфолио Данила Мифтахова с проектами,
 инструментами разработчика, заглушками резюме и контактами. Контент хранится в Git.
 
-## Текущее состояние — Stage 01–04
+## Текущее состояние — Stage 05 готов к review
 
 Stage 01–04, Portfolio Content Refinement и Hero Portrait Integration реализованы
 и слиты в `develop`. Адаптивное портфолио на Vue 3/TypeScript/Vite использует
 Tailwind CSS, Vue Router и Vue I18n. Vite SSG генерирует локализованные HTML
-и базовые метаданные по `/en/` и `/ru/`; `/` ведёт на `/en/`.
+по `/en/` и `/ru/`; `/` ведёт на `/en/`. Stage 05 реализован в
+`feature/i18n-seo` и ожидает review/merge; после merge он будет завершён
+в `develop`.
 
 - Семь секций: Hero, About, Skills, Projects, Developer Tools, Resume и Contacts.
 - Hero использует фотографию владельца в локальных оптимизированных WebP-файлах,
@@ -20,19 +22,27 @@ Tailwind CSS, Vue Router и Vue I18n. Vite SSG генерирует локали
   с проверенными GitHub-адресами и четырьмя явными ссылками Release на версии.
   Четыре реальных скриншота проектов локально оптимизированы в WebP.
 - Десктопная навигация по секциям и мобильное меню поддерживают переключение EN/RU
-  с сохранением видимой секции; контакты ведут на социальные профили владельца.
+  с сохранением видимой секции, query/hash и истории Back/Forward; контакты
+  ведут на социальные профили владельца.
+- Локализованные title/description, язык HTML, OG/Twitter, self-canonical,
+  взаимные hreflang и x-default, robots/sitemap и безопасный Person/WebSite JSON-LD.
+  Добавлены два локальных social preview PNG 1200×630. Абсолютные метаданные
+  сайта требуют явно заданного HTTPS origin.
+- Детерминированная проверка AI/agent readability извлекает профессиональные факты
+  из готового EN/RU HTML, включая девять ссылок на исходники и честный статус PDF.
+  Она не моделирует поисковую систему и не гарантирует AI-рекомендаций.
 - ESLint, Prettier, TypeScript, Vitest, Playwright, SSG/build-проверки и GitHub
   Actions обеспечивают автоматические проверки качества. Исходные дизайн-референсы сохранены.
 
 Настоящих PDF резюме пока нет: у трёх ролевых заглушек отключены просмотр
 и скачивание, интеграция PDF.js запланирована. Публичный Live Demo не подтверждён,
-ссылок на него нет. Production-деплой не выполнен. Существующие механизмы
-локализации и SEO являются основой; их аудит и завершение относятся к следующему
-Stage 05. Backend и база данных не используются.
+ссылок на него нет. Production-деплой не выполнен.
+Локальные SEO/readability-проверки проходят с тестовым origin и без origin.
+Backend и база данных не используются.
 
 ## План разработки
 
-Этапы 01–04 реализованы; этапы 05–09 остаются запланированными. Синхронизация
+Этапы 01–04 слиты; Stage 05 ожидает review/merge; этапы 06–09 запланированы. Синхронизация
 документации — задача сопровождения вне девятиэтапного roadmap.
 
 | Этап | Ветка                           | Название                   |
@@ -68,6 +78,14 @@ make check              # lint, формат, типы, unit/integration
 npx playwright install chromium
 make verify             # SSG build, HTML и браузерный smoke
 make ci                 # check + verify, без повторов и исправления исходников
+
+# Проверка Stage 05; portfolio.test — только локальный тест, не production.
+VITE_SITE_ORIGIN=https://portfolio.test make verify
+VITE_SITE_ORIGIN= npm run build
+VITE_SITE_ORIGIN= npm run test:build
+VITE_SITE_ORIGIN= npx playwright test tests/e2e/foundation.e2e.spec.ts tests/e2e/localization.e2e.spec.ts
+# Адресный readability-аудит текущего dist/ (также входит в test:build):
+node --test tests/build/readability.test.mjs
 ```
 
 В Linux для Chromium могут потребоваться системные библиотеки:
@@ -78,12 +96,26 @@ make ci                 # check + verify, без повторов и испра�
 Production-домен ещё не выбран. При необходимости скопируйте `.env.example`
 в `.env.local` и задайте `VITE_SITE_ORIGIN` как реальный HTTPS origin без пути,
 затем пересоберите сайт. Без origin canonical, hreflang, `og:url` и sitemap
-не генерируются; локализованные HTML и базовые метаданные работают.
+не генерируются, как и метаданные изображений OG/Twitter и JSON-LD;
+локализованные HTML, текстовые OG/Twitter и разрешающий robots продолжают работать.
 Хостинг должен раздавать `/en/index.html` и `/ru/index.html` напрямую и возвращать
 404 для неизвестных адресов. Корень пока использует HTML meta-refresh;
 настоящий HTTP redirect и live SEO проверяются на этапе доставки.
 В GitHub рекомендуется сделать `Quality and static build` обязательной проверкой
 веток; настройки защиты веток вручную задаёт администратор.
+
+Реализованы локально: статический HTML, SEO metadata, crawl artifacts, social
+images, JSON-LD и автоматические проверки. [Отчёт Stage 05](ARCHITECTURE.md#stage-05-validation-evidence)
+содержит аудит шести шагов, вопросы агента, источники по краулерам и результаты smoke.
+`llms.txt` намеренно не добавлен: конкретный потребитель и дополнительные сведения
+сверх HTML не найдены. Существующие `User-agent: *` / `Allow: /` разрешают обход
+без новых правил для отдельных ботов и изменения политики обучения моделей.
+
+После deployment необходимы проверки публичного HTTPS и настоящего `VITE_SITE_ORIGIN`,
+HTTP redirects/status codes, прямой раздачи локализованных документов, публичных
+social previews, доступа краулеров, реальной индексации и подтверждение прав/
+отправка sitemap в Search Console/webmaster tools. Локальные проверки не подтверждают
+ни один из этих production-результатов.
 
 - [AGENTS.md](AGENTS.md): процесс Codex и проектные инструкции.
 - [ARCHITECTURE.md](ARCHITECTURE.md): реализованное портфолио, границы системы, маршруты и качество.
