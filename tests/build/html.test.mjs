@@ -139,6 +139,20 @@ for (const locale of ['en', 'ru']) {
       document.querySelector('.contacts-copy').textContent,
       copy.contactsCopy,
     )
+    const heroLinks = [...document.querySelectorAll('#hero .social-links a')]
+    assert.deepEqual(
+      heroLinks.map((link) => link.textContent.trim()),
+      ['LinkedIn', 'GitHub', copy.heroContact],
+    )
+    assert.deepEqual(
+      heroLinks.map((link) => link.getAttribute('href')),
+      [
+        'https://www.linkedin.com/in/danil-miftakhov-55468b399/',
+        'https://github.com/DanilFaritovich',
+        `/${locale}/#contacts`,
+      ],
+    )
+    assert.equal(heroLinks[2].getAttribute('target'), null)
     for (const button of document.querySelectorAll('#resume button')) {
       assert.ok(
         [copy.viewPdf, copy.downloadPdf].includes(button.textContent.trim()),

@@ -102,10 +102,33 @@ describe('portfolio', () => {
       ).toHaveLength(3)
       expect(
         wrapper.findAll('#hero .social-links a').map((link) => link.text()),
-      ).toEqual(['GitHub', 'LinkedIn', 'Telegram'])
+      ).toEqual(['LinkedIn', 'GitHub', messages[locale].heroContact])
       expect(wrapper.find('#hero a[href*="instagram.com"]').exists()).toBe(
         false,
       )
+      wrapper.unmount()
+    },
+  )
+
+  it.each(['en', 'ru'] as const)(
+    'navigates from Hero to localized Contacts with query and focus in %s',
+    async (locale) => {
+      const { wrapper, router } = await render(`/${locale}/?source=hero#hero`)
+      const contact = wrapper.get('#hero .social-links a:last-child')
+      expect(contact.attributes('href')).toBe(
+        `/${locale}/?source=hero#contacts`,
+      )
+      expect(contact.attributes('target')).toBeUndefined()
+      expect(contact.classes()).not.toContain('action')
+      await contact.trigger('click')
+      await flushPromises()
+      expect(router.currentRoute.value.fullPath).toBe(
+        `/${locale}/?source=hero#contacts`,
+      )
+      expect(document.activeElement).toBe(
+        wrapper.get('#contacts-heading').element,
+      )
+      expect(wrapper.findAll('#hero .social-links a')).toHaveLength(3)
       wrapper.unmount()
     },
   )

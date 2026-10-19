@@ -145,6 +145,7 @@ export default {
     'A modular collection of reusable engineering standards and workflows for Codex-assisted software development.',
   standardsDetail:
     'Includes stack-specific skill profiles, incremental standards synchronization, Git and CI/CD conventions, testing guidelines and context-efficient agent workflows.',
+  heroContact: 'Contact',
   github: 'GitHub',
   linkedin: 'LinkedIn',
   telegram: 'Telegram',

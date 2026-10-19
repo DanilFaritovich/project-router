@@ -1,22 +1,37 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
+import { useNavigationQuery } from '../composables/useNavigationQuery'
 import { useI18n } from 'vue-i18n'
-import { contactSocialGroups, socialLinks } from '../content/portfolio'
+import {
+  contactSocialGroups,
+  heroSocialOrder,
+  socialLinks,
+} from '../content/portfolio'
 import UiAction from './UiAction.vue'
 const props = defineProps<{
   buttons?: boolean
   group?: keyof typeof contactSocialGroups
 }>()
 const links = computed(() => {
-  if (props.group) {
-    const order = contactSocialGroups[props.group]
-    return order.map((label) =>
-      socialLinks.find((link) => link.label === label)!,
-    )
-  }
-  return socialLinks.filter((link) => !('contactsOnly' in link))
+  const order = props.group ? contactSocialGroups[props.group] : heroSocialOrder
+  return order.map((label) => socialLinks.find((link) => link.label === label)!)
 })
 const { t } = useI18n()
+const route = useRoute()
+const query = useNavigationQuery()
+async function focusContacts(event: MouseEvent) {
+  if (
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey
+  )
+    return
+  await nextTick()
+  document.getElementById('contacts-heading')?.focus({ preventScroll: true })
+}
 </script>
 
 <template>
@@ -38,5 +53,11 @@ const { t } = useI18n()
         ></a
       >
     </template>
+    <RouterLink
+      v-if="!group"
+      :to="{ path: route.path, query, hash: '#contacts' }"
+      @click="focusContacts"
+      >{{ t('heroContact') }}</RouterLink
+    >
   </div>
 </template>

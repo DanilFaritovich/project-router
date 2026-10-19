@@ -14,7 +14,7 @@ test('external social and release links preserve the portfolio tab and scroll po
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/en/')
   for (const selector of [
-    '#hero .social-links a',
+    '#hero .social-links a[href^="https://"]',
     '#projects a[href*="/releases/tag/"]',
     '#contacts .social-links a[href^="https://"]',
   ]) {
@@ -36,6 +36,80 @@ test('external social and release links preserve the portfolio tab and scroll po
   }
   expect(context.pages()).toHaveLength(1)
 })
+
+for (const width of [1440, 390, 320]) {
+  test(`Hero contact navigation, history and layout at ${width}px`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width, height: 1000 })
+    const errors: string[] = []
+    page.on('pageerror', (error) => errors.push(error.message))
+    for (const locale of ['en', 'ru']) {
+      const initial = `/${locale}/?source=hero#hero`
+      await page.goto(initial)
+      const hero = page.locator('#hero')
+      const links = hero.locator('.social-links a')
+      await expect(links).toHaveText([
+        'LinkedIn',
+        'GitHub',
+        locale === 'en' ? 'Contact' : 'Контакты',
+      ])
+      await expect(links.nth(0)).toHaveAttribute(
+        'href',
+        'https://www.linkedin.com/in/danil-miftakhov-55468b399/',
+      )
+      await expect(links.nth(1)).toHaveAttribute(
+        'href',
+        'https://github.com/DanilFaritovich',
+      )
+      for (const index of [0, 1])
+        await expect(links.nth(index)).toHaveAttribute('target', '_blank')
+      const contact = links.nth(2)
+      await expect(contact).toHaveAttribute(
+        'href',
+        `/${locale}/?source=hero#contacts`,
+      )
+      await expect(contact).not.toHaveAttribute('target')
+      await expect(contact).not.toHaveClass(/action/)
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth > innerWidth,
+        ),
+      ).toBe(false)
+      await hero.screenshot({
+        path: testInfo.outputPath(`hero-${locale}-${width}.png`),
+      })
+      await links.nth(0).focus()
+      await page.keyboard.press('Tab')
+      await expect(links.nth(1)).toBeFocused()
+      await page.keyboard.press('Tab')
+      await expect(contact).toBeFocused()
+      await expect(contact).toHaveCSS('outline-style', 'solid')
+      await page.keyboard.press('Enter')
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#contacts$`),
+      )
+      await expect(page.locator('#contacts-heading')).toBeFocused()
+      await expect(page.locator('#contacts-heading')).toBeInViewport()
+      await page.goBack()
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#hero$`),
+      )
+      await expect(hero).toBeInViewport()
+      await page.goForward()
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#contacts$`),
+      )
+      await expect(page.locator('#contacts-heading')).toBeInViewport()
+      await page.reload()
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#contacts$`),
+      )
+      await expect(page.locator('html')).toHaveAttribute('lang', locale)
+    }
+    expect(errors).toEqual([])
+  })
+}
 
 for (const width of [1440, 768, 390, 320]) {
   test(`Contacts groups, keyboard navigation and wrapping at ${width}px`, async ({
