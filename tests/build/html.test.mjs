@@ -146,27 +146,29 @@ for (const locale of ['en', 'ru']) {
       )
     }
     assert.equal(document.documentElement.lang, locale)
-    assert.match(
-      document.title,
-      locale === 'en' ? /Engineering portfolio/ : /Инженерное портфолио/,
-    )
+    assert.equal(document.querySelectorAll('title').length, 1)
+    assert.equal(document.title, copy.title)
+    assert.ok(document.title.trim())
+    assert.notEqual(en.description, ru.description)
+    for (const [selector, expected] of [
+      ['meta[name="description"]', copy.description],
+      ['meta[property="og:title"]', copy.title],
+      ['meta[property="og:description"]', copy.description],
+      ['meta[property="og:type"]', 'website'],
+      ['meta[property="og:locale"]', locale === 'en' ? 'en_US' : 'ru_RU'],
+      [
+        'meta[property="og:locale:alternate"]',
+        locale === 'en' ? 'ru_RU' : 'en_US',
+      ],
+    ]) {
+      const tags = document.querySelectorAll(selector)
+      assert.equal(tags.length, 1, `Expected exactly one ${selector}`)
+      assert.equal(tags[0].content, expected)
+      assert.ok(tags[0].content.trim(), `Empty ${selector}`)
+    }
     assert.match(
       document.querySelector('main').textContent,
       locale === 'en' ? /Danil Miftakhov/ : /Данил Мифтахов/,
-    )
-    assert.match(
-      document.querySelector('meta[name="description"]').content,
-      locale === 'en'
-        ? /engineering portfolio of Danil/
-        : /инженерное портфолио Данила/,
-    )
-    assert.equal(
-      document.querySelector('meta[property="og:title"]').content,
-      document.title,
-    )
-    assert.equal(
-      document.querySelector('meta[property="og:description"]').content,
-      document.querySelector('meta[name="description"]').content,
     )
     assert.equal(document.querySelectorAll('h1').length, 1)
     for (const id of [

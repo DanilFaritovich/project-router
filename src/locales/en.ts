@@ -1,8 +1,8 @@
 export default {
   heroPortraitAlt: 'Portrait of Danil Miftakhov',
-  title: 'ProjectRouter — Engineering portfolio',
+  title: 'Danil Miftakhov | Python Backend & Data Engineer',
   description:
-    'ProjectRouter is the engineering portfolio of Danil Miftakhov. Python backend, data engineering and integration work.',
+    "Danil Miftakhov's Python backend and data engineering portfolio: API integrations, ETL and data processing with PostgreSQL/PostGIS, plus automation projects.",
   language: 'Choose language',
   languageLabel: 'Language',
   portfolio: 'Portfolio',
