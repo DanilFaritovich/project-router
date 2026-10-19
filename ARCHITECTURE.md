@@ -8,8 +8,8 @@ and nine-item catalog use Vue 3, TypeScript, Vite 8, Tailwind CSS 4, Vue Router,
 Vue I18n, Vite SSG and Unhead. Desktop/mobile navigation, EN/RU content and the
 owner portrait are implemented. Resume controls reflect supplied PDF availability. Stage 05 —
 Localization & SEO is implemented in `feature/i18n-seo`, awaiting review/merge
-into `develop`. Stage 06 viewer code is prepared pending the owner resume assets;
-Stages 07–09 and production delivery remain planned.
+into `develop`. Stage 06 — Resume & Interactions is implemented with six
+owner-supplied PDFs. Stages 07–09 and production delivery remain planned.
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
@@ -117,8 +117,8 @@ Three resume roles use `src/content/resumes.ts` for typed specialization metadat
 EN/RU asset paths and build-time availability. Owner-supplied documents belong in
 `public/resumes/{backend,ai,data}-{en,ru}.pdf` and are copied unchanged by Vite.
 Missing files keep the affected card actions disabled with localized explanation.
-The requested resume ZIP and six PDFs were absent during Stage 06 implementation;
-real-document acceptance and completion of Stage 06 remain blocked on these assets.
+All six original, two-page A4 PDFs are included. Their bytes match the supplied
+archive; the archive itself is excluded from Git.
 
 `ResumeSection.vue` loads `components/resume/ResumeModal.vue` asynchronously on
 preview. Its client mount calls `src/pdf/loadPdf.ts`, which dynamically imports
@@ -134,10 +134,12 @@ independently, including horizontally when deliberately zoomed beyond its width.
 
 Unit/component tests cover mapping, language selection, resource URL alignment,
 loading/error/retry, pages/zoom, focus containment/restoration and disposal.
-A build test requires all six PDFs and compares source/build bytes. Real-PDF
-Chromium scenarios at 320, 390, 768 and 1440px run when all owner files are supplied;
-they are explicitly skipped while the archive is missing. This is pending
-acceptance, not evidence of successful rendering of the actual resumes.
+A build test requires all six PDFs and compares source/build bytes. Mandatory
+Chromium scenarios render all six real documents, verify nonempty canvases,
+page navigation, selected-file download bytes, error/retry and keyboard focus.
+Responsive checks at 320, 390, 768 and 1440px assert no page/dialog overflow and
+no document overflow in fit-width mode; 390px and 1440px screenshots are saved
+as ignored Playwright artifacts for visual inspection.
 
 ## Responsive Hero and local image optimization
 
@@ -165,8 +167,8 @@ as four optimized WebP files in `src/assets/projects/` and load lazily.
 Unit and integration tests cover catalog order and exact action URLs, localized
 card content and image failures, metadata and optional origin links, both direct
 localized entries, root redirection and query/hash-preserving language switching.
-They also cover About's three experience blocks, seven sections, unavailable PDF
-controls and menu focus/Escape/selection. Localization tests assert the portrait's
+They also cover About's three experience blocks, seven sections, PDF availability
+and viewer states, plus menu focus/Escape/selection. Localization tests assert the portrait's
 EN/RU alt text on entry and after switching languages.
 Built HTML checks assert localized copy without JavaScript, all seven sections,
 three About blocks, eight skill groups, nine complete catalog cards, four local
@@ -176,8 +178,8 @@ Russian content, desktop section tracking, mobile menu behavior, keyboard action
 loaded/failed catalog images and layout without overflow at widths from 320 to
 1440 pixels in EN/RU. External popup destinations are intercepted in browser tests;
 these checks do not establish live availability or deployment of linked projects.
-Stage 07 will expand visual and accessibility coverage. Real-resume browser
-acceptance and live-domain verification remain pending. Stage 05 adds built-HTML professional
+Stage 07 will expand visual and accessibility coverage. Live-domain verification
+remains pending. Stage 05 adds built-HTML professional
 evidence extraction and a limited accessibility/performance smoke; it does not
 replace Stage 07 visual QA or real search-engine testing.
 Repository administrators should require the `Quality and static build` CI check
