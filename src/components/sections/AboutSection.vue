@@ -7,13 +7,24 @@ const { t } = useI18n()
 <template>
   <PortfolioSection id="about" prefix="about">
     <div class="about-copy">
-      <h3>{{ t('experienceTitle') }}</h3>
-      <p>{{ t('experience') }}</p>
-      <p class="muted">{{ t('experienceDetail') }}</p>
-      <h3>{{ t('personalTitle') }}</h3>
-      <p>{{ t('personal') }}</p>
-      <aside class="focus-panel">
-        <p class="eyebrow">{{ t('focusTitle') }}</p>
+      <p class="about-introduction">{{ t('aboutIntroduction') }}</p>
+      <div class="about-block">
+        <h3>{{ t('experienceTitle') }}</h3>
+        <p>{{ t('experience') }}</p>
+        <p>{{ t('experienceDetail') }}</p>
+      </div>
+      <div class="about-block">
+        <h3>{{ t('freelanceTitle') }}</h3>
+        <p>{{ t('freelance') }}</p>
+        <p>{{ t('freelanceDetail') }}</p>
+      </div>
+      <div class="about-block">
+        <h3>{{ t('personalTitle') }}</h3>
+        <p>{{ t('personal') }}</p>
+        <p>{{ t('personalDetail') }}</p>
+      </div>
+      <aside class="focus-panel" aria-labelledby="focus-heading">
+        <h3 id="focus-heading" class="eyebrow">{{ t('focusTitle') }}</h3>
         <p>{{ t('focus') }}</p>
       </aside>
     </div>

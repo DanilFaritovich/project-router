@@ -266,8 +266,22 @@
   .section-heading .section-intro {
     max-width: 190px;
   }
-  .about-copy > p {
-    margin: 24px 0;
+  .about-copy {
+    min-width: 0;
+    max-width: 72ch;
+  }
+  .about-introduction {
+    margin-bottom: 28px;
+  }
+  .about-block {
+    padding: 24px 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .about-block p {
+    margin-top: 16px;
+  }
+  .about-copy .focus-panel {
+    margin-top: 4px;
   }
   .muted {
     color: var(--color-muted);
@@ -278,6 +292,10 @@
   }
   .focus-panel .eyebrow {
     margin-bottom: 10px;
+  }
+  .skills-grid > div {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   .skills-grid {
     display: grid;
@@ -502,6 +520,11 @@
   }
 }
 
+.focus-panel .eyebrow {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 @media (min-width: 1600px) {
   :root {
     --rail-width: max(224px, calc((100vw - 1168px) / 2));
@@ -677,8 +700,7 @@
     font-size: 14px;
     line-height: 1.6;
   }
-  .about-copy > p {
-    margin: 24px 0;
+  .about-copy {
     line-height: 1.6;
   }
   .focus-panel {

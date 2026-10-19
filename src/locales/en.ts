@@ -22,50 +22,59 @@ export default {
   name: 'Danil Miftakhov',
   role: 'Python Backend / Data & Automation Engineer',
   intro:
-    'I build APIs, data pipelines and integrations that turn complex workflows into repeatable tools.',
+    'I build Python backends, data-processing pipelines and API integrations. My work spans PostgreSQL, geospatial data and business automation — from commercial and freelance projects to personal engineering tools.',
   aboutEyebrow: '02 / About',
   aboutTitle: 'About Me',
   aboutIntro:
-    'Commercial work and personal engineering projects, with clear boundaries.',
-  experienceTitle: 'Commercial engineering experience',
+    'Commercial experience, client integrations and personal engineering projects.',
+  aboutIntroduction:
+    'I enjoy turning complex data workflows and integrations into practical, maintainable tools. My experience spans commercial engineering, client work and independent projects, with an emphasis on reliable solutions.',
+  experienceTitle: 'Commercial Experience',
   experience:
-    'My commercial work at Maxim has focused on Python, PostgreSQL, PostGIS and SQL: processing address and geographic data, integrating external APIs and automating internal workflows.',
+    'Since 2022, I have worked at Maxim with Python, PostgreSQL/PostGIS and SQL, processing address and geospatial data, preparing bulk imports and analytical exports, and integrating geocoding services.',
   experienceDetail:
-    'Typical tasks include normalizing and enriching geodata, preparing SQL imports with duplicate and no-op checks, and producing analytical exports. I also work with geocoder integrations, reusable database utilities and scripts that reduce repetitive operational steps.',
-  personalTitle: 'Personal projects',
+    'I also investigate application errors and SQL performance issues using logs and execution plans, test hypotheses and document findings for developers.',
+  freelanceTitle: 'Freelance & Client Work',
+  freelance:
+    'In freelance projects, I develop marketplace integrations, automate product data synchronization and order workflows, and build web scrapers and API integrations.',
+  freelanceDetail:
+    'I have also created Telegram interfaces for controlling server-side utilities and tools for processing CSV, Excel and JSON data, using Python, browser automation and Linux-based environments.',
+  personalTitle: 'Personal Engineering Projects',
   personal:
-    'My personal repositories explore application architecture, ETL and LLM integration, with automated checks and reproducible local environments.',
+    'My personal projects include FastAPI services, Apache Airflow ETL pipelines, LLM/MCP integrations and developer automation tools.',
+  personalDetail:
+    'I focus on architecture, testing, CI and reproducible environments. One example is an AI-assisted Ansible/Python toolkit for provisioning my personal Ubuntu VPS, with independently verified initialization stages.',
   focusTitle: 'Current focus',
   focus:
-    'Deepening service boundaries, data-pipeline reliability and structured LLM workflows.',
+    'Python backend engineering, service architecture, reliable ETL pipelines and practical AI integrations for software development.',
   skillsEyebrow: '03 / Skills',
   skillsTitle: 'Skills & Technologies',
   skillsIntro:
     'A detailed view of the stack, grouped by engineering responsibility.',
   backendTitle: 'Backend & APIs',
   backendDetail:
-    'REST APIs, validated contracts, asynchronous I/O and application services.',
+    'REST API development, data validation, asynchronous operations and application service logic using FastAPI, Flask and Python.',
   databaseTitle: 'Databases & Geospatial',
   databaseDetail:
-    'Data extraction, batch processing, address normalization and coordinate transformations.',
+    'PostgreSQL/PostGIS workflows involving geospatial processing, SQL exports, bulk imports, SQLAlchemy and query execution plan analysis.',
   dataTitle: 'Data Engineering & ML',
   dataDetail:
-    'Linked ETL stages, intermediate artifacts, preprocessing, training and inference pipelines.',
+    'ETL pipelines with Apache Airflow and MinIO/S3, data transformation, geospatial processing and model training with scikit-learn.',
   automationTitle: 'Automation & Integrations',
   automationDetail:
-    'External APIs, browser workflows and repeatable data preparation.',
+    'External API integrations, marketplace automation, web scraping, browser workflows and data transformation between services.',
   infraTitle: 'Infrastructure & Delivery',
   infraDetail:
-    'Infrastructure as Code, isolated validation, local runtimes and CI quality gates.',
+    'Docker and Docker Compose, Ansible-based Linux server provisioning, SSH/UFW management and automated validation with GitHub Actions.',
   testingTitle: 'Testing & Quality',
   testingDetail:
-    'Unit, integration and browser checks; typed boundaries and repeatable verification.',
+    'Unit, integration and E2E testing, formatting checks, static type analysis and automated code quality workflows.',
   aiTitle: 'AI & Developer Workflows',
   aiDetail:
-    'Backend-only model access, validated outputs and bounded automation tasks.',
+    'LLM API integrations, structured model outputs, custom MCP tools and development workflow automation with Codex and OpenCode.',
   architectureTitle: 'Architecture & Interfaces',
   architectureDetail:
-    'Layered services, persistence boundaries and typed project interfaces.',
+    'Layered application responsibilities, Ports & Adapters, Dependency Injection, transaction boundaries and Vue/React interfaces in personal projects.',
   projectsEyebrow: '04 / Projects',
   projectsTitle: 'Featured Projects',
   projectsIntro:
