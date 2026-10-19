@@ -28,22 +28,22 @@ export default {
   aboutIntro:
     'Commercial experience, client integrations and personal engineering projects.',
   aboutIntroduction:
-    'I am a Python developer focused on backend engineering, data processing and automation. My experience combines commercial development, client integrations and personal engineering projects. I particularly enjoy connecting systems, working with large datasets and automating multi-stage workflows.',
+    'I enjoy turning complex data workflows and integrations into practical, maintainable tools. My experience spans commercial engineering, client work and independent projects, with an emphasis on reliable solutions.',
   experienceTitle: 'Commercial Experience',
   experience:
-    'Since 2022, I have worked at Maxim with Python, PostgreSQL/PostGIS, SQL and geospatial data. My work includes address data processing and normalization, bulk imports, analytical exports, geocoder integrations and data workflow automation.',
+    'Since 2022, I have worked at Maxim with Python, PostgreSQL/PostGIS and SQL, processing address and geospatial data, preparing bulk imports and analytical exports, and integrating geocoding services.',
   experienceDetail:
-    'I also participate in technical investigations: examining SQL queries and execution plans, analyzing application logs and errors, testing hypotheses and preparing actionable reports for developers.',
+    'I also investigate application errors and SQL performance issues using logs and execution plans, test hypotheses and document findings for developers.',
   freelanceTitle: 'Freelance & Client Work',
   freelance:
-    'Alongside my primary job, I work on external service integrations and business process automation. My projects include product data processing, marketplace stock synchronization, order automation, web scraping and API integrations.',
+    'In freelance projects, I develop marketplace integrations, automate product data synchronization and order workflows, and build web scrapers and API integrations.',
   freelanceDetail:
-    'Depending on the task, I use Python, HTTP clients, Playwright/Camoufox, SQL, Docker and Linux. I have also built Telegram interfaces for controlling server-side utilities and tools for processing CSV, Excel and JSON data.',
+    'I have also created Telegram interfaces for controlling server-side utilities and tools for processing CSV, Excel and JSON data, using Python, browser automation and Linux-based environments.',
   personalTitle: 'Personal Engineering Projects',
   personal:
-    'My personal projects focus on backend architecture and engineering infrastructure. I work with FastAPI, SQLAlchemy, Apache Airflow, LLM APIs and MCP, building applications, ETL pipelines and developer automation tools.',
+    'My personal projects include FastAPI services, Apache Airflow ETL pipelines, LLM/MCP integrations and developer automation tools.',
   personalDetail:
-    'I pay particular attention to component boundaries, testing, CI, Docker and reproducible environments. One example is an AI-assisted Ansible and Python toolkit for configuring my personal Ubuntu VPS, with independent verification of initialization stages.',
+    'I focus on architecture, testing, CI and reproducible environments. One example is an AI-assisted Ansible/Python toolkit for provisioning my personal Ubuntu VPS, with independently verified initialization stages.',
   focusTitle: 'Current focus',
   focus:
     'Python backend engineering, service architecture, reliable ETL pipelines and practical AI integrations for software development.',
