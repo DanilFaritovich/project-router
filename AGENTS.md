@@ -3,8 +3,10 @@
 ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–04,
 content refinement and Hero Portrait integration are implemented, including the
 responsive seven-section layout, nine-item catalog, localized static HTML, quality
-tooling and CI. Stage 05 — Localization & SEO is next; PDF interactions and
-production delivery remain planned.
+tooling and CI. Stage 05 — Localization & SEO is implemented in
+`feature/i18n-seo`, awaiting review/merge into `develop`, including social previews,
+JSON-LD and built-HTML AI readability checks. Stages 06–09, PDF interactions and
+production delivery remain planned; the site is not deployed.
 
 - Stack: Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Vue I18n,
   Vite SSG/Unhead; PDF.js is planned. Git-tracked content; no backend or database.
