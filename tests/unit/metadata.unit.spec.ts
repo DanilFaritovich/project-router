@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { pageMetadata } from '../../src/seo/metadata'
+import { pageMetadata, socialPreviews } from '../../src/seo/metadata'
 import { parseSiteOrigin } from '../../src/seo/origin'
 
 const expectedMetadata = {
@@ -22,6 +22,12 @@ describe('localized metadata', () => {
       // Reserved test-only domain; never used as a production default.
       const head = pageMetadata(locale, 'https://portfolio.test')
       expect(head.htmlAttrs.lang).toBe(locale)
+      expect(socialPreviews[locale].path).toBe(
+        `/social/portfolio-${locale}.png`,
+      )
+      expect(socialPreviews[locale].alt).toContain(
+        locale === 'en' ? 'Danil Miftakhov' : 'Данил Мифтахов',
+      )
       const expected = expectedMetadata[locale]
       expect(head.title).toBe(expected.title)
       expect(head.title.trim()).not.toBe('')
@@ -30,6 +36,24 @@ describe('localized metadata', () => {
         ['property', 'og:title', expected.title],
         ['property', 'og:description', expected.description],
         ['property', 'og:type', 'website'],
+        [
+          'property',
+          'og:image',
+          `https://portfolio.test/social/portfolio-${locale}.png`,
+        ],
+        ['property', 'og:image:width', '1200'],
+        ['property', 'og:image:height', '630'],
+        ['property', 'og:image:type', 'image/png'],
+        ['property', 'og:image:alt', socialPreviews[locale].alt],
+        ['name', 'twitter:card', 'summary_large_image'],
+        ['name', 'twitter:title', expected.title],
+        ['name', 'twitter:description', expected.description],
+        [
+          'name',
+          'twitter:image',
+          `https://portfolio.test/social/portfolio-${locale}.png`,
+        ],
+        ['name', 'twitter:image:alt', socialPreviews[locale].alt],
         ['property', 'og:locale', locale === 'en' ? 'en_US' : 'ru_RU'],
         [
           'property',
@@ -80,6 +104,25 @@ describe('localized metadata', () => {
         const head = pageMetadata(locale, origin)
         expect(head.link).toEqual([])
         expect(head.meta.some((meta) => meta.property === 'og:url')).toBe(false)
+        expect(
+          head.meta.some(
+            (meta) =>
+              meta.property?.startsWith('og:image') ||
+              meta.name?.startsWith('twitter:image'),
+          ),
+        ).toBe(false)
+        expect(head.meta).toContainEqual({
+          name: 'twitter:card',
+          content: 'summary_large_image',
+        })
+        expect(head.meta).toContainEqual({
+          name: 'twitter:title',
+          content: expectedMetadata[locale].title,
+        })
+        expect(head.meta).toContainEqual({
+          name: 'twitter:description',
+          content: expectedMetadata[locale].description,
+        })
         expect(head.title).toBe(expectedMetadata[locale].title)
         expect(head.meta).toContainEqual({
           name: 'description',

@@ -21,6 +21,9 @@ async function expectMetadata(page: Page, locale: Locale) {
     ['meta[property="og:title"]', copy.title],
     ['meta[property="og:description"]', copy.description],
     ['meta[property="og:type"]', 'website'],
+    ['meta[name="twitter:card"]', 'summary_large_image'],
+    ['meta[name="twitter:title"]', copy.title],
+    ['meta[name="twitter:description"]', copy.description],
     ['meta[property="og:locale"]', locale === 'en' ? 'en_US' : 'ru_RU'],
     [
       'meta[property="og:locale:alternate"]',
@@ -37,6 +40,17 @@ async function expectMetadata(page: Page, locale: Locale) {
   await expect(page.locator('meta[property="og:url"]')).toHaveCount(
     origin ? 1 : 0,
   )
+  for (const selector of [
+    'meta[property="og:image"]',
+    'meta[name="twitter:image"]',
+  ]) {
+    await expect(page.locator(selector)).toHaveCount(origin ? 1 : 0)
+    if (origin)
+      await expect(page.locator(selector)).toHaveAttribute(
+        'content',
+        `${origin}/social/portfolio-${locale}.png`,
+      )
+  }
   if (origin) {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
