@@ -132,8 +132,8 @@ for (const locale of ['en', 'ru']) {
     }
     assert.equal(document.querySelector('#hero img').alt, copy.heroPortraitAlt)
     assert.equal(
-      document.querySelector('#pdf-unavailable').textContent,
-      copy.pdfUnavailable,
+      document.querySelector('#pdf-unavailable')?.textContent ?? '',
+      document.querySelector('#pdf-unavailable') ? copy.pdfUnavailable : '',
     )
     assert.equal(
       document.querySelector('.contacts-copy').textContent,
@@ -157,7 +157,10 @@ for (const locale of ['en', 'ru']) {
       assert.ok(
         [copy.viewPdf, copy.downloadPdf].includes(button.textContent.trim()),
       )
-      assert.equal(button.getAttribute('aria-describedby'), 'pdf-unavailable')
+      assert.equal(
+        button.getAttribute('aria-describedby'),
+        button.disabled ? 'pdf-unavailable' : null,
+      )
     }
     for (const nav of document.querySelectorAll('.language-switcher')) {
       assert.equal(nav.getAttribute('aria-label'), copy.language)
@@ -211,7 +214,11 @@ for (const locale of ['en', 'ru']) {
       )
     }
     assert.equal(document.querySelectorAll('#projects article').length, 6)
-    assert.equal(document.querySelectorAll('#resume button:disabled').length, 6)
+    assert.equal(
+      document.querySelectorAll('#resume button:disabled').length +
+        2 * document.querySelectorAll('#resume a[download]').length,
+      6,
+    )
     for (const language of ['en', 'ru'])
       assert.ok(document.querySelector(`a[href="/${language}/"]`))
     const jsonLd = document.querySelectorAll(

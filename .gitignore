@@ -54,3 +54,6 @@ temp/
 # .agents/skills/, dependency lock files and design/reference/ stay tracked.
 
 .vite-ssg-temp/
+
+# Owner-provided source archive; only the six original PDFs are published.
+/Danil_Miftakhov_All_6_Resumes_EN_RU.zip

@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@unhead/vue": "2.1.17",
+    "pdfjs-dist": "6.4.299",
     "vue": "3.5.44",
     "vue-i18n": "11.4.16",
     "vue-router": "4.6.4"

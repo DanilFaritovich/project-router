@@ -3,16 +3,16 @@
 [English](README.md) · [Русский](README.ru.md)
 
 ProjectRouter — EN/RU инженерное портфолио Данила Мифтахова с проектами,
-инструментами разработчика, заглушками резюме и контактами. Контент хранится в Git.
+инструментами разработчика, шестью PDF резюме и контактами. Контент хранится в Git.
 
-## Текущее состояние — Stage 05 готов к review
+## Текущее состояние — Stage 06 готов к review
 
-Stage 01–04, Portfolio Content Refinement и Hero Portrait Integration реализованы
-и слиты в `develop`. Адаптивное портфолио на Vue 3/TypeScript/Vite использует
-Tailwind CSS, Vue Router и Vue I18n. Vite SSG генерирует локализованные HTML
-по `/en/` и `/ru/`; `/` ведёт на `/en/`. Stage 05 реализован в
-`feature/i18n-seo` и ожидает review/merge; после merge он будет завершён
-в `develop`.
+Этапы 01–05 завершены и слиты в `develop`, включая уточнение контента,
+портрет владельца, локализацию и SEO. Stage 06 — Resume & Interactions реализован
+в `feature/resume-interactions` в [PR #10](https://github.com/DanilFaritovich/project-router/pull/10)
+и ожидает проверки/merge в `develop`. Адаптивное портфолио использует Vue 3,
+TypeScript, Vite, Tailwind CSS, Vue Router и Vue I18n. Vite SSG генерирует
+локализованные HTML по `/en/` и `/ru/`; `/` ведёт на `/en/`.
 
 - Семь секций: Hero, About, Skills, Projects, Developer Tools, Resume и Contacts.
 - Hero использует фотографию владельца в локальных оптимизированных WebP-файлах,
@@ -34,28 +34,42 @@ Tailwind CSS, Vue Router и Vue I18n. Vite SSG генерирует локали
 - ESLint, Prettier, TypeScript, Vitest, Playwright, SSG/build-проверки и GitHub
   Actions обеспечивают автоматические проверки качества. Исходные дизайн-референсы сохранены.
 
-Настоящих PDF резюме пока нет: у трёх ролевых заглушек отключены просмотр
-и скачивание, интеграция PDF.js запланирована. Публичный Live Demo не подтверждён,
-ссылок на него нет. Production-деплой не выполнен.
-Локальные SEO/readability-проверки проходят с тестовым origin и без origin.
-Backend и база данных не используются.
+Три специализации резюме — Backend, AI / LLM и Data / ETL — представлены
+оригинальными английскими и русскими PDF владельца в `public/resumes/`
+(шесть двухстраничных файлов). «Открыть PDF» показывает доступное с клавиатуры
+модальное окно с навигацией по страницам, масштабированием, адаптивным Fit width,
+состояниями загрузки/ошибки/повтора, скачиванием и ссылкой на исходный файл.
+Язык документа изначально совпадает с языком сайта, затем переключается независимо;
+просмотр и скачивание всегда используют выбранный документ. PDF.js и локальный
+worker загружаются только при открытии просмотра.
+
+URL-аннотации PDF обеспечивают кликабельные ссылки на личный сайт, Email (`mailto:`),
+WhatsApp, Telegram, LinkedIn, GitHub и проекты. HTTP(S)-ссылки открываются в новой
+вкладке с `noopener noreferrer`; остальные URL-схемы и PDF-действия исключены.
+Ссылки совпадают с отображаемой страницей при любом масштабе и доступны с клавиатуры.
+Выделение текста, поиск и полноценный Text Layer не входят в возможности просмотрщика.
+Исходные PDF и существующий дизайн портфолио сохранены.
+
+Публичный Live Demo не подтверждён, ссылок на него нет. Production-деплой
+не выполнен, production origin не настроен. Локальные SEO/readability-проверки
+покрывают сборки с тестовым origin и без origin. Backend и база данных не используются.
 
 ## План разработки
 
-Этапы 01–04 слиты; Stage 05 ожидает review/merge; этапы 06–09 запланированы. Синхронизация
-документации — задача сопровождения вне девятиэтапного roadmap.
+Этапы 01–05 слиты. Stage 06 реализован в PR #10 и ожидает проверки/merge;
+этапы 07–09 запланированы. Сопровождение документации не входит в этот roadmap.
 
-| Этап | Ветка                           | Название                   |
-| ---- | ------------------------------- | -------------------------- |
-| 01   | `chore/project-bootstrap`       | Bootstrap                  |
-| 02   | `feature/vue-foundation`        | Vue Foundation             |
-| 03   | `feature/portfolio-layout`      | Layout & Sections          |
-| 04   | `feature/projects-catalog`      | Projects Catalog           |
-| 05   | `feature/i18n-seo`              | Localization & SEO         |
-| 06   | `feature/resume-interactions`   | Resume & Interactions      |
-| 07   | `test/portfolio-quality`        | Testing & Visual QA        |
-| 08   | `feature/production-foundation` | Docker & CI/CD             |
-| 09   | `feature/caddy-production`      | Caddy & Production Release |
+| Этап | Ветка                           | Название                   | Статус                    |
+| ---- | ------------------------------- | -------------------------- | ------------------------- |
+| 01   | `chore/project-bootstrap`       | Bootstrap                  | Завершён / слит           |
+| 02   | `feature/vue-foundation`        | Vue Foundation             | Завершён / слит           |
+| 03   | `feature/portfolio-layout`      | Layout & Sections          | Завершён / слит           |
+| 04   | `feature/projects-catalog`      | Projects Catalog           | Завершён / слит           |
+| 05   | `feature/i18n-seo`              | Localization & SEO         | Завершён / слит           |
+| 06   | `feature/resume-interactions`   | Resume & Interactions      | PR #10 / ожидает проверки |
+| 07   | `test/portfolio-quality`        | Testing & Visual QA        | Запланирован              |
+| 08   | `feature/production-foundation` | Docker & CI/CD             | Запланирован              |
+| 09   | `feature/caddy-production`      | Caddy & Production Release | Запланирован              |
 
 После этих девяти этапов реализации отдельно выполняются release PR из `develop`
 в `main` и тег/релиз `v1.0.0` по явному разрешению. Этот переход к релизу не является
@@ -73,13 +87,13 @@ npm run dev             # локальный Vite, /en/ и /ru/
 npm run build           # статический сайт в dist/
 npm run preview         # локальная проверка production-сборки
 make fix                # безопасное форматирование и lint autofix
-npm test -- tests/integration/localization.integration.spec.ts
+npm test -- tests/unit/pdf-links.unit.spec.ts tests/integration/resume.integration.spec.ts
 make check              # lint, формат, типы, unit/integration
 npx playwright install chromium
 make verify             # SSG build, HTML и браузерный smoke
 make ci                 # check + verify, без повторов и исправления исходников
 
-# Проверка Stage 05; portfolio.test — только локальный тест, не production.
+# Дополнительные режимы SEO-проверок; portfolio.test — только локальный тест.
 VITE_SITE_ORIGIN=https://portfolio.test make verify
 VITE_SITE_ORIGIN= npm run build
 VITE_SITE_ORIGIN= npm run test:build
@@ -105,8 +119,8 @@ Production-домен ещё не выбран. При необходимост�
 веток; настройки защиты веток вручную задаёт администратор.
 
 Реализованы локально: статический HTML, SEO metadata, crawl artifacts, social
-images, JSON-LD и автоматические проверки. [Отчёт Stage 05](ARCHITECTURE.md#stage-05-validation-evidence)
-содержит аудит шести шагов, вопросы агента, источники по краулерам и результаты smoke.
+images, JSON-LD и автоматические проверки. [Проверки SEO и readability](ARCHITECTURE.md#seo-and-agent-readability-checks)
+описывают границы валидации и доступные агентам факты.
 `llms.txt` намеренно не добавлен: конкретный потребитель и дополнительные сведения
 сверх HTML не найдены. Существующие `User-agent: *` / `Allow: /` разрешают обход
 без новых правил для отдельных ботов и изменения политики обучения моделей.
@@ -124,6 +138,28 @@ social previews, доступа краулеров, реальной индек�
   [Codex Development Standards](https://github.com/DanilFaritovich/codex-development-standards),
   ветка `develop`, профиль `vue-static-site` v2, инструкция `bootstrap/vue-static-site.md`.
   Docker, CD и backend-скиллы не установлены.
+
+## Структура репозитория
+
+| Путь                                | Назначение                                                        |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| `src/components/`, `src/views/`     | Семь секций, навигация, карточки каталога и модальное окно резюме |
+| `src/content/`, `src/locales/`      | Типизированные проекты/резюме и EN/RU тексты                      |
+| `src/pdf/`                          | Отложенная загрузка PDF.js и безопасный слой URL-аннотаций        |
+| `src/router/`, `src/seo/`           | Локализованные маршруты, метаданные и структурированные данные    |
+| `src/assets/`, `src/styles/`        | Оптимизированные изображения и общие стили                        |
+| `public/resumes/`, `public/social/` | Оригинальные PDF резюме и social previews                         |
+| `tests/unit/`, `tests/integration/` | Логика и поведение компонентов                                    |
+| `tests/build/`, `tests/e2e/`        | Готовые HTML/ассеты и пользовательские сценарии Chromium          |
+| `.github/workflows/`, `Makefile`    | Read-only CI и локальные команды качества                         |
+| `design/reference/`                 | Сохранённые канонические дизайны                                  |
+
+Тесты резюме проверяют шесть реальных PDF, адреса и координаты ссылок, смену EN/RU
+и страниц, масштаб/Fit width, resize, desktop/mobile, начальный overflow,
+клавиатуру, повтор загрузки и байты скачанного файла. Внешние переходы в браузере
+перехватываются; тесты не подтверждают доступность сторонних сайтов. CI устанавливает
+зависимости из lockfile и Chromium, затем выполняет `make ci` для PR в `develop`/`main`
+и push в эти базовые ветки.
 
 ## Лицензия
 

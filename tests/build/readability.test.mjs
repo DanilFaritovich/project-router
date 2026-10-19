@@ -190,20 +190,38 @@ for (const locale of ['en', 'ru']) {
         },
       )
       await t.test(
-        'resume availability is explicit; no invented PDF download — #resume',
+        'resume actions reflect supplied documents — #resume',
         () => {
-          assert.match(
-            text('#pdf-unavailable'),
-            locale === 'en'
-              ? /PDF files are currently unavailable/
-              : /PDF-файлы пока недоступны/,
-          )
-          assert.equal(
-            document.querySelectorAll('#resume button:disabled').length,
-            6,
-          )
-          assert.equal(document.querySelectorAll('#resume a[href]').length, 0)
-          assert.equal(document.querySelectorAll('a[href$=".pdf"]').length, 0)
+          if (document.querySelector('#pdf-unavailable')) {
+            assert.match(
+              text('#pdf-unavailable'),
+              locale === 'en'
+                ? /PDF files are currently unavailable/
+                : /PDF-файлы пока недоступны/,
+            )
+            assert.equal(
+              document.querySelectorAll('#resume button:disabled').length,
+              6,
+            )
+            assert.equal(document.querySelectorAll('#resume a[href]').length, 0)
+            assert.equal(document.querySelectorAll('a[href$=".pdf"]').length, 0)
+          } else {
+            assert.equal(
+              document.querySelectorAll('#resume a[download]').length,
+              3,
+            )
+            assert.equal(
+              document.querySelectorAll('#resume button:disabled').length,
+              0,
+            )
+            for (const id of ['backend', 'ai', 'data']) {
+              assert.ok(
+                document.querySelector(
+                  `#resume a[href="/resumes/${id}-${locale}.pdf"][download]`,
+                ),
+              )
+            }
+          }
         },
       )
       await t.test(

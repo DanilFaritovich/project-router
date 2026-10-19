@@ -2,13 +2,13 @@
 
 ## Current implementation
 
-Stages 01–04, Portfolio Content Refinement and Hero Portrait Integration are
-implemented and merged into `develop`. The responsive seven-section portfolio
-and nine-item catalog use Vue 3, TypeScript, Vite 8, Tailwind CSS 4, Vue Router,
-Vue I18n, Vite SSG and Unhead. Desktop/mobile navigation, EN/RU content and the
-owner portrait are implemented; resume controls remain unavailable. Stage 05 —
-Localization & SEO is implemented in `feature/i18n-seo`, awaiting review/merge
-into `develop`. Stages 06–09, PDF interactions and production delivery remain planned.
+Stages 01–05 are complete and merged into `develop`, including content refinement,
+Hero Portrait Integration and Localization & SEO. The responsive seven-section
+portfolio and nine-item catalog use Vue 3, TypeScript, Vite 8, Tailwind CSS 4,
+Vue Router, Vue I18n, Vite SSG and Unhead. Stage 06 — Resume & Interactions is
+implemented in `feature/resume-interactions`, [PR #10](https://github.com/DanilFaritovich/project-router/pull/10),
+awaiting review/merge. It adds six owner-supplied PDFs and a client-only PDF.js
+viewer with clickable links. Stages 07–09 and production delivery remain planned.
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
@@ -20,18 +20,20 @@ generates `dist/en/index.html` and `dist/ru/index.html`, with nested route outpu
 The browser hydrates that HTML; no request-time SSR, backend or database is used.
 This keeps the foundation close to Vue + Vite without a second routing framework.
 
-| Existing area                       | Responsibility                                                    |
-| ----------------------------------- | ----------------------------------------------------------------- |
-| `src/main.ts`, `src/App.vue`        | Per-app i18n, locale guard, hydration, reactive document head     |
-| `src/views/`                        | Seven-section portfolio composition                               |
-| `src/components/`                   | Section/card/action primitives, navigation and section components |
-| `src/locales/`                      | Typed EN/RU copy, locale paths, fresh i18n instances              |
-| `src/router/`                       | Explicit routes and URL-driven locale guard                       |
-| `src/seo/`                          | Origin validation, localized head and safe Person/WebSite JSON-LD |
-| `src/styles/`                       | Tailwind theme tokens and responsive portfolio styles             |
-| `tests/unit/`, `tests/integration/` | Metadata contracts and component/router/i18n behavior             |
-| `tests/build/`, `tests/e2e/`        | Actual HTML/asset inspection and production Chromium smoke        |
-| `vite.config.ts`                    | SSG routes, root redirect, 404, robots and optional sitemap       |
+| Existing area                       | Responsibility                                                         |
+| ----------------------------------- | ---------------------------------------------------------------------- |
+| `src/main.ts`, `src/App.vue`        | Per-app i18n, locale guard, hydration, reactive document head          |
+| `src/views/`                        | Seven-section portfolio composition                                    |
+| `src/components/`                   | Section/card/action primitives, navigation and section components      |
+| `src/locales/`                      | Typed EN/RU copy, locale paths, fresh i18n instances                   |
+| `src/router/`                       | Explicit routes and URL-driven locale guard                            |
+| `src/seo/`                          | Origin validation, localized head and safe Person/WebSite JSON-LD      |
+| `src/pdf/`                          | Lazy document/worker loading and safe PDF URL annotations              |
+| `public/resumes/`                   | Six unchanged two-page EN/RU PDFs for Backend, AI / LLM and Data / ETL |
+| `src/styles/`                       | Tailwind theme tokens and responsive portfolio styles                  |
+| `tests/unit/`, `tests/integration/` | Metadata contracts and component/router/i18n behavior                  |
+| `tests/build/`, `tests/e2e/`        | Actual HTML/asset inspection and production Chromium smoke             |
+| `vite.config.ts`                    | SSG routes, root redirect, 404, robots and optional sitemap            |
 
 `src/content/portfolio.ts` holds section identities, social destinations and eight
 skill group keys. `src/locales/en.ts` and `src/locales/ru.ts` provide section copy,
@@ -112,17 +114,67 @@ cards render both approved paragraphs at every breakpoint. GitHub actions use
 the verified repository or development-branch addresses, and only four cards
 expose explicit versioned release URLs. External actions open new tabs with
 `noopener noreferrer`. No public Live Demo is confirmed or linked.
-Three resume roles expose disabled preview and download controls with a shared
-unavailable explanation; no real resume PDFs, PDF modal or viewer are present.
+Three resume roles use `src/content/resumes.ts` for typed specialization metadata,
+EN/RU asset paths and build-time availability. Owner-supplied documents belong in
+`public/resumes/{backend,ai,data}-{en,ru}.pdf` and are copied unchanged by Vite.
+Missing files keep the affected card actions disabled with localized explanation.
+All six original, two-page A4 PDFs are included. Their bytes match the supplied
+archive; the archive itself is excluded from Git.
 
-Stage 06 will use PDF.js for configured resume PDF preview, loaded lazily when needed. Keep
-PDF asset metadata separate from the viewer. Track unavailable, loading, ready
-and error states, with retry, page/zoom/fit controls where appropriate and a
-direct download of the same configured document. Do not synthesize resume files
-from mockups. The current reference package supplies no actual PDFs.
-The modal must support keyboard focus containment, Escape, focus restoration,
-accessible names and responsive usable controls. Release viewer resources on
-close. A missing PDF keeps preview/download unavailable with explanatory copy.
+`ResumeSection.vue` loads `components/resume/ResumeModal.vue` asynchronously on
+preview. Its client mount calls `src/pdf/loadPdf.ts`, which dynamically imports
+PDF.js and the Vite-emitted local worker URL; neither PDF.js nor browser/Canvas
+APIs execute during SSG. The native modal dialog provides background inertness;
+the component contains Tab focus, handles cancel/Escape, locks body scrolling,
+restores the opener and destroys loading/rendering resources on unmount.
+Document language initializes from the site locale and then stays independent.
+Preview, download and new-tab fallback derive from the same selected asset URL.
+Loading, ready and error/retry states accompany single-page canvas rendering,
+previous/next, zoom and responsive fit-width controls. The viewport scrolls
+independently, including horizontally when deliberately zoomed beyond its width.
+
+`src/pdf/linkAnnotations.ts` dynamically imports the installed PDF.js 6.4
+`AnnotationLayer` and reads the current page's display annotations. Only visible
+Link annotations with absolute `http:`, `https:` or `mailto:` URLs pass the allowlist.
+`AnnotationLayer.addLinkAnnotations` creates native anchors; no scripting manager,
+forms, attachments or PDF actions are enabled. The minimal link service sets an
+accessible URL label and opens HTTP(S) in a new tab with `noopener noreferrer`.
+This supports the personal-site, Email, WhatsApp, Telegram, LinkedIn, GitHub and
+project URLs embedded in the documents without inventing destinations. A URL
+printed inside an owner-supplied PDF is not a configured production site origin.
+
+Canvas and annotations share one positioned page wrapper. The layer uses the
+same CSS-pixel viewport as Canvas, cloned with `dontFlip: true` as required by
+PDF.js annotations; bitmap device-pixel scaling affects only Canvas resolution.
+PDF.js owns annotation rectangles; the modal supplies scoped positioning and a
+visible keyboard focus outline without importing the full PDF viewer UI/styles.
+The layer is rebuilt after page/zoom/fit-width/automatic-resize changes and
+published only when Canvas and links for the current render are ready.
+Manual zoom survives resize; both layers remain aligned in the scrolling wrapper.
+
+Every rerender/document switch removes old anchors and calls the layer's
+`destroy()`. If a removed link held focus, focus moves to the document viewport
+inside the dialog. Generation guards destroy late asynchronous layers instead of
+attaching stale links. Closing disconnects resize observation, cancels rendering,
+destroys document loading/worker resources, removes the annotation layer and
+restores the opener. Native links participate in the dialog's Tab order, with
+hidden page content excluded. There is no full Text Layer, search or text selection.
+
+Unit/component tests cover mapping, language selection, resource URL alignment,
+loading/error/retry, pages/zoom, focus containment/restoration and disposal.
+A build test requires all six PDFs and compares source/build bytes. Mandatory
+Chromium scenarios render all six real documents, verify nonempty canvases,
+page navigation, selected-file download bytes, error/retry and keyboard focus.
+Real-PDF link checks independently parse each original page, compare all anchor
+URLs and rectangles against its PDF viewport, and check geometry after EN/RU,
+page, zoom, fit-width and resize changes. Actual pointer/Enter activation is
+intercepted on mobile/desktop; no third-party site is contacted. Unit tests use
+the installed AnnotationLayer with safe/unsafe annotations and verify URL policy,
+accessible anchors and destruction; component tests cover stale asynchronous
+layers and focus during removal.
+Responsive checks at 320, 390, 768 and 1440px assert no page/dialog overflow and
+no document overflow in fit-width mode; 390px and 1440px screenshots are saved
+as ignored Playwright artifacts for visual inspection.
 
 ## Responsive Hero and local image optimization
 
@@ -150,8 +202,8 @@ as four optimized WebP files in `src/assets/projects/` and load lazily.
 Unit and integration tests cover catalog order and exact action URLs, localized
 card content and image failures, metadata and optional origin links, both direct
 localized entries, root redirection and query/hash-preserving language switching.
-They also cover About's three experience blocks, seven sections, unavailable PDF
-controls and menu focus/Escape/selection. Localization tests assert the portrait's
+They also cover About's three experience blocks, seven sections, PDF availability
+and viewer states, plus menu focus/Escape/selection. Localization tests assert the portrait's
 EN/RU alt text on entry and after switching languages.
 Built HTML checks assert localized copy without JavaScript, all seven sections,
 three About blocks, eight skill groups, nine complete catalog cards, four local
@@ -161,110 +213,53 @@ Russian content, desktop section tracking, mobile menu behavior, keyboard action
 loaded/failed catalog images and layout without overflow at widths from 320 to
 1440 pixels in EN/RU. External popup destinations are intercepted in browser tests;
 these checks do not establish live availability or deployment of linked projects.
-Stage 07 will expand visual and accessibility coverage. No PDF viewer tests,
-live-domain verification are claimed. Stage 05 adds built-HTML professional
+Stage 07 will expand visual and accessibility coverage. Live-domain verification
+remains pending. Stage 05 adds built-HTML professional
 evidence extraction and a limited accessibility/performance smoke; it does not
 replace Stage 07 visual QA or real search-engine testing.
 Repository administrators should require the `Quality and static build` CI check
 in branch protection; repository settings are not changed by this task.
 
-## Stage 05 validation evidence
+## SEO and agent readability checks
 
-Local audit on 2026-10-19, Node 22.22.2; all five earlier commits remain ancestors.
+The completed Stage 05 implementation is validated by metadata/localization unit
+and integration tests, built-HTML tests and Chromium smoke. Tests support both an
+explicit test HTTPS origin and an empty origin; test values are never production
+defaults. The generated `/en/` and `/ru/` documents expose their full localized
+content without JavaScript. Root fallback and 404 output are noindex; localized
+pages remain indexable. Social previews are two committed 1200×630 PNGs.
 
-| Step                | Result                                                                                                                                                                                                      |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — Localization    | Direct EN/RU, refresh/hydration, seven sections, nine cards, labels/alt, nonempty matching translation keys; language switching preserves query/hash and history.                                           |
-| 2 — Metadata        | Unique localized title/description and HTML language agree with visible specialization.                                                                                                                     |
-| 3 — Indexing        | Self-canonical, reciprocal EN/RU hreflang, x-default to EN, two-page sitemap and permissive robots agree; root/404 HTML are noindex.                                                                        |
-| 4 — Social          | Unique OG/Twitter metadata and two intact 1200×630 PNGs, each below 160 kB.                                                                                                                                 |
-| 5 — Structured data | One Person/WebSite graph per locale, stable IDs, visible facts/profiles, safe serialization; no graph without origin.                                                                                       |
-| 6 — Final audit     | Built-HTML agent evidence check, console checks at all smoke widths, no-JS catalog checks and documentation synchronized. No new runtime defect found; no approved content, design or asset changes needed. |
+`tests/build/readability.test.mjs`, included in `make verify`, parses generated
+HTML with JSDOM without executing JavaScript or importing source catalogs. It
+checks visible professional evidence, all nine source links and resume actions,
+excluding scripts and explicitly hidden nodes. It does not call an LLM or
+establish search indexing, rankings or AI recommendations.
 
-`make fix` and focused metadata/structured-data/localization tests passed (34 tests).
-`make check` passed (62 tests). `VITE_SITE_ORIGIN=https://portfolio.test make verify`
-passed 24 built-HTML/asset/readability checks and 19 Chromium scenarios. The same
-24 build checks passed after `VITE_SITE_ORIGIN= npm run build`, followed by five
-foundation/localization browser scenarios with empty origin. The initial sandbox
-blocked the local preview socket; browser validation succeeded outside that
-restriction. Test origin is never a production default. Both modes retain useful
-EN/RU static text; empty origin emits no site canonical/hreflang/OG URL, social
-image metadata, sitemap or JSON-LD. Robots remains `User-agent: *` / `Allow: /`.
+| Reader question                                  | Visible evidence in both localized documents                                                      |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| Who is the owner and what is his specialization? | Hero introduction and eight Skills groups                                                         |
+| What is his commercial experience?               | About: Maxim since 2022, Python, PostgreSQL/PostGIS, SQL and geospatial/data processing           |
+| Where are FastAPI, ETL and LLM examples?         | The project catalog describes the relevant technologies and links to source                       |
+| Where is the source code?                        | All nine Projects/Developer Tools cards and the GitHub profile                                    |
+| How can he be contacted?                         | Contacts links to the approved social profiles, including Telegram and LinkedIn                   |
+| How does paid work differ from personal work?    | Separate About blocks for commercial, freelance/client and personal engineering work              |
+| Where are resumes?                               | Three specialization cards with EN/RU-selected preview/download actions and six public PDF assets |
 
-The existing layout suite covers EN/RU at 1440, 1024, 768, 390, 375 and 320 px,
-including loaded images and horizontal overflow; it now rejects console errors
-and warnings at every width. Keyboard menu/focus/Escape, real anchors, semantic
-heading order, nonempty image alternatives and explicit image dimensions pass.
-Both locales retain seven sections and nine project headings without JavaScript.
-An additional no-JavaScript browser smoke verified visible section/project
-headings and no overflow at 1440, 1024, 768, 390 and 320 px in both locales.
-No extra blocking third-party scripts, stylesheets or fonts are needed; the one
-local stylesheet is necessary for presentation.
+These checks establish extractability of self-published facts, not independent
+credential verification or live availability of external links. The viewer reads
+only the current PDF page when opened; resume content is not duplicated in a
+parallel professional-content store.
 
-A single local Chromium sample per locale at 1440/390 px, without throttling,
-measured DOMContentLoaded/load at 51–75 ms and FCP at 32–68 ms. Resource timing
-reported about 182 kB desktop / 91 kB mobile transferred at initial load and no
-external resource requests. These are local preview observations, sensitive to
-cache/environment, not production Core Web Vitals or performance guarantees.
-Client JS is about 215 kB (76 kB gzip), CSS 19 kB (5 kB gzip); project images are
-lazy-loaded and the responsive portrait has explicit dimensions and high priority.
+`User-agent: *` / `Allow: /` permits crawling. Search/training bot-specific policy
+is unchanged. No concrete consumer for `llms.txt` has been identified, so it is
+intentionally absent. Stage 07 will expand visual/accessibility QA. Local smoke
+results are not production Core Web Vitals or performance guarantees.
 
-### AI Search & Agent Readability Audit
-
-`tests/build/readability.test.mjs`, automatically included in `npm run test:build`
-and `make verify`, parses only generated HTML with the existing JSDOM dependency,
-without executing JavaScript or importing source translations/catalogs. It checks
-visible body evidence, excludes scripts and explicitly hidden nodes, and verifies
-public hrefs. Browser smoke complements this with actual layout behavior. It does
-not call an LLM, read private career data, or reproduce ChatGPT Search/Gemini.
-
-All six questions are answerable from either localized document. Route references
-below mean both `/en/` and `/ru/` followed by the fragment; no live domain is known.
-
-| Agent question                             | Public HTML evidence and supported answer                                                                                                                                                                                                                              | Limits                                                                                                                                                                     |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Who is Danil Miftakhov; specialization?    | `#hero` name, role and introduction: Python backend, data processing, API integrations and automation; `#skills` provides eight technical groups.                                                                                                                      | Self-published professional profile, not independent credential verification.                                                                                              |
-| Commercial Python/PostgreSQL experience?   | `#about` Commercial Experience: Maxim since 2022, Python, PostgreSQL/PostGIS, SQL, address/geospatial processing, imports/exports and diagnostics.                                                                                                                     | No commercial FastAPI/LLM claim, exact employment title or private employer evidence inferred.                                                                             |
-| FastAPI, ETL and LLM projects?             | `#project-moon`, `#project-task`, `#project-maxim` demonstrate FastAPI; `#project-geocoder` describes Airflow ETL/PostgreSQL/MinIO; `#project-support` describes validated LLM responses; `#project-worker` describes MCP tooling. Each card includes its source link. | Project evidence does not establish that these technologies were used commercially.                                                                                        |
-| Where is source code?                      | All nine named cards in `#projects` / `#tools` have the confirmed repository or development-branch links. The [GitHub profile](https://github.com/DanilFaritovich) is linked in Hero/Contacts.                                                                         | Extraction verifies hrefs against approved destinations; external repository uptime and contents are not re-audited.                                                       |
-| How to contact him?                        | `#contacts` explicitly suggests [Telegram](https://t.me/Daniel_De_Casto) or [LinkedIn](https://www.linkedin.com/in/danil-miftakhov-55468b399/); GitHub and Instagram are also public links.                                                                            | No email, phone or other contact information invented; live profile accessibility unverified.                                                                              |
-| Commercial versus freelance/personal work? | Three separately titled `#about` blocks distinguish Maxim employment; marketplace/API/scraping client work; personal FastAPI/Airflow/LLM/MCP and developer tools.                                                                                                      | No unsupported assignment of every catalog item to a paid engagement. Resume PDFs remain explicitly unavailable in `#resume`, with six disabled controls and no PDF links. |
-
-The static text and anchors are available to an ordinary HTTP client. Public
-localized pages contain no noindex; root and 404 are excluded from the two-page
-sitemap. Robots does not block localized documents, images or public assets.
-Actual HTTPS fetching, host rules and crawler access require deployment.
-
-Crawler roles were checked against official sources on the audit date:
-
-- [OpenAI crawler documentation](https://developers.openai.com/api/docs/bots):
-  `OAI-SearchBot` is for search; `GPTBot` is for model training; `ChatGPT-User`
-  performs user-triggered visits and is not the automatic search index crawler.
-  Search/training controls are independent; robots may not apply to user visits.
-- [Google AI features](https://developers.google.com/search/docs/appearance/ai-features)
-  and [Googlebot](https://developers.google.com/search/docs/crawling-indexing/googlebot):
-  `Googlebot` controls Search crawling, including AI Search features;
-  `Google-Extended` controls separate training/grounding uses, not Search indexing.
-
-Existing wildcard Allow already permits search crawlers; no dedicated User-Agent
-blocks were added. Training policy is unchanged, not silently tightened or expanded.
-No CDN/CAPTCHA/antibot bypass was attempted. Other bot-specific policies are not
-needed for this audit.
-
-No concrete `llms.txt` consumer has been identified for this small portfolio; it
-would duplicate the already readable profile and links. It is not a required
-Google/ChatGPT Search indexing artifact. [Google's official guidance](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
-explicitly says Google Search does not use it. OpenAI's search crawler guidance
-requires no such file. Keep it absent unless a concrete future integration needs
-it; do not create a parallel professional-content store. This audit establishes
-technical extractability, not indexing, rankings or AI recommendations.
-
-After authorized deployment, use the real origin and verify public HTTPS, HTTP
-root redirect, localized direct responses and unknown-path 404/noindex, canonical/
-hreflang/sitemap/robots at the public host, actual social image fetching/previews,
-JSON-LD validation and real search/AI crawler access. Then perform Search Console/
-webmaster ownership verification and sitemap submission and observe indexing.
-None of these public-environment outcomes is established by local preview.
+After authorized deployment, verify public HTTPS and the real origin, root HTTP
+redirect, localized direct responses and unknown-path 404/noindex, canonical/
+hreflang/sitemap/robots, fetched social previews, structured data and crawler
+access. Search Console/webmaster ownership, sitemap submission and actual
+indexing require the public environment; none is established by local preview.
 
 ## Delivery boundaries (later)
 

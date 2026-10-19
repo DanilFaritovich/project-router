@@ -3,16 +3,16 @@
 [English](README.md) · [Русский](README.ru.md)
 
 ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio, with projects,
-developer tools, resume placeholders and contacts. Content is tracked in Git.
+developer tools, six resume PDFs and contacts. Content is tracked in Git.
 
-## Current state — Stage 05 ready for review
+## Current state — Stage 06 ready for review
 
-Stages 01–04, Portfolio Content Refinement and Hero Portrait Integration are
-implemented and merged into `develop`. The responsive Vue 3/TypeScript/Vite
-portfolio includes Tailwind CSS, Vue Router and Vue I18n. Vite SSG generates
-localized HTML at `/en/` and `/ru/`; `/` goes to `/en/`. Stage 05 is
-implemented in `feature/i18n-seo`, awaiting review/merge; it will be complete
-in `develop` after merge.
+Stages 01–05 are complete and merged into `develop`, including content refinement,
+the owner portrait, localization and SEO. Stage 06 — Resume & Interactions is
+implemented in `feature/resume-interactions` in [PR #10](https://github.com/DanilFaritovich/project-router/pull/10),
+awaiting review/merge into `develop`. The responsive portfolio uses Vue 3,
+TypeScript, Vite, Tailwind CSS, Vue Router and Vue I18n. Vite SSG generates
+localized HTML at `/en/` and `/ru/`; `/` goes to `/en/`.
 
 - Seven sections: Hero, About, Skills, Projects, Developer Tools, Resume and Contacts.
 - Hero uses the owner's photograph as local optimized WebP images, with localized
@@ -34,28 +34,41 @@ in `develop` after merge.
 - ESLint, Prettier, TypeScript, Vitest, Playwright, SSG/build checks and GitHub
   Actions provide automated quality checks. Original design references are preserved.
 
-Real resume PDFs are absent: three role placeholders have disabled preview and
-download controls, and PDF.js integration remains planned. No public Live Demo
-is confirmed or linked. Production deployment has not been performed.
-Local SEO/readability checks pass with a test origin and without an origin.
-No backend or database is used.
+Three resume specializations — Backend, AI / LLM and Data / ETL — each include
+owner-supplied English and Russian PDFs in `public/resumes/` (six two-page files).
+View PDF opens a keyboard-accessible modal with page navigation, zoom, responsive
+Fit width, loading/error/retry states, download and an original-file fallback.
+Document language starts from the site locale and can then change independently;
+preview and download always use the selected document. PDF.js and its local worker
+load only when a preview opens.
+
+PDF URL annotations provide clickable personal-site, Email (`mailto:`), WhatsApp,
+Telegram, LinkedIn, GitHub and project links. HTTP(S) links open in a new tab with
+`noopener noreferrer`; other URL schemes and PDF actions are excluded. Links
+follow the rendered page at every scale and support keyboard navigation. Text
+selection, search and a full Text Layer are outside this viewer's scope. Original
+PDF files and the existing portfolio design are preserved.
+
+No public Live Demo is confirmed or linked. Production deployment has not been
+performed; no production origin is configured. Local SEO/readability checks cover
+builds with a test origin and without an origin. No backend or database is used.
 
 ## Development roadmap
 
-Stages 01–04 are merged; Stage 05 awaits review/merge; stages 06–09 remain planned. Documentation sync
-is a maintenance task outside the nine-stage roadmap.
+Stages 01–05 are merged. Stage 06 is implemented in PR #10 and awaits review/merge;
+Stages 07–09 remain planned. Documentation maintenance is outside this roadmap.
 
-| Stage | Branch                          | Scope                      |
-| ----- | ------------------------------- | -------------------------- |
-| 01    | `chore/project-bootstrap`       | Bootstrap                  |
-| 02    | `feature/vue-foundation`        | Vue Foundation             |
-| 03    | `feature/portfolio-layout`      | Layout & Sections          |
-| 04    | `feature/projects-catalog`      | Projects Catalog           |
-| 05    | `feature/i18n-seo`              | Localization & SEO         |
-| 06    | `feature/resume-interactions`   | Resume & Interactions      |
-| 07    | `test/portfolio-quality`        | Testing & Visual QA        |
-| 08    | `feature/production-foundation` | Docker & CI/CD             |
-| 09    | `feature/caddy-production`      | Caddy & Production Release |
+| Stage | Branch                          | Scope                      | Status                  |
+| ----- | ------------------------------- | -------------------------- | ----------------------- |
+| 01    | `chore/project-bootstrap`       | Bootstrap                  | Complete / merged       |
+| 02    | `feature/vue-foundation`        | Vue Foundation             | Complete / merged       |
+| 03    | `feature/portfolio-layout`      | Layout & Sections          | Complete / merged       |
+| 04    | `feature/projects-catalog`      | Projects Catalog           | Complete / merged       |
+| 05    | `feature/i18n-seo`              | Localization & SEO         | Complete / merged       |
+| 06    | `feature/resume-interactions`   | Resume & Interactions      | PR #10 / review pending |
+| 07    | `test/portfolio-quality`        | Testing & Visual QA        | Planned                 |
+| 08    | `feature/production-foundation` | Docker & CI/CD             | Planned                 |
+| 09    | `feature/caddy-production`      | Caddy & Production Release | Planned                 |
 
 After these nine implementation stages, a separate release PR from `develop`
 into `main` and the `v1.0.0` tag/release require explicit authorization. This
@@ -74,13 +87,13 @@ npm run dev             # local Vite server, /en/ and /ru/
 npm run build           # static site in dist/
 npm run preview         # inspect the production build locally
 make fix                # safe formatting and lint autofix
-npm test -- tests/integration/localization.integration.spec.ts
+npm test -- tests/unit/pdf-links.unit.spec.ts tests/integration/resume.integration.spec.ts
 make check              # lint, formatting, types, unit/integration
 npx playwright install chromium
 make verify             # SSG build, HTML checks and browser smoke
 make ci                 # check + verify, no repeated checks or source repairs
 
-# Stage 05 validation; portfolio.test is reserved for local tests, never production.
+# Optional SEO validation modes; portfolio.test is reserved for local tests.
 VITE_SITE_ORIGIN=https://portfolio.test make verify
 VITE_SITE_ORIGIN= npm run build
 VITE_SITE_ORIGIN= npm run test:build
@@ -106,8 +119,8 @@ belong to the delivery stage. Administrators should require the
 settings are configured manually.
 
 Implemented locally: static HTML, SEO metadata, crawl artifacts, social images,
-JSON-LD and automated checks. See [Stage 05 evidence](ARCHITECTURE.md#stage-05-validation-evidence)
-for the six-step audit, agent questions, crawler sources and local smoke results.
+JSON-LD and automated checks. See [SEO and readability checks](ARCHITECTURE.md#seo-and-agent-readability-checks)
+for the validation boundaries and evidence available to agents.
 `llms.txt` is intentionally absent: no concrete consumer or extra information
 beyond HTML has been identified. The existing `User-agent: *` / `Allow: /`
 permits crawling without new bot-specific rules or a change to training policy.
@@ -124,6 +137,28 @@ submission. None of these production checks has been performed locally.
   [Codex Development Standards](https://github.com/DanilFaritovich/codex-development-standards),
   `develop`, profile `vue-static-site` v2, using `bootstrap/vue-static-site.md`.
   Docker, CD and backend skills are not installed.
+
+## Repository map
+
+| Path                                | Responsibility                                                 |
+| ----------------------------------- | -------------------------------------------------------------- |
+| `src/components/`, `src/views/`     | Seven sections, navigation, catalog cards and the resume modal |
+| `src/content/`, `src/locales/`      | Typed projects/resumes and EN/RU copy                          |
+| `src/pdf/`                          | Lazy PDF.js loading and safe URL annotation rendering          |
+| `src/router/`, `src/seo/`           | Localized routing, metadata and structured data                |
+| `src/assets/`, `src/styles/`        | Optimized images and shared presentation                       |
+| `public/resumes/`, `public/social/` | Original resume PDFs and social previews                       |
+| `tests/unit/`, `tests/integration/` | Logic and component behavior                                   |
+| `tests/build/`, `tests/e2e/`        | Built HTML/assets and Chromium user journeys                   |
+| `.github/workflows/`, `Makefile`    | Read-only CI and local quality commands                        |
+| `design/reference/`                 | Preserved canonical designs                                    |
+
+Resume tests inspect the six real PDFs, link destinations and coordinates, EN/RU
+and page changes, zoom/Fit width, resize, desktop/mobile layouts, initial overflow,
+keyboard behavior, retry and download bytes. External browser destinations are
+intercepted; the tests do not establish availability of linked sites. CI installs
+locked dependencies and Chromium, then runs `make ci` for PRs to `develop`/`main`
+and pushes to those base branches.
 
 ## License
 
