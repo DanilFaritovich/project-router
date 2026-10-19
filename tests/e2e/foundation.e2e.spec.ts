@@ -33,6 +33,41 @@ async function expectMetadata(page: Page, locale: Locale) {
     await expect(page.locator(selector)).toHaveCount(1)
     await expect(page.locator(selector)).toHaveAttribute('content', content)
   }
+  const jsonLd = page.locator('script[type="application/ld+json"]')
+  await expect(jsonLd).toHaveCount(origin ? 1 : 0)
+  if (origin) {
+    await expect
+      .poll(async () => {
+        const data = JSON.parse((await jsonLd.textContent())!)
+        return data
+      })
+      .toEqual({
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Person',
+            '@id': `${origin}/#person`,
+            name: copy.name,
+            url: `${origin}/${locale}/`,
+            jobTitle: copy.role,
+            description: copy.intro,
+            sameAs: [
+              'https://github.com/DanilFaritovich',
+              'https://www.linkedin.com/in/danil-miftakhov-55468b399/',
+            ],
+          },
+          {
+            '@type': 'WebSite',
+            '@id': `${origin}/#website`,
+            name: 'ProjectRouter',
+            url: `${origin}/`,
+            description: copy.description,
+            inLanguage: ['en', 'ru'],
+            author: { '@id': `${origin}/#person` },
+          },
+        ],
+      })
+  }
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(
     origin ? 1 : 0,
   )

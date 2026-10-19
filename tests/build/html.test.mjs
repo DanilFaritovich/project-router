@@ -200,6 +200,46 @@ for (const locale of ['en', 'ru']) {
     assert.equal(document.querySelectorAll('#resume button:disabled').length, 6)
     for (const language of ['en', 'ru'])
       assert.ok(document.querySelector(`a[href="/${language}/"]`))
+    const jsonLd = document.querySelectorAll(
+      'script[type="application/ld+json"]',
+    )
+    assert.equal(jsonLd.length, origin ? 1 : 0)
+    if (origin) {
+      const data = JSON.parse(jsonLd[0].textContent)
+      assert.equal(data['@context'], 'https://schema.org')
+      assert.equal(data['@graph'].length, 2)
+      const [person, website] = data['@graph']
+      assert.equal(person['@type'], 'Person')
+      assert.equal(website['@type'], 'WebSite')
+      assert.equal(
+        new Set(data['@graph'].map((entity) => entity['@id'])).size,
+        2,
+      )
+      assert.equal(person['@id'], `${origin}/#person`)
+      assert.equal(website['@id'], `${origin}/#website`)
+      assert.equal(person.name, copy.name)
+      assert.equal(person.jobTitle, copy.role)
+      assert.equal(person.description, copy.intro)
+      assert.equal(person.url, `${origin}/${locale}/`)
+      assert.deepEqual(person.sameAs, [
+        'https://github.com/DanilFaritovich',
+        'https://www.linkedin.com/in/danil-miftakhov-55468b399/',
+      ])
+      for (const profile of person.sameAs) {
+        assert.ok(document.querySelector(`a[href="${profile}"]`))
+        assert.equal(new URL(profile).protocol, 'https:')
+      }
+      assert.equal(website.name, 'ProjectRouter')
+      assert.equal(website.url, `${origin}/`)
+      assert.equal(website.description, copy.description)
+      assert.deepEqual(website.inLanguage, ['en', 'ru'])
+      assert.deepEqual(website.author, { '@id': person['@id'] })
+      for (const entity of data['@graph']) {
+        assert.equal(new URL(entity['@id']).protocol, 'https:')
+        assert.equal(new URL(entity.url).protocol, 'https:')
+        await access(`dist${new URL(entity.url).pathname}index.html`)
+      }
+    }
     const canonicals = document.querySelectorAll('link[rel="canonical"]')
     const alternates = document.querySelectorAll(
       'link[rel="alternate"][hreflang]',
@@ -253,7 +293,7 @@ test('static root redirects and missing page is excluded from indexing', async (
     assert.equal(robots[0].content, 'noindex')
     assert.equal(
       document.querySelectorAll(
-        'link[rel="canonical"], link[hreflang], meta[property="og:url"]',
+        'link[rel="canonical"], link[hreflang], meta[property="og:url"], script[type="application/ld+json"]',
       ).length,
       0,
     )
