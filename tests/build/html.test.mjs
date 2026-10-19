@@ -12,6 +12,56 @@ for (const locale of ['en', 'ru']) {
     const html = await readFile(`dist/${locale}/index.html`, 'utf8')
     const document = new JSDOM(html).window.document
     const copy = locale === 'en' ? en : ru
+    assert.equal(document.querySelector('.hero-intro').textContent, copy.intro)
+    assert.equal(
+      document.querySelector('.about-introduction').textContent,
+      copy.aboutIntroduction,
+    )
+    const experienceBlocks = [
+      ...document.querySelectorAll('#about .about-block'),
+    ]
+    assert.equal(experienceBlocks.length, 3)
+    for (const [index, key] of [
+      'experience',
+      'freelance',
+      'personal',
+    ].entries()) {
+      const block = experienceBlocks[index]
+      assert.equal(block.querySelector('h3').textContent, copy[`${key}Title`])
+      assert.deepEqual(
+        [...block.querySelectorAll('p')].map((p) => p.textContent),
+        [copy[key], copy[`${key}Detail`]],
+      )
+    }
+    assert.equal(
+      document.querySelector('#focus-heading').textContent,
+      copy.focusTitle,
+    )
+    assert.equal(
+      document.querySelector('#about aside p').textContent,
+      copy.focus,
+    )
+    const skills = [...document.querySelectorAll('#skills .skills-grid > div')]
+    assert.equal(skills.length, 8)
+    for (const [index, key] of [
+      'backend',
+      'database',
+      'data',
+      'automation',
+      'infra',
+      'testing',
+      'ai',
+      'architecture',
+    ].entries()) {
+      assert.equal(
+        skills[index].querySelector('h3').textContent,
+        copy[`${key}Title`],
+      )
+      assert.equal(
+        skills[index].querySelector('.skill-detail').textContent,
+        copy[`${key}Detail`],
+      )
+    }
     const cards = [...document.querySelectorAll('.portfolio-card')]
     assert.deepEqual(
       cards.map((card) => card.id),

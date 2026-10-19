@@ -22,50 +22,59 @@ export default {
   name: 'Danil Miftakhov',
   role: 'Python Backend / Data & Automation Engineer',
   intro:
-    'I build APIs, data pipelines and integrations that turn complex workflows into repeatable tools.',
+    'I build Python backends, data-processing pipelines and API integrations. My work spans PostgreSQL, geospatial data and business automation — from commercial and freelance projects to personal engineering tools.',
   aboutEyebrow: '02 / About',
   aboutTitle: 'About Me',
   aboutIntro:
-    'Commercial work and personal engineering projects, with clear boundaries.',
-  experienceTitle: 'Commercial engineering experience',
+    'Commercial experience, client integrations and personal engineering projects.',
+  aboutIntroduction:
+    'I am a Python developer focused on backend engineering, data processing and automation. My experience combines commercial development, client integrations and personal engineering projects. I particularly enjoy connecting systems, working with large datasets and automating multi-stage workflows.',
+  experienceTitle: 'Commercial Experience',
   experience:
-    'My commercial work at Maxim has focused on Python, PostgreSQL, PostGIS and SQL: processing address and geographic data, integrating external APIs and automating internal workflows.',
+    'Since 2022, I have worked at Maxim with Python, PostgreSQL/PostGIS, SQL and geospatial data. My work includes address data processing and normalization, bulk imports, analytical exports, geocoder integrations and data workflow automation.',
   experienceDetail:
-    'Typical tasks include normalizing and enriching geodata, preparing SQL imports with duplicate and no-op checks, and producing analytical exports. I also work with geocoder integrations, reusable database utilities and scripts that reduce repetitive operational steps.',
-  personalTitle: 'Personal projects',
+    'I also participate in technical investigations: examining SQL queries and execution plans, analyzing application logs and errors, testing hypotheses and preparing actionable reports for developers.',
+  freelanceTitle: 'Freelance & Client Work',
+  freelance:
+    'Alongside my primary job, I work on external service integrations and business process automation. My projects include product data processing, marketplace stock synchronization, order automation, web scraping and API integrations.',
+  freelanceDetail:
+    'Depending on the task, I use Python, HTTP clients, Playwright/Camoufox, SQL, Docker and Linux. I have also built Telegram interfaces for controlling server-side utilities and tools for processing CSV, Excel and JSON data.',
+  personalTitle: 'Personal Engineering Projects',
   personal:
-    'My personal repositories explore application architecture, ETL and LLM integration, with automated checks and reproducible local environments.',
+    'My personal projects focus on backend architecture and engineering infrastructure. I work with FastAPI, SQLAlchemy, Apache Airflow, LLM APIs and MCP, building applications, ETL pipelines and developer automation tools.',
+  personalDetail:
+    'I pay particular attention to component boundaries, testing, CI, Docker and reproducible environments. One example is an AI-assisted Ansible and Python toolkit for configuring my personal Ubuntu VPS, with independent verification of initialization stages.',
   focusTitle: 'Current focus',
   focus:
-    'Deepening service boundaries, data-pipeline reliability and structured LLM workflows.',
+    'Python backend engineering, service architecture, reliable ETL pipelines and practical AI integrations for software development.',
   skillsEyebrow: '03 / Skills',
   skillsTitle: 'Skills & Technologies',
   skillsIntro:
     'A detailed view of the stack, grouped by engineering responsibility.',
   backendTitle: 'Backend & APIs',
   backendDetail:
-    'REST APIs, validated contracts, asynchronous I/O and application services.',
+    'REST API development, data validation, asynchronous operations and application service logic using FastAPI, Flask and Python.',
   databaseTitle: 'Databases & Geospatial',
   databaseDetail:
-    'Data extraction, batch processing, address normalization and coordinate transformations.',
+    'PostgreSQL/PostGIS workflows involving geospatial processing, SQL exports, bulk imports, SQLAlchemy and query execution plan analysis.',
   dataTitle: 'Data Engineering & ML',
   dataDetail:
-    'Linked ETL stages, intermediate artifacts, preprocessing, training and inference pipelines.',
+    'ETL pipelines with Apache Airflow and MinIO/S3, data transformation, geospatial processing and model training with scikit-learn.',
   automationTitle: 'Automation & Integrations',
   automationDetail:
-    'External APIs, browser workflows and repeatable data preparation.',
+    'External API integrations, marketplace automation, web scraping, browser workflows and data transformation between services.',
   infraTitle: 'Infrastructure & Delivery',
   infraDetail:
-    'Infrastructure as Code, isolated validation, local runtimes and CI quality gates.',
+    'Docker and Docker Compose, Ansible-based Linux server provisioning, SSH/UFW management and automated validation with GitHub Actions.',
   testingTitle: 'Testing & Quality',
   testingDetail:
-    'Unit, integration and browser checks; typed boundaries and repeatable verification.',
+    'Unit, integration and E2E testing, formatting checks, static type analysis and automated code quality workflows.',
   aiTitle: 'AI & Developer Workflows',
   aiDetail:
-    'Backend-only model access, validated outputs and bounded automation tasks.',
+    'LLM API integrations, structured model outputs, custom MCP tools and development workflow automation with Codex and OpenCode.',
   architectureTitle: 'Architecture & Interfaces',
   architectureDetail:
-    'Layered services, persistence boundaries and typed project interfaces.',
+    'Layered application responsibilities, Ports & Adapters, Dependency Injection, transaction boundaries and Vue/React interfaces in personal projects.',
   projectsEyebrow: '04 / Projects',
   projectsTitle: 'Featured Projects',
   projectsIntro:
