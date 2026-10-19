@@ -6,6 +6,7 @@ import App from '../../src/App.vue'
 import { createAppI18n, messages } from '../../src/locales'
 import { routes, installLocaleRouting } from '../../src/router'
 import { sections } from '../../src/content/portfolio'
+import { resumes, resumeAvailable } from '../../src/content/resumes'
 
 async function render(path = '/en/') {
   const router = createRouter({ history: createMemoryHistory(), routes })
@@ -135,7 +136,7 @@ describe('portfolio', () => {
     },
   )
 
-  it('renders all seven named sections, reviewed cards and unavailable PDF controls', async () => {
+  it('renders all seven named sections, reviewed cards and file-backed PDF controls', async () => {
     const { wrapper } = await render()
     for (const id of sections) {
       const section = wrapper.get(`section#${id}`)
@@ -145,8 +146,9 @@ describe('portfolio', () => {
     expect(wrapper.findAll('h1')).toHaveLength(1)
     expect(wrapper.findAll('#projects article')).toHaveLength(6)
     expect(wrapper.findAll('#tools article')).toHaveLength(3)
-    expect(wrapper.findAll('#resume button:disabled')).toHaveLength(6)
-    expect(wrapper.get('#pdf-unavailable').text()).toContain('unavailable')
+    expect(wrapper.findAll('#resume button:disabled')).toHaveLength(
+      2 * resumes.filter((item) => !resumeAvailable(item.id, 'en')).length,
+    )
     expect(wrapper.findAll('#projects img')).toHaveLength(4)
     expect(wrapper.text()).not.toContain('Live Demo')
     wrapper.unmount()
@@ -230,9 +232,11 @@ describe('portfolio', () => {
     expect(router.currentRoute.value.fullPath).toBe('/ru/#resume')
     expect(wrapper.get('#resume-heading').text()).toBe('Резюме')
     expect(wrapper.get('.menu-trigger').text()).toBe('Меню')
-    expect(wrapper.get('#pdf-unavailable').text()).toBe(
-      'PDF-файлы пока недоступны.',
-    )
+    if (resumes.some((item) => !resumeAvailable(item.id, 'ru'))) {
+      expect(wrapper.get('#pdf-unavailable').text()).toBe(
+        'PDF-файлы пока недоступны.',
+      )
+    }
     expect(wrapper.find('[role="dialog"]').exists()).toBe(false)
     wrapper.unmount()
   })
