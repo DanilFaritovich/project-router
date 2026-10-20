@@ -1,0 +1,18 @@
+services:
+  project-router:
+    image: ${PROJECT_ROUTER_IMAGE:?Set PROJECT_ROUTER_IMAGE to a GHCR image digest}
+    restart: unless-stopped
+    expose: ['8080']
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m,uid=101,gid=101
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    networks:
+      portfolio-proxy:
+        aliases: [project-router]
+    # The image owns the HTTP healthcheck; no public domain is involved.
+networks:
+  portfolio-proxy:
+    external: true
+    name: portfolio-proxy

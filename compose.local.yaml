@@ -1,0 +1,13 @@
+# Standalone local configuration: does not load compose.yaml or portfolio-proxy.
+services:
+  project-router:
+    image: ${PROJECT_ROUTER_IMAGE:-project-router:local}
+    # One local service needs no separate network or service discovery.
+    network_mode: bridge
+    ports:
+      - '127.0.0.1:${PROJECT_ROUTER_PORT:-8080}:8080'
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m,uid=101,gid=101
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
