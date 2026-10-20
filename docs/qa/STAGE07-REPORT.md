@@ -7,7 +7,16 @@ Base: [`127bf3e`](https://github.com/DanilFaritovich/project-router/commit/127bf
 (current `origin/develop`, Stage 06 merged). Branch: `test/portfolio-quality`.
 Validated application/test revision:
 [`2bec1d37e8a0c9e5117602e4c9ddcb70d00a7851`](https://github.com/DanilFaritovich/project-router/commit/2bec1d37e8a0c9e5117602e4c9ddcb70d00a7851).
-Subsequent changes document the audit and add review images only.
+Subsequent changes document the audit, add review images and include the spacing
+follow-up below.
+
+Owner-review follow-up (2026-10-20): reduced only Projects bottom padding from
+140px to 90px (mobile: 100px to 60px). The gap from Avito Parser to Tools content
+is now 139px instead of 189px (mobile: 109px instead of 149px), a 26.5–26.8%
+reduction. EN/RU screenshots and geometry were checked at 320, 390, 768, 1024 and
+1440px: divider retained, other section dimensions unchanged, no overlaps or
+horizontal overflow. `make check` (94 tests) and `make verify` (25 build and 46
+Chromium tests) passed. Committed review images below predate this cosmetic fix.
 
 Linux x64, Node 22.22.2, npm 10.9.7, Playwright 1.64.1,
 Chromium 156.0.8078.4, Vue 3.5.44, PDF.js 6.4.299,
