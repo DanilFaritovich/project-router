@@ -5,12 +5,12 @@
 ProjectRouter — EN/RU инженерное портфолио Данила Мифтахова с проектами,
 инструментами разработчика, шестью PDF резюме и контактами. Контент хранится в Git.
 
-## Текущее состояние — Stage 07 готов к review
+## Текущее состояние — Stage 08 в разработке
 
-Этапы 01–06 завершены и слиты в `develop`. Stage 07 — Testing & Visual QA
-подготовлен в `test/portfolio-quality` к ручной приёмке; в
-[QA-отчёте](docs/qa/STAGE07-REPORT.md) собраны дефекты, браузерные проверки и
-чеклист владельца. Адаптивное портфолио использует Vue 3,
+Этапы 01–07 завершены и слиты в `develop`. Stage 08 — Docker & CI/CD Foundation
+реализуется в `feature/production-foundation`; Stage 09 запланирован.
+[QA-отчёт](docs/qa/STAGE07-REPORT.md) содержит свидетельства Stage 07 и проверки
+владельца. Адаптивное портфолио использует Vue 3,
 TypeScript, Vite, Tailwind CSS, Vue Router и Vue I18n. Vite SSG генерирует
 локализованные HTML по `/en/` и `/ru/`; `/` ведёт на `/en/`.
 
@@ -56,20 +56,19 @@ WhatsApp, Telegram, LinkedIn, GitHub и проекты. HTTP(S)-ссылки о�
 
 ## План разработки
 
-Этапы 01–06 слиты. Stage 07 ожидает ручной проверки/merge;
-этапы 08–09 запланированы. Сопровождение документации не входит в этот roadmap.
+Этапы 01–07 слиты. Stage 08 в разработке; Stage 09 запланирован. Сопровождение документации не входит в этот roadmap.
 
-| Этап | Ветка                           | Название                   | Статус           |
-| ---- | ------------------------------- | -------------------------- | ---------------- |
-| 01   | `chore/project-bootstrap`       | Bootstrap                  | Завершён / слит  |
-| 02   | `feature/vue-foundation`        | Vue Foundation             | Завершён / слит  |
-| 03   | `feature/portfolio-layout`      | Layout & Sections          | Завершён / слит  |
-| 04   | `feature/projects-catalog`      | Projects Catalog           | Завершён / слит  |
-| 05   | `feature/i18n-seo`              | Localization & SEO         | Завершён / слит  |
-| 06   | `feature/resume-interactions`   | Resume & Interactions      | Завершён / слит  |
-| 07   | `test/portfolio-quality`        | Testing & Visual QA        | Ожидает проверки |
-| 08   | `feature/production-foundation` | Docker & CI/CD             | Запланирован     |
-| 09   | `feature/caddy-production`      | Caddy & Production Release | Запланирован     |
+| Этап | Ветка                           | Название                   | Статус          |
+| ---- | ------------------------------- | -------------------------- | --------------- |
+| 01   | `chore/project-bootstrap`       | Bootstrap                  | Завершён / слит |
+| 02   | `feature/vue-foundation`        | Vue Foundation             | Завершён / слит |
+| 03   | `feature/portfolio-layout`      | Layout & Sections          | Завершён / слит |
+| 04   | `feature/projects-catalog`      | Projects Catalog           | Завершён / слит |
+| 05   | `feature/i18n-seo`              | Localization & SEO         | Завершён / слит |
+| 06   | `feature/resume-interactions`   | Resume & Interactions      | Завершён / слит |
+| 07   | `test/portfolio-quality`        | Testing & Visual QA        | Завершён / слит |
+| 08   | `feature/production-foundation` | Docker & CI/CD Foundation  | В разработке    |
+| 09   | `feature/caddy-production`      | Caddy & Production Release | Запланирован    |
 
 После этих девяти этапов реализации отдельно выполняются release PR из `develop`
 в `main` и тег/релиз `v1.0.0` по явному разрешению. Этот переход к релизу не является
@@ -113,9 +112,9 @@ Production-домен ещё не выбран. При необходимост�
 не генерируются, как и метаданные изображений OG/Twitter и JSON-LD;
 локализованные HTML, текстовые OG/Twitter и разрешающий robots продолжают работать.
 Хостинг должен раздавать `/en/index.html` и `/ru/index.html` напрямую и возвращать
-404 для неизвестных адресов. Корень пока использует HTML meta-refresh;
-настоящий HTTP redirect и live SEO проверяются на этапе доставки.
-В GitHub рекомендуется сделать `Quality and static build` обязательной проверкой
+404 для неизвестных адресов. Docker-сервер возвращает HTTP redirect в корне; обычный статический preview
+сохраняет HTML meta-refresh. Live SEO проверяется после доставки.
+В GitHub рекомендуется сделать `Quality and static build` и `Docker build and container smoke` обязательными проверками
 веток; настройки защиты веток вручную задаёт администратор.
 
 Реализованы локально: статический HTML, SEO metadata, crawl artifacts, social
@@ -138,6 +137,65 @@ social previews, доступа краулеров, реальной индек�
   [Codex Development Standards](https://github.com/DanilFaritovich/codex-development-standards),
   ветка `develop`, профиль `vue-static-site` v2, инструкция `bootstrap/vue-static-site.md`.
   Docker, CD и backend-скиллы не установлены.
+
+## Docker и GHCR foundation
+
+Multi-stage [Dockerfile](Dockerfile) использует Node 22.22.2 с закреплённым digest
+для `npm ci` и Vite SSG, затем Nginx Unprivileged на HTTP 8080 под UID/GID 101:101.
+Runtime содержит статические файлы без Node, исходников Vue и build-зависимостей.
+Compose включает read-only filesystem, временный tmpfs и сброс capabilities.
+Постоянное хранилище, HTTPS-сервер и Caddy в этом репозитории отсутствуют.
+
+```sh
+make docker-build       # project-router:local, необязательный build arg VITE_SITE_ORIGIN
+make docker-test        # реальные контейнеры: без origin и с https://portfolio.test
+make docker-run         # отдельный локальный Compose, http://127.0.0.1:8080
+curl -I http://127.0.0.1:8080/
+curl -f http://127.0.0.1:8080/en/ -o /dev/null
+make docker-stop
+```
+
+Локальному Compose не нужна production-сеть. `PROJECT_ROUTER_PORT` меняет занятый
+порт, `PROJECT_ROUTER_IMAGE` позволяет проверить другой образ/digest. Браузерные
+тесты принимают `PLAYWRIGHT_PORT`, если занят 4173. Production [compose.yaml](compose.yaml)
+содержит один сервис без публикации host-портов, `restart: unless-stopped`,
+healthcheck из образа и внешнюю сеть `portfolio-proxy` с alias `project-router`.
+Сетью управляет будущий deployment-репозиторий. Docker health status сам по себе
+не перезапускает зависший контейнер; restart policy обрабатывает выход процесса.
+
+`/` возвращает HTTP 302 на `/en/`; EN/RU отдают собственные SSG-документы.
+Неизвестные пути возвращают HTTP 404 без SPA fallback. PDF остаются неизменными.
+JS (включая `.mjs` PDF.js), CSS и изображения имеют корректные MIME types.
+Ресурсы с fingerprint используют immutable cache; HTML, crawl files и публичные
+ресурсы перевалидируются. Ответы включают nosniff, запрет встраивания во frame
+и referrer policy.
+
+CI сохраняет существующие проверки сайта (`make ci`), затем проверяет workflows,
+Docker и контейнеры. PR ничего не публикует. Успешные доверенные push вызывают
+reusable GHCR workflow: `develop` → `develop-sha-<полный SHA>`, `main` →
+`main-sha-<полный SHA>`, отдельно авторизованные теги `v*` → точный тег версии.
+Buildx использует layer cache, OCI labels и стандартный provenance; только publish
+jobs получают `packages: write` и используют `GITHUB_TOKEN`. Тег `latest` и
+production deployment не создаются. Для доставки используется
+`ghcr.io/danilfaritovich/project-router@sha256:<digest>` из лога/summary publish job.
+PR не проверяет первую post-merge публикацию GHCR; registry digest не заявляется
+до фактической успешной публикации.
+
+`VITE_SITE_ORIGIN` — build-time HTTPS origin без path, credentials, query и
+fragment. Без него работают local/development-сборки. С ним включаются имеющиеся
+canonical/hreflang, sitemap, JSON-LD и OG/Twitter metadata. Смена origin требует
+пересборки образа. Реальный домен ещё не выбран; перед stable/release publication
+владелец подтверждает его и задаёт Actions repository variable `VITE_SITE_ORIGIN`.
+Секреты и настройки реального сервера в этой задаче не добавляются.
+
+[Контракт развёртывания](docs/deployment/CONTRACT.md) и
+[пример manifest](docs/deployment/service-manifest.example.yaml) описывают сервис
+`project-router`, GHCR digest, HTTP 8080, сеть `portfolio-proxy`, alias
+`project-router`, health endpoint `/en/`, stateless storage и отсутствие секретов
+для базового сайта. Будущий controller `portfolio-deployment` назначает домен и
+обновляет контейнеры за своим gateway. SSH/CD, конфигурация Caddy, reconciliation,
+другие приложения и VPS rollback находятся вне ProjectRouter. CI проверяет,
+GHCR публикует артефакт, production deployment остаётся отдельной работой.
 
 ## Структура репозитория
 

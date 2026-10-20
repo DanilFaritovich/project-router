@@ -1,10 +1,9 @@
 # ProjectRouter agent instructions
 
-ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–06 are
-complete and merged into `develop`. Stage 07 — Testing & Visual QA is prepared
-in `test/portfolio-quality`, awaiting manual review/merge; see
-[the QA report](docs/qa/STAGE07-REPORT.md) for evidence and the owner checklist.
-Stages 08–09 and production delivery remain planned; the site is not deployed.
+ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–07 are
+complete and merged into `develop`; see [the QA report](docs/qa/STAGE07-REPORT.md).
+Stage 08 — Docker & CI/CD Foundation is in development in
+`feature/production-foundation`. Stage 09 remains planned; the site is not deployed.
 
 - Stack: Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Vue I18n,
   Vite SSG/Unhead and PDF.js. Git-tracked content; no backend or database.
@@ -48,5 +47,17 @@ Stages 08–09 and production delivery remain planned; the site is not deployed.
 - Follow the nine-stage roadmap in [README.md](README.md). The separate release
   PR `develop` → `main` and `v1.0.0` tag/release require explicit authorization;
   release handoff is not a tenth implementation stage.
-- Docker, GHCR, Caddy and delivery are later stages. No unauthorized production
+- Docker packaging: digest-pinned multi-stage Node → Nginx Unprivileged, UID/GID
+  101:101, HTTP 8080. `make docker-build`, `docker-test`, `docker-run`, `docker-stop`;
+  tests own UUID resources, local Compose uses loopback and no production network.
+  Production `compose.yaml` accepts `PROJECT_ROUTER_IMAGE` (deploy by digest), no
+  host ports, external `portfolio-proxy`, alias `project-router`, stateless.
+- `VITE_SITE_ORIGIN` is baked into SSG; changing it requires a new image. Main/tag
+  publication requires the confirmed origin in an Actions repository variable.
+  CI validates site then containers; only successful trusted pushes publish GHCR.
+  PRs never publish. See [deployment contract](docs/deployment/CONTRACT.md).
+- ProjectRouter owns only its image build/test/publication and integration contract.
+  Future `portfolio-deployment` owns gateway, domain, network and VPS operations.
+  Do not add Caddy, SSH/CD, controllers or other applications here. Docker health
+  status alone does not restart a hung process. No unauthorized production
   deployments, production host access, tags/releases or automatic merges.

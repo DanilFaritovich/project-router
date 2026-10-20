@@ -2,13 +2,13 @@
 
 ## Current implementation
 
-Stages 01–06 are complete and merged into `develop`, including content refinement,
+Stages 01–07 are complete and merged into `develop`, including content refinement,
 Hero Portrait Integration, Localization & SEO and Resume & Interactions. The
 responsive seven-section portfolio and nine-item catalog use Vue 3, TypeScript,
 Vite 8, Tailwind CSS 4, Vue Router, Vue I18n, Vite SSG and Unhead. Six owner-supplied
-PDFs use a client-only PDF.js viewer with clickable links. Stage 07 — Testing &
-Visual QA is prepared for manual review in `test/portfolio-quality`; see the
-[QA report](docs/qa/STAGE07-REPORT.md). Stages 08–09 and production delivery remain planned.
+PDFs use a client-only PDF.js viewer with clickable links. Stage 07 — Testing & Visual QA is merged; see the
+[QA report](docs/qa/STAGE07-REPORT.md). Stage 08 — Docker & CI/CD Foundation is
+in development; Stage 09 and production delivery remain planned.
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
@@ -87,8 +87,7 @@ verified and no production deployment has been performed.
   to the localized document. A redirect does not make the site identity invalid,
   so these identifiers were retained. `<` is escaped before script insertion.
 - `dist/index.html` provides a no-JavaScript meta-refresh and fallback anchor to
-  `/en/`; Vue Router redirects `/` during development. An HTTP redirect is a later
-  hosting concern. `dist/404.html` is marked noindex; static hosting must serve it
+  `/en/`; Vue Router redirects `/` during development. The Docker Nginx server returns an HTTP 302 at root. `dist/404.html` is marked noindex; static hosting must serve it
   with status 404 for unknown paths instead of using a blanket SPA fallback.
   Vite preview is a local smoke server, not the production routing contract.
 - Inspect built HTML without JavaScript, sitemap and link destinations before
@@ -220,8 +219,8 @@ regression checks and delayed-response/resize interaction tests. Live-domain ver
 remains pending. Stage 05 adds built-HTML professional
 evidence extraction and a limited accessibility/performance smoke; it does not
 replace Stage 07 visual QA or real search-engine testing.
-Repository administrators should require the `Quality and static build` CI check
-in branch protection; repository settings are not changed by this task.
+Repository administrators should require `Quality and static build` and
+`Docker build and container smoke` CI checks in branch protection; repository settings are not changed by this task.
 
 ## SEO and agent readability checks
 
@@ -264,21 +263,60 @@ hreflang/sitemap/robots, fetched social previews, structured data and crawler
 access. Search Console/webmaster ownership, sitemap submission and actual
 indexing require the public environment; none is established by local preview.
 
-## Delivery boundaries (later)
+## Container architecture and delivery boundaries
 
-The nine-stage [README roadmap](README.md) defines implementation order. Initial
-quality tooling and CI start in Stage 02; Stage 07 expands testing and visual QA.
-Stage 08 covers Docker and production CI/CD foundations; Stage 09 covers Caddy
-and production release readiness. These are planned stages, not authorization
-to deploy. After them, a separate `develop` → `main` release PR and the `v1.0.0`
-tag/release require explicit authorization, outside the nine implementation stages.
+The nine-stage [README roadmap](README.md) keeps Stage 08 in development and
+Stage 09 planned. ProjectRouter owns its image build, validation, GHCR publication
+and [integration contract](docs/deployment/CONTRACT.md), with an illustrative
+[service manifest](docs/deployment/service-manifest.example.yaml). A future
+`portfolio-deployment` repository owns the gateway, domain, external network and
+VPS container updates. Caddy, SSH/CD, controllers, other applications and rollback
+on the VPS are outside this repository.
 
-The future pipeline may package static output in Docker, publish immutable
-images to GHCR and serve it through Caddy with HTTPS and direct localized routes.
-Public requests go to static assets; there is no application server or database.
-Actual deployment topology, secrets and production host are intentionally unset.
-Install Docker/CD skills and configure packaging only when that work is requested.
-Production deployment requires separate authorization and validated revisions.
+`Dockerfile` installs locked npm dependencies with digest-pinned Node 22.22.2 and
+runs Vite SSG. `VITE_SITE_ORIGIN` is a public build argument passed through existing
+origin validation; changing it requires a new image. The final digest-pinned Nginx
+Unprivileged runtime contains only generated static site output and server tooling,
+without Node, Vue sources or build dependencies. Master/workers run as 101:101 on
+HTTP 8080. Compose makes the filesystem read-only, drops capabilities, sets
+no-new-privileges and provides a bounded disposable `/tmp` tmpfs. No persistent
+storage is needed. The internal server does not terminate HTTPS.
+
+`docker/nginx.conf` redirects `/` to `/en/` with HTTP 302, serves localized SSG
+HTML and returns the noindex 404 document with status 404 for unknown resources.
+There is no blanket SPA fallback. The MIME mapping explicitly supports PDF.js's
+module worker. Fingerprinted assets cache immutably for one year; HTML, public
+PDF/images and crawl files revalidate. Security headers include nosniff, frame
+denial and referrer policy. Gateway HTTPS/HSTS is a future central responsibility.
+
+Production `compose.yaml` contains only `project-router`, accepts
+`PROJECT_ROUTER_IMAGE` (immutable digest for production), exposes 8080 internally
+and joins external `portfolio-proxy` as `project-router` without host ports.
+Standalone `compose.local.yaml` uses the existing default Docker bridge and a
+loopback port.
+`make docker-build/test/run/stop` expose the operator interface. Image healthcheck
+uses BusyBox wget at `http://127.0.0.1:8080/en/`; unhealthy status alone cannot
+restart a running container. Restart policy handles exit, not hung-process recovery.
+
+`tests/docker/smoke.mjs` validates actual isolated containers built by
+`scripts/docker.mjs` with unset origin and reserved HTTPS test origin, including
+HTTP, process UID, all six PDF hashes, all generated assets, metadata/crawl files,
+restart, health and runtime contents. Rendered production Compose must have no
+published port. Tests remove only owned UUID resources and never create the
+production network. Playwright's `PLAYWRIGHT_PORT` can avoid a busy local test port.
+
+GitHub CI preserves the site `make ci` sequence, then runs actionlint and Docker
+smoke. Only successful trusted pushes call the reusable GHCR workflow with
+packages:write in publication jobs. Develop/main get full-SHA tags; separately
+authorized v* tags get a version tag. Buildx adds OCI labels and minimal provenance,
+caches layers, and reports the published digest in the log and Actions summary.
+Production consumes that digest rather than a mutable tag. Main/tag publication
+requires a confirmed origin repository variable; no domain is invented. A PR
+cannot establish actual registry publication; verify the first post-merge push.
+
+No production deployment, host contact, release tag or GitHub Release is performed
+by these workflows. Stage 09, the separate `develop` → `main` release PR and
+`v1.0.0` tag/release require explicit authorization.
 
 Task flow: branch strictly from `develop` → local commit → push → PR to
 `develop` → manual review/merge. `main` is the stable branch. Stage 01's initial
