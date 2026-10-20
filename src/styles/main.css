@@ -439,7 +439,7 @@
     margin: 10px 0 24px;
   }
   #projects {
-    padding-bottom: 140px;
+    padding-bottom: 90px;
   }
   .tool-card .eyebrow {
     font-size: 10px;
@@ -577,8 +577,11 @@
     height: 260px;
   }
   .portfolio-section {
-    grid-template-columns: 164px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: 28px;
+  }
+  .section-heading .section-intro {
+    max-width: 420px;
   }
   h2 {
     font-size: 30px;
@@ -609,12 +612,6 @@
   }
 }
 @media (min-width: 768px) and (max-width: 899px) {
-  .portfolio-section {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .section-heading .section-intro {
-    max-width: 420px;
-  }
   .hero-section {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -791,7 +788,7 @@
     margin-top: 48px;
   }
   #projects {
-    padding-bottom: 100px;
+    padding-bottom: 60px;
   }
   .resume-card {
     grid-template-columns: minmax(0, 1fr);

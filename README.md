@@ -5,12 +5,12 @@
 ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio, with projects,
 developer tools, six resume PDFs and contacts. Content is tracked in Git.
 
-## Current state — Stage 06 ready for review
+## Current state — Stage 07 ready for review
 
-Stages 01–05 are complete and merged into `develop`, including content refinement,
-the owner portrait, localization and SEO. Stage 06 — Resume & Interactions is
-implemented in `feature/resume-interactions` in [PR #10](https://github.com/DanilFaritovich/project-router/pull/10),
-awaiting review/merge into `develop`. The responsive portfolio uses Vue 3,
+Stages 01–06 are complete and merged into `develop`. Stage 07 — Testing & Visual QA
+is prepared in `test/portfolio-quality` for manual acceptance; the
+[QA report](docs/qa/STAGE07-REPORT.md) includes findings, browser evidence and an
+owner checklist. The responsive portfolio uses Vue 3,
 TypeScript, Vite, Tailwind CSS, Vue Router and Vue I18n. Vite SSG generates
 localized HTML at `/en/` and `/ru/`; `/` goes to `/en/`.
 
@@ -55,20 +55,20 @@ builds with a test origin and without an origin. No backend or database is used.
 
 ## Development roadmap
 
-Stages 01–05 are merged. Stage 06 is implemented in PR #10 and awaits review/merge;
-Stages 07–09 remain planned. Documentation maintenance is outside this roadmap.
+Stages 01–06 are merged. Stage 07 awaits manual review/merge;
+Stages 08–09 remain planned. Documentation maintenance is outside this roadmap.
 
-| Stage | Branch                          | Scope                      | Status                  |
-| ----- | ------------------------------- | -------------------------- | ----------------------- |
-| 01    | `chore/project-bootstrap`       | Bootstrap                  | Complete / merged       |
-| 02    | `feature/vue-foundation`        | Vue Foundation             | Complete / merged       |
-| 03    | `feature/portfolio-layout`      | Layout & Sections          | Complete / merged       |
-| 04    | `feature/projects-catalog`      | Projects Catalog           | Complete / merged       |
-| 05    | `feature/i18n-seo`              | Localization & SEO         | Complete / merged       |
-| 06    | `feature/resume-interactions`   | Resume & Interactions      | PR #10 / review pending |
-| 07    | `test/portfolio-quality`        | Testing & Visual QA        | Planned                 |
-| 08    | `feature/production-foundation` | Docker & CI/CD             | Planned                 |
-| 09    | `feature/caddy-production`      | Caddy & Production Release | Planned                 |
+| Stage | Branch                          | Scope                      | Status            |
+| ----- | ------------------------------- | -------------------------- | ----------------- |
+| 01    | `chore/project-bootstrap`       | Bootstrap                  | Complete / merged |
+| 02    | `feature/vue-foundation`        | Vue Foundation             | Complete / merged |
+| 03    | `feature/portfolio-layout`      | Layout & Sections          | Complete / merged |
+| 04    | `feature/projects-catalog`      | Projects Catalog           | Complete / merged |
+| 05    | `feature/i18n-seo`              | Localization & SEO         | Complete / merged |
+| 06    | `feature/resume-interactions`   | Resume & Interactions      | Complete / merged |
+| 07    | `test/portfolio-quality`        | Testing & Visual QA        | Review pending    |
+| 08    | `feature/production-foundation` | Docker & CI/CD             | Planned           |
+| 09    | `feature/caddy-production`      | Caddy & Production Release | Planned           |
 
 After these nine implementation stages, a separate release PR from `develop`
 into `main` and the `v1.0.0` tag/release require explicit authorization. This

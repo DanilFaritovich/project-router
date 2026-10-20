@@ -5,12 +5,12 @@
 ProjectRouter — EN/RU инженерное портфолио Данила Мифтахова с проектами,
 инструментами разработчика, шестью PDF резюме и контактами. Контент хранится в Git.
 
-## Текущее состояние — Stage 06 готов к review
+## Текущее состояние — Stage 07 готов к review
 
-Этапы 01–05 завершены и слиты в `develop`, включая уточнение контента,
-портрет владельца, локализацию и SEO. Stage 06 — Resume & Interactions реализован
-в `feature/resume-interactions` в [PR #10](https://github.com/DanilFaritovich/project-router/pull/10)
-и ожидает проверки/merge в `develop`. Адаптивное портфолио использует Vue 3,
+Этапы 01–06 завершены и слиты в `develop`. Stage 07 — Testing & Visual QA
+подготовлен в `test/portfolio-quality` к ручной приёмке; в
+[QA-отчёте](docs/qa/STAGE07-REPORT.md) собраны дефекты, браузерные проверки и
+чеклист владельца. Адаптивное портфолио использует Vue 3,
 TypeScript, Vite, Tailwind CSS, Vue Router и Vue I18n. Vite SSG генерирует
 локализованные HTML по `/en/` и `/ru/`; `/` ведёт на `/en/`.
 
@@ -56,20 +56,20 @@ WhatsApp, Telegram, LinkedIn, GitHub и проекты. HTTP(S)-ссылки о�
 
 ## План разработки
 
-Этапы 01–05 слиты. Stage 06 реализован в PR #10 и ожидает проверки/merge;
-этапы 07–09 запланированы. Сопровождение документации не входит в этот roadmap.
+Этапы 01–06 слиты. Stage 07 ожидает ручной проверки/merge;
+этапы 08–09 запланированы. Сопровождение документации не входит в этот roadmap.
 
-| Этап | Ветка                           | Название                   | Статус                    |
-| ---- | ------------------------------- | -------------------------- | ------------------------- |
-| 01   | `chore/project-bootstrap`       | Bootstrap                  | Завершён / слит           |
-| 02   | `feature/vue-foundation`        | Vue Foundation             | Завершён / слит           |
-| 03   | `feature/portfolio-layout`      | Layout & Sections          | Завершён / слит           |
-| 04   | `feature/projects-catalog`      | Projects Catalog           | Завершён / слит           |
-| 05   | `feature/i18n-seo`              | Localization & SEO         | Завершён / слит           |
-| 06   | `feature/resume-interactions`   | Resume & Interactions      | PR #10 / ожидает проверки |
-| 07   | `test/portfolio-quality`        | Testing & Visual QA        | Запланирован              |
-| 08   | `feature/production-foundation` | Docker & CI/CD             | Запланирован              |
-| 09   | `feature/caddy-production`      | Caddy & Production Release | Запланирован              |
+| Этап | Ветка                           | Название                   | Статус           |
+| ---- | ------------------------------- | -------------------------- | ---------------- |
+| 01   | `chore/project-bootstrap`       | Bootstrap                  | Завершён / слит  |
+| 02   | `feature/vue-foundation`        | Vue Foundation             | Завершён / слит  |
+| 03   | `feature/portfolio-layout`      | Layout & Sections          | Завершён / слит  |
+| 04   | `feature/projects-catalog`      | Projects Catalog           | Завершён / слит  |
+| 05   | `feature/i18n-seo`              | Localization & SEO         | Завершён / слит  |
+| 06   | `feature/resume-interactions`   | Resume & Interactions      | Завершён / слит  |
+| 07   | `test/portfolio-quality`        | Testing & Visual QA        | Ожидает проверки |
+| 08   | `feature/production-foundation` | Docker & CI/CD             | Запланирован     |
+| 09   | `feature/caddy-production`      | Caddy & Production Release | Запланирован     |
 
 После этих девяти этапов реализации отдельно выполняются release PR из `develop`
 в `main` и тег/релиз `v1.0.0` по явному разрешению. Этот переход к релизу не является

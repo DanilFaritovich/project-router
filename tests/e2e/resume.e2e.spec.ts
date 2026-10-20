@@ -78,7 +78,7 @@ async function expectPdfLinks(
 }
 
 test.describe('real resume viewer', () => {
-  for (const width of [320, 390, 768, 1440]) {
+  for (const width of [320, 390, 768, 1024, 1440]) {
     test(`renders and contains controls without page overflow at ${width}px`, async ({
       page,
     }, testInfo) => {
@@ -235,11 +235,21 @@ test.describe('real resume viewer', () => {
   test('opens all six original documents with the matching download and fallback', async ({
     page,
   }) => {
-    await page.context().route('https://**', (route) =>
+    await page.context().route(/^https:\/\//, (route) =>
       route.fulfill({
         contentType: 'text/html',
         body: '<p>External destination intercepted</p>',
       }),
+    )
+    // Exercise new-tab behavior without relying on Chromium's native PDF UI.
+    let originalNavigation = false
+    await page.context().route('**/resumes/*.pdf', (route) =>
+      originalNavigation && route.request().isNavigationRequest()
+        ? route.fulfill({
+            contentType: 'text/html',
+            body: '<title>Original PDF</title>',
+          })
+        : route.continue(),
     )
     const errors: string[] = []
     page.on('pageerror', (error) => errors.push(error.message))
@@ -305,6 +315,27 @@ test.describe('real resume viewer', () => {
           await popup.close()
           await expect(dialog).toBeVisible()
         }
+        for (const name of language === 'en'
+          ? ['Zoom in', 'Zoom out', 'Fit width']
+          : ['Увеличить', 'Уменьшить', 'По ширине']) {
+          await dialog.getByRole('button', { name, exact: true }).click()
+          await expectPdfLinks(dialog, `${id}-${language}.pdf`, 2)
+        }
+        const downloadEvent = page.waitForEvent('download')
+        await dialog.locator('a[download]').click()
+        const download = await downloadEvent
+        expect(download.suggestedFilename()).toBe(`${id}-${language}.pdf`)
+        expect(await readFile((await download.path())!)).toEqual(
+          await readFile(`public${url}`),
+        )
+        originalNavigation = true
+        const originalEvent = page.waitForEvent('popup')
+        await dialog.locator('footer a').click()
+        const original = await originalEvent
+        await original.waitForURL(`**${url}`)
+        expect(await original.evaluate(() => window.opener)).toBeNull()
+        await original.close()
+        originalNavigation = false
         // Assert that the rendered canvas contains document content, beyond its white background.
         expect(
           await dialog
