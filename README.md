@@ -57,17 +57,21 @@ builds with a test origin and without an origin. No backend or database is used.
 
 Stages 01–07 are merged. Stage 08 is in development; Stage 09 remains planned. Documentation maintenance is outside this roadmap.
 
-| Stage | Branch                          | Scope                      | Status            |
-| ----- | ------------------------------- | -------------------------- | ----------------- |
-| 01    | `chore/project-bootstrap`       | Bootstrap                  | Complete / merged |
-| 02    | `feature/vue-foundation`        | Vue Foundation             | Complete / merged |
-| 03    | `feature/portfolio-layout`      | Layout & Sections          | Complete / merged |
-| 04    | `feature/projects-catalog`      | Projects Catalog           | Complete / merged |
-| 05    | `feature/i18n-seo`              | Localization & SEO         | Complete / merged |
-| 06    | `feature/resume-interactions`   | Resume & Interactions      | Complete / merged |
-| 07    | `test/portfolio-quality`        | Testing & Visual QA        | Complete / merged |
-| 08    | `feature/production-foundation` | Docker & CI/CD Foundation  | In development    |
-| 09    | `feature/caddy-production`      | Caddy & Production Release | Planned           |
+| Stage | Branch                           | Scope                            | Status            |
+| ----- | -------------------------------- | -------------------------------- | ----------------- |
+| 01    | `chore/project-bootstrap`        | Bootstrap                        | Complete / merged |
+| 02    | `feature/vue-foundation`         | Vue Foundation                   | Complete / merged |
+| 03    | `feature/portfolio-layout`       | Layout & Sections                | Complete / merged |
+| 04    | `feature/projects-catalog`       | Projects Catalog                 | Complete / merged |
+| 05    | `feature/i18n-seo`               | Localization & SEO               | Complete / merged |
+| 06    | `feature/resume-interactions`    | Resume & Interactions            | Complete / merged |
+| 07    | `test/portfolio-quality`         | Testing & Visual QA              | Complete / merged |
+| 08    | `feature/production-foundation`  | Docker & CI/CD Foundation        | In development    |
+| 09    | `feature/production-integration` | Production Integration & Release | Planned           |
+
+Stage 09 integrates ProjectRouter with the central deployment and prepares its
+release. Caddy and deployment management for all applications belong to the
+separate `portfolio-deployment` repository.
 
 After these nine implementation stages, a separate release PR from `develop`
 into `main` and the `v1.0.0` tag/release require explicit authorization. This

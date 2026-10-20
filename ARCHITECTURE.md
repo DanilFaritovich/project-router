@@ -266,7 +266,10 @@ indexing require the public environment; none is established by local preview.
 ## Container architecture and delivery boundaries
 
 The nine-stage [README roadmap](README.md) keeps Stage 08 in development and
-Stage 09 planned. ProjectRouter owns its image build, validation, GHCR publication
+Stage 09 — Production Integration & Release planned. Stage 09 integrates
+ProjectRouter with the central deployment and prepares its release; Caddy and
+deployment management for all applications belong to the separate
+`portfolio-deployment` repository. ProjectRouter owns its image build, validation, GHCR publication
 and [integration contract](docs/deployment/CONTRACT.md), with an illustrative
 [service manifest](docs/deployment/service-manifest.example.yaml). A future
 `portfolio-deployment` repository owns the gateway, domain, external network and

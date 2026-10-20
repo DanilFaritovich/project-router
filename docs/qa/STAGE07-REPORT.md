@@ -215,7 +215,10 @@ redirects, direct locale responses and unknown-path HTTP 404, cache/compression,
 security headers/CSP, real-origin metadata and fetched social previews. Vite
 preview's fallback behavior is not the Caddy routing contract. Search-console
 ownership, crawler access/indexing, real CWV and deployed external destinations
-cannot be established by this local audit. Docker/GHCR/Caddy are Stage 08–09.
+cannot be established by this local audit. Docker/GHCR belong to Stage 08; Stage 09 —
+Production Integration & Release covers ProjectRouter integration with the central
+deployment and release preparation. Caddy and deployment management for all
+applications belong to the separate `portfolio-deployment` repository.
 
 ## Manual QA Checklist
 

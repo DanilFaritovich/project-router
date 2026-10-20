@@ -142,5 +142,8 @@ not run it without an independently provisioned production network.
 
 Caddy configuration, SSH, reconciliation, other applications, VPS rollback and
 production deployment are outside this repository and are not implemented here.
+Stage 09 — Production Integration & Release covers ProjectRouter integration
+with the central deployment and release preparation. Caddy and deployment management
+for all applications belong to the separate `portfolio-deployment` repository.
 Stage 09 and the separate `develop` → `main` release PR, tag and GitHub Release
 remain separately authorized work. A green CI run or GHCR push is not a deployment.

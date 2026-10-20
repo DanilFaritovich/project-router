@@ -3,7 +3,10 @@
 ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–07 are
 complete and merged into `develop`; see [the QA report](docs/qa/STAGE07-REPORT.md).
 Stage 08 — Docker & CI/CD Foundation is in development in
-`feature/production-foundation`. Stage 09 remains planned; the site is not deployed.
+`feature/production-foundation`. Stage 09 — Production Integration & Release
+remains planned: integrate ProjectRouter with the central deployment and prepare
+its release. Caddy and deployment management for all applications belong to the
+separate `portfolio-deployment` repository. The site is not deployed.
 
 - Stack: Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Vue I18n,
   Vite SSG/Unhead and PDF.js. Git-tracked content; no backend or database.

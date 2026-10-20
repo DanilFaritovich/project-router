@@ -58,17 +58,21 @@ WhatsApp, Telegram, LinkedIn, GitHub и проекты. HTTP(S)-ссылки о�
 
 Этапы 01–07 слиты. Stage 08 в разработке; Stage 09 запланирован. Сопровождение документации не входит в этот roadmap.
 
-| Этап | Ветка                           | Название                   | Статус          |
-| ---- | ------------------------------- | -------------------------- | --------------- |
-| 01   | `chore/project-bootstrap`       | Bootstrap                  | Завершён / слит |
-| 02   | `feature/vue-foundation`        | Vue Foundation             | Завершён / слит |
-| 03   | `feature/portfolio-layout`      | Layout & Sections          | Завершён / слит |
-| 04   | `feature/projects-catalog`      | Projects Catalog           | Завершён / слит |
-| 05   | `feature/i18n-seo`              | Localization & SEO         | Завершён / слит |
-| 06   | `feature/resume-interactions`   | Resume & Interactions      | Завершён / слит |
-| 07   | `test/portfolio-quality`        | Testing & Visual QA        | Завершён / слит |
-| 08   | `feature/production-foundation` | Docker & CI/CD Foundation  | В разработке    |
-| 09   | `feature/caddy-production`      | Caddy & Production Release | Запланирован    |
+| Этап | Ветка                            | Название                         | Статус          |
+| ---- | -------------------------------- | -------------------------------- | --------------- |
+| 01   | `chore/project-bootstrap`        | Bootstrap                        | Завершён / слит |
+| 02   | `feature/vue-foundation`         | Vue Foundation                   | Завершён / слит |
+| 03   | `feature/portfolio-layout`       | Layout & Sections                | Завершён / слит |
+| 04   | `feature/projects-catalog`       | Projects Catalog                 | Завершён / слит |
+| 05   | `feature/i18n-seo`               | Localization & SEO               | Завершён / слит |
+| 06   | `feature/resume-interactions`    | Resume & Interactions            | Завершён / слит |
+| 07   | `test/portfolio-quality`         | Testing & Visual QA              | Завершён / слит |
+| 08   | `feature/production-foundation`  | Docker & CI/CD Foundation        | В разработке    |
+| 09   | `feature/production-integration` | Production Integration & Release | Запланирован    |
+
+Stage 09 отвечает за интеграцию ProjectRouter с центральным деплоем и подготовку
+релиза. Caddy и управление деплоем всех приложений относятся к отдельному
+репозиторию `portfolio-deployment`.
 
 После этих девяти этапов реализации отдельно выполняются release PR из `develop`
 в `main` и тег/релиз `v1.0.0` по явному разрешению. Этот переход к релизу не является
