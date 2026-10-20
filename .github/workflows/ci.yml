@@ -4,6 +4,7 @@ on:
     branches: [develop, main]
   push:
     branches: [develop, main]
+    tags: ['v*']
 permissions:
   contents: read
 concurrency:
@@ -25,3 +26,31 @@ jobs:
       - run: make ci
       - name: Ensure checks did not change source
         run: git diff --exit-code
+
+  docker:
+    name: Docker build and container smoke
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
+      - name: Validate GitHub Actions
+        run: docker run --rm -v "$PWD:/repo:ro" -w /repo rhysd/actionlint:1.7.7 -color
+      - run: make docker-test
+      - run: git diff --exit-code
+  publish:
+    name: Publish validated image
+    if: github.event_name == 'push'
+    needs: [quality, docker]
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/publish.yml

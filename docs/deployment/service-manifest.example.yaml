@@ -1,0 +1,17 @@
+# Proposed integration data for the future portfolio-deployment repository.
+# This is documentation, not an executable controller configuration.
+schemaVersion: 1
+serviceId: project-router
+image:
+  repository: ghcr.io/danilfaritovich/project-router
+  digest: null # Required: replace with a published sha256:<64 hex> digest.
+http:
+  port: 8080
+  healthcheckPath: /en/
+network:
+  name: portfolio-proxy
+  alias: project-router
+storage: stateless
+domain: null # Assigned by the central controller after owner confirmation.
+buildOrigin: null # Must match the HTTPS origin baked into the selected image.
+secrets: []
