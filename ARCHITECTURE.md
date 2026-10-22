@@ -2,13 +2,14 @@
 
 ## Current implementation
 
-Stages 01–07 are complete and merged into `develop`, including content refinement,
+Stages 01–08 are complete and merged into `develop`, including content refinement,
 Hero Portrait Integration, Localization & SEO and Resume & Interactions. The
 responsive seven-section portfolio and nine-item catalog use Vue 3, TypeScript,
 Vite 8, Tailwind CSS 4, Vue Router, Vue I18n, Vite SSG and Unhead. Six owner-supplied
 PDFs use a client-only PDF.js viewer with clickable links. Stage 07 — Testing & Visual QA is merged; see the
-[QA report](docs/qa/STAGE07-REPORT.md). Stage 08 — Docker & CI/CD Foundation is
-in development; Stage 09 and production delivery remain planned.
+[QA report](docs/qa/STAGE07-REPORT.md). Stage 08 — Docker & CI/CD Foundation is merged. Stage 09 producer integration
+and release preparation are implemented, pending review/merge; production delivery
+remains separately authorized.
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
@@ -265,16 +266,13 @@ indexing require the public environment; none is established by local preview.
 
 ## Container architecture and delivery boundaries
 
-The nine-stage [README roadmap](README.md) keeps Stage 08 in development and
-Stage 09 — Production Integration & Release planned. Stage 09 integrates
-ProjectRouter with the central deployment and prepares its release; Caddy and
-deployment management for all applications belong to the separate
-`portfolio-deployment` repository. ProjectRouter owns its image build, validation, GHCR publication
-and [integration contract](docs/deployment/CONTRACT.md), with an illustrative
-[service manifest](docs/deployment/service-manifest.example.yaml). A future
-`portfolio-deployment` repository owns the gateway, domain, external network and
-VPS container updates. Caddy, SSH/CD, controllers, other applications and rollback
-on the VPS are outside this repository.
+The nine-stage [README roadmap](README.md) records Stage 08 as merged and
+Stage 09 — Production Integration & Release preparation as implemented, pending
+review/merge. ProjectRouter owns image build/test/publication and the
+[integration contract](docs/deployment/CONTRACT.md). `portfolio-deployment` owns
+gateway, network lifecycle, application operations and manager-specific naming;
+infrastructure owns the host. The producer example manifest is not a manager
+schema. No Caddy, SSH/CD, other applications or VPS operations are implemented here.
 
 `Dockerfile` installs locked npm dependencies with digest-pinned Node 22.22.2 and
 runs Vite SSG. `VITE_SITE_ORIGIN` is a public build argument passed through existing
@@ -290,11 +288,13 @@ HTML and returns the noindex 404 document with status 404 for unknown resources.
 There is no blanket SPA fallback. The MIME mapping explicitly supports PDF.js's
 module worker. Fingerprinted assets cache immutably for one year; HTML, public
 PDF/images and crawl files revalidate. Security headers include nosniff, frame
-denial and referrer policy. Gateway HTTPS/HSTS is a future central responsibility.
+denial and referrer policy. Gateway HTTPS/HSTS is a central responsibility.
 
 Production `compose.yaml` contains only `project-router`, accepts
 `PROJECT_ROUTER_IMAGE` (immutable digest for production), exposes 8080 internally
 and joins external `portfolio-proxy` as `project-router` without host ports.
+This is a standalone producer example. The manager generates service `web` and
+alias `project-router-web`; never run both projects for the same application.
 Standalone `compose.local.yaml` uses the existing default Docker bridge and a
 loopback port.
 `make docker-build/test/run/stop` expose the operator interface. Image healthcheck
@@ -302,24 +302,39 @@ uses BusyBox wget at `http://127.0.0.1:8080/en/`; unhealthy status alone cannot
 restart a running container. Restart policy handles exit, not hung-process recovery.
 
 `tests/docker/smoke.mjs` validates actual isolated containers built by
-`scripts/docker.mjs` with unset origin and reserved HTTPS test origin, including
+`scripts/docker.mjs` with unset origin, reserved HTTPS test origin and confirmed production origin, including
 HTTP, process UID, all six PDF hashes, all generated assets, metadata/crawl files,
 restart, health and runtime contents. Rendered production Compose must have no
 published port. Tests remove only owned UUID resources and never create the
 production network. Playwright's `PLAYWRIGHT_PORT` can avoid a busy local test port.
 
 GitHub CI preserves the site `make ci` sequence, then runs actionlint and Docker
-smoke. Only successful trusted pushes call the reusable GHCR workflow with
-packages:write in publication jobs. Develop/main get full-SHA tags; separately
-authorized v* tags get a version tag. Buildx adds OCI labels and minimal provenance,
-caches layers, and reports the published digest in the log and Actions summary.
-Production consumes that digest rather than a mutable tag. Main/tag publication
-requires a confirmed origin repository variable; no domain is invented. A PR
-cannot establish actual registry publication; verify the first post-merge push.
+smoke. Successful trusted exact-SHA pushes alone call reusable publication;
+PRs never publish. Main/tag require Actions variable `VITE_SITE_ORIGIN` exactly
+`https://danil-miftakhov.dev`; main also requires the protected-ref signal.
+Effective branch rules still require independent operator review. Develop/main
+get full-SHA discovery tags; separately authorized v* tags get a version tag.
+Only protected-main artifacts are eligible under the current manager policy.
+
+Buildx publishes linux/amd64 with `mode=max`; arguments are public, never secrets.
+The Docker build validates origin-bearing SSG output. Post-push verification checks
+raw index/manifest hashes, unique amd64 child, hashed exported config and pulled runtime identity and
+origin metadata copied from an unstarted UUID container. The helper creates no
+network or running application. Negative tests reject corrupted origin/digest/platform.
+
+Pinned GitHub Artifact Attestations actions sign the exact digest with SLSA
+provenance and a custom origin/build-input predicate. OIDC signing and
+packages/attestations write permissions are limited to publication. The trusted
+reusable workflow identity, exact SHA/ref, digest, CI run/attempt and origin must
+be verified together; OCI labels or unsigned JSON alone are insufficient.
+A failed post-push step can leave an image but does not make it release eligible.
+The [release checklist](docs/deployment/RELEASE-CHECKLIST.md) defines future
+operator verification. Manager's independent collector/runtime acceptance, public
+HTTPS and actual protected-main publication are not established by local tests.
 
 No production deployment, host contact, release tag or GitHub Release is performed
-by these workflows. Stage 09, the separate `develop` → `main` release PR and
-`v1.0.0` tag/release require explicit authorization.
+by these workflows. The separate `develop` → `main` release PR and `v1.0.0`
+tag/release require explicit authorization.
 
 Task flow: branch strictly from `develop` → local commit → push → PR to
 `develop` → manual review/merge. `main` is the stable branch. Stage 01's initial

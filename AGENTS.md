@@ -1,11 +1,10 @@
 # ProjectRouter agent instructions
 
-ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–07 are
+ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–08 are
 complete and merged into `develop`; see [the QA report](docs/qa/STAGE07-REPORT.md).
-Stage 08 — Docker & CI/CD Foundation is in development in
-`feature/production-foundation`. Stage 09 — Production Integration & Release
-remains planned: integrate ProjectRouter with the central deployment and prepare
-its release. Caddy and deployment management for all applications belong to the
+Stage 09 — Production Integration & Release preparation is implemented in
+`feature/production-integration`, pending review/merge and separate release. Caddy and deployment management for
+all applications belong to the
 separate `portfolio-deployment` repository. The site is not deployed.
 
 - Stack: Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Vue I18n,
@@ -31,7 +30,8 @@ separate `portfolio-deployment` repository. The site is not deployed.
 - Node 22.22.2+ (22.x), `npm ci`; use `make fix` → targeted tests → `make check`.
   `make verify` adds SSG/HTML/Chromium checks without repeating `check`.
   CI independently runs read-only `make ci` (`check` + `verify` once each).
-  Configure `VITE_SITE_ORIGIN` only when a real production origin is known.
+  Confirmed origin: `https://danil-miftakhov.dev`, public Actions variable
+  `VITE_SITE_ORIGIN`; required exactly for main/tag publication.
 - Use `rg`, bounded output, selective file reads and focused diffs. Do not dump
   path-heavy SVGs, load all skill references or repeat successful full checks
   without a relevant change. Prefer existing PNG previews for visual inspection.
@@ -54,13 +54,14 @@ separate `portfolio-deployment` repository. The site is not deployed.
   101:101, HTTP 8080. `make docker-build`, `docker-test`, `docker-run`, `docker-stop`;
   tests own UUID resources, local Compose uses loopback and no production network.
   Production `compose.yaml` accepts `PROJECT_ROUTER_IMAGE` (deploy by digest), no
-  host ports, external `portfolio-proxy`, alias `project-router`, stateless.
+  host ports, external `portfolio-proxy`, alias `project-router`, stateless. Manager
+  generates service `web` / alias `project-router-web`; never run both Compose projects.
 - `VITE_SITE_ORIGIN` is baked into SSG; changing it requires a new image. Main/tag
   publication requires the confirmed origin in an Actions repository variable.
   CI validates site then containers; only successful trusted pushes publish GHCR.
   PRs never publish. See [deployment contract](docs/deployment/CONTRACT.md).
 - ProjectRouter owns only its image build/test/publication and integration contract.
-  Future `portfolio-deployment` owns gateway, domain, network and VPS operations.
+  `portfolio-deployment` owns gateway, domain, network and VPS operations.
   Do not add Caddy, SSH/CD, controllers or other applications here. Docker health
   status alone does not restart a hung process. No unauthorized production
   deployments, production host access, tags/releases or automatic merges.

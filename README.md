@@ -5,11 +5,11 @@
 ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio, with projects,
 developer tools, six resume PDFs and contacts. Content is tracked in Git.
 
-## Current state — Stage 08 in development
+## Current state — Stage 09 release preparation
 
-Stages 01–07 are complete and merged into `develop`. Stage 08 — Docker & CI/CD
-Foundation is in development in `feature/production-foundation`; Stage 09 remains
-planned. The [QA report](docs/qa/STAGE07-REPORT.md) records Stage 07 evidence and
+Stages 01–08 are complete and merged into `develop`. Stage 09 — Production
+Integration & Release preparation is implemented in `feature/production-integration`,
+pending review/merge and separate release authorization. The [QA report](docs/qa/STAGE07-REPORT.md) records Stage 07 evidence and
 owner checks. The responsive portfolio uses Vue 3,
 TypeScript, Vite, Tailwind CSS, Vue Router and Vue I18n. Vite SSG generates
 localized HTML at `/en/` and `/ru/`; `/` goes to `/en/`.
@@ -50,12 +50,13 @@ selection, search and a full Text Layer are outside this viewer's scope. Origina
 PDF files and the existing portfolio design are preserved.
 
 No public Live Demo is confirmed or linked. Production deployment has not been
-performed; no production origin is configured. Local SEO/readability checks cover
+performed. The confirmed build origin is `https://danil-miftakhov.dev`; it is
+configured as the public Actions repository variable `VITE_SITE_ORIGIN`. Local SEO/readability checks cover
 builds with a test origin and without an origin. No backend or database is used.
 
 ## Development roadmap
 
-Stages 01–07 are merged. Stage 08 is in development; Stage 09 remains planned. Documentation maintenance is outside this roadmap.
+Stages 01–08 are merged. Stage 09 preparation is implemented, pending review/merge. Documentation maintenance is outside this roadmap.
 
 | Stage | Branch                           | Scope                            | Status            |
 | ----- | -------------------------------- | -------------------------------- | ----------------- |
@@ -66,8 +67,8 @@ Stages 01–07 are merged. Stage 08 is in development; Stage 09 remains planned.
 | 05    | `feature/i18n-seo`               | Localization & SEO               | Complete / merged |
 | 06    | `feature/resume-interactions`    | Resume & Interactions            | Complete / merged |
 | 07    | `test/portfolio-quality`         | Testing & Visual QA              | Complete / merged |
-| 08    | `feature/production-foundation`  | Docker & CI/CD Foundation        | In development    |
-| 09    | `feature/production-integration` | Production Integration & Release | Planned           |
+| 08    | `feature/production-foundation`  | Docker & CI/CD Foundation        | Complete / merged |
+| 09    | `feature/production-integration` | Production Integration & Release | Prepared / review |
 
 Stage 09 integrates ProjectRouter with the central deployment and prepares its
 release. Caddy and deployment management for all applications belong to the
@@ -110,7 +111,7 @@ On Linux, Chromium may need system libraries:
 Development flow: `make fix` → targeted tests → `make check`; run `make verify`
 when build behavior or user journeys change.
 
-The production domain is undecided. Optionally copy `.env.example` to
+The confirmed production origin is `https://danil-miftakhov.dev`. Optionally copy `.env.example` to
 `.env.local`, set `VITE_SITE_ORIGIN` to the real HTTPS origin without a path,
 and rebuild. Without an origin, canonical, hreflang, `og:url` and sitemap are
 omitted, along with OG/Twitter image metadata and JSON-LD; localized HTML,
@@ -151,7 +152,7 @@ There is no persistent storage, HTTPS server or Caddy in this repository.
 
 ```sh
 make docker-build       # project-router:local, optional VITE_SITE_ORIGIN build arg
-make docker-test        # real containers, unset origin + https://portfolio.test
+make docker-test        # isolated containers: unset, test and production origins
 make docker-run         # standalone local Compose, http://127.0.0.1:8080
 curl -I http://127.0.0.1:8080/
 curl -f http://127.0.0.1:8080/en/ -o /dev/null
@@ -163,7 +164,8 @@ busy port or `PROJECT_ROUTER_IMAGE` to test another image/digest. Browser tests
 similarly accept `PLAYWRIGHT_PORT` if 4173 is busy. Production [compose.yaml](compose.yaml)
 has one service, no published host ports, `restart: unless-stopped`, an image-owned
 healthcheck and external `portfolio-proxy` network with alias `project-router`.
-The future deployment repository owns that network. Docker health status alone
+The central deployment repository owns that network. Its generated Compose uses
+service `web` and alias `project-router-web`; do not run producer Compose beside it. Docker health status alone
 does not restart a hung container; restart policy handles process exit.
 
 `/` returns HTTP 302 to `/en/`; EN/RU serve their SSG documents. Unknown paths
@@ -176,27 +178,29 @@ CI keeps existing site checks (`make ci`) then runs workflow validation and
 Docker/container tests. PRs publish nothing. Successful trusted pushes call the
 reusable GHCR publication workflow: `develop` → `develop-sha-<full SHA>`, `main` →
 `main-sha-<full SHA>`, separately authorized `v*` tags → exact version tag. Buildx
-uses layer caching, OCI labels and standard provenance; only publish jobs have
-`packages: write`, using `GITHUB_TOKEN`. No `latest` tag or production deployment
-is created. Deploy by `ghcr.io/danilfaritovich/project-router@sha256:<digest>` from
-the publish job's log/summary. PR checks cannot prove the first post-merge GHCR push;
-no registry digest is claimed until publication actually succeeds.
+uses layer caching and `mode=max` provenance; public build arguments must contain
+no secrets. Only publish jobs have package/attestation write and OIDC permissions.
+Pinned GitHub actions sign both build provenance and an origin predicate for the
+exact digest after checking its registry/platform identity and copied SSG bytes.
+OCI labels/plain JSON alone are insufficient evidence. No `latest` tag, automatic
+deployment, release or merge is created.
 
-`VITE_SITE_ORIGIN` is a build-time HTTPS origin without path, credentials, query
-or fragment. An unset value supports local/development builds. Setting it enables
-the existing canonical/hreflang, sitemap, JSON-LD and OG/Twitter metadata. Changing
-origin requires rebuilding the image. The real domain is undecided; before stable
-or release publication the owner must confirm it and set the Actions repository
-variable `VITE_SITE_ORIGIN`. No secret or real server setting is added here.
+Main/tag publication requires the exact Actions repository variable
+`VITE_SITE_ORIGIN=https://danil-miftakhov.dev`; main additionally requires the
+protected-ref signal. Missing/wrong origin fails before publication. Origin is
+baked into canonical/hreflang, sitemap/robots, JSON-LD and OG/Twitter metadata;
+changing it requires a new image. Local/develop builds may omit it.
 
 The [deployment contract](docs/deployment/CONTRACT.md) and
-[example manifest](docs/deployment/service-manifest.example.yaml) define service
-`project-router`, GHCR digest, HTTP 8080, network `portfolio-proxy`, alias
-`project-router`, health endpoint `/en/`, stateless storage and no basic site
-secrets. The future `portfolio-deployment` controller assigns the domain and
-updates containers behind its gateway. SSH/CD, Caddy configuration, reconciliation,
-other applications and VPS rollback are outside ProjectRouter. CI validates,
-GHCR publishes an artifact, and production deployment remains separate work.
+[release checklist](docs/deployment/RELEASE-CHECKLIST.md) explain exact-SHA CI,
+GHCR digest retrieval, signature/origin verification and manager handoff.
+The [producer example](docs/deployment/service-manifest.example.yaml) is not the
+manager's schema. `portfolio-deployment` owns its `web`/`project-router-web`
+naming, network lifecycle, gateway and operations; infrastructure owns the host.
+Producer Compose remains an independent example with alias `project-router`.
+A local build or PR check does not prove a future protected-main publication.
+No production digest or deployment is asserted by Stage 09; effective branch
+rules, first signed main publication and manager acceptance remain operator work.
 
 ## Repository map
 

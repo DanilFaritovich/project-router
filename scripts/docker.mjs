@@ -2,6 +2,7 @@ import console from 'node:console'
 import { execFileSync } from 'node:child_process'
 import process from 'node:process'
 import { randomUUID } from 'node:crypto'
+import { productionOrigin } from './verify-origin.mjs'
 import { smoke } from '../tests/docker/smoke.mjs'
 
 export function docker(...args) {
@@ -23,6 +24,8 @@ function build(image, origin) {
   docker(
     'build',
     '--quiet',
+    '--platform',
+    'linux/amd64',
     '--build-arg',
     `VITE_SITE_ORIGIN=${origin}`,
     '-t',
@@ -65,7 +68,11 @@ if (mode === 'build') {
     })
   }
   try {
-    for (const [index, origin] of ['', 'https://portfolio.test'].entries()) {
+    for (const [index, origin] of [
+      '',
+      'https://portfolio.test',
+      productionOrigin,
+    ].entries()) {
       const image = `${prefix}:${index}`
       images.push(image)
       build(image, origin)
@@ -76,7 +83,9 @@ if (mode === 'build') {
         `${prefix}-${index}`,
         '--read-only',
         '--tmpfs',
-        '/tmp:rw,noexec,nosuid,size=16m,uid=101,gid=101',
+        origin === productionOrigin
+          ? '/tmp:rw,noexec,nosuid,size=16m,mode=1777'
+          : '/tmp:rw,noexec,nosuid,size=16m,uid=101,gid=101',
         '--cap-drop',
         'ALL',
         '--security-opt',
@@ -91,7 +100,7 @@ if (mode === 'build') {
       containers.pop()
     }
     console.log(
-      'Docker smoke: both origin modes passed; owned resources removed.',
+      'Docker smoke: all three origin modes passed; owned resources removed.',
     )
   } finally {
     cleanup()

@@ -23,7 +23,17 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npx playwright install --with-deps chromium
+      - name: Validate production publication origin
+        if: github.event_name == 'push' && github.ref != 'refs/heads/develop'
+        env:
+          VITE_SITE_ORIGIN: ${{ vars.VITE_SITE_ORIGIN }}
+        run: node scripts/verify-origin.mjs --require-production
       - run: make ci
+        env:
+          VITE_SITE_ORIGIN: ${{ vars.VITE_SITE_ORIGIN }}
+      - name: Verify production HTML origin
+        if: github.event_name == 'push' && github.ref != 'refs/heads/develop'
+        run: node scripts/verify-origin.mjs dist https://danil-miftakhov.dev
       - name: Ensure checks did not change source
         run: git diff --exit-code
 
@@ -53,4 +63,6 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
+      attestations: write
     uses: ./.github/workflows/publish.yml
