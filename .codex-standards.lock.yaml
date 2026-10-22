@@ -1,0 +1,22 @@
+version: 1
+
+source:
+  repository: https://github.com/DanilFaritovich/codex-development-standards
+  ref: 6e605d0193e10f7fdacff3c3da63455067859b21
+
+profile:
+  name: vue-static-site
+  version: 2
+
+skills:
+  - task-development-workflow
+  - standards-sync
+  - code-quality
+  - vue
+  - vue-testing
+  - design-to-vue
+  - seo
+  - github-actions
+  - documentation
+
+optional_skills: []

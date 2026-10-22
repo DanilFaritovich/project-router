@@ -9,7 +9,7 @@ node_modules/
 
 # Vite, generated output, caches and reports
 dist/
-build/
+/build/
 .vite/
 .vite-inspect/
 .cache/
@@ -52,3 +52,8 @@ tmp/
 temp/
 
 # .agents/skills/, dependency lock files and design/reference/ stay tracked.
+
+.vite-ssg-temp/
+
+# Owner-provided source archive; only the six original PDFs are published.
+/Danil_Miftakhov_All_6_Resumes_EN_RU.zip

@@ -1,0 +1,347 @@
+import { test, expect } from '@playwright/test'
+
+test('external social and release links preserve the portfolio tab and scroll position', async ({
+  page,
+  context,
+}) => {
+  // Keep popup navigation deterministic and independent of external services.
+  await context.route(/^https:\/\//, (route) =>
+    route.fulfill({
+      contentType: 'text/html',
+      body: '<title>External destination</title>',
+    }),
+  )
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/en/')
+  for (const selector of [
+    '#hero .social-links a[href^="https://"]',
+    '#projects a[href*="/releases/tag/"]',
+    '#contacts .social-links a[href^="https://"]',
+  ]) {
+    const links = page.locator(selector)
+    for (const link of await links.all()) {
+      await link.scrollIntoViewIfNeeded()
+      const url = page.url()
+      const scrollY = await page.evaluate(() => window.scrollY)
+      const popupPromise = page.waitForEvent('popup')
+      await link.click()
+      const popup = await popupPromise
+      await popup.waitForLoadState()
+      expect(popup.url()).toBe(await link.getAttribute('href'))
+      expect(await popup.evaluate(() => window.opener)).toBeNull()
+      await popup.close()
+      expect(page.url()).toBe(url)
+      expect(await page.evaluate(() => window.scrollY)).toBe(scrollY)
+    }
+  }
+  expect(context.pages()).toHaveLength(1)
+})
+
+for (const width of [1440, 390, 320]) {
+  test(`Hero contact navigation, history and layout at ${width}px`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width, height: 1000 })
+    const errors: string[] = []
+    page.on('pageerror', (error) => errors.push(error.message))
+    for (const locale of ['en', 'ru']) {
+      const initial = `/${locale}/?source=hero#hero`
+      await page.goto(initial)
+      const hero = page.locator('#hero')
+      const links = hero.locator('.social-links a')
+      await expect(links).toHaveText([
+        'LinkedIn↗',
+        'GitHub↗',
+        locale === 'en' ? 'Contact↘' : 'Контакты↘',
+      ])
+      for (const [index, name] of [
+        'LinkedIn',
+        'GitHub',
+        locale === 'en' ? 'Contact' : 'Контакты',
+      ].entries()) {
+        await expect(links.nth(index)).toHaveAccessibleName(name)
+        await expect(
+          links.nth(index).locator('.external-indicator'),
+        ).toHaveAttribute('aria-hidden', 'true')
+      }
+      await expect(links.nth(0)).toHaveAttribute(
+        'href',
+        'https://www.linkedin.com/in/danil-miftakhov-55468b399/',
+      )
+      await expect(links.nth(1)).toHaveAttribute(
+        'href',
+        'https://github.com/DanilFaritovich',
+      )
+      for (const index of [0, 1])
+        await expect(links.nth(index)).toHaveAttribute('target', '_blank')
+      const contact = links.nth(2)
+      await expect(contact).toHaveAttribute(
+        'href',
+        `/${locale}/?source=hero#contacts`,
+      )
+      await expect(contact).not.toHaveAttribute('target')
+      await expect(contact).not.toHaveClass(/action/)
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth > innerWidth,
+        ),
+      ).toBe(false)
+      await hero.screenshot({
+        path: testInfo.outputPath(`hero-${locale}-${width}.png`),
+      })
+      await links.nth(0).focus()
+      await page.keyboard.press('Tab')
+      await expect(links.nth(1)).toBeFocused()
+      await page.keyboard.press('Tab')
+      await expect(contact).toBeFocused()
+      await expect(contact).toHaveCSS('outline-style', 'solid')
+      await page.keyboard.press('Enter')
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#contacts$`),
+      )
+      await expect(page.locator('#contacts-heading')).toBeFocused()
+      await expect(page.locator('#contacts-heading')).toBeInViewport()
+      await page.goBack()
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#hero$`),
+      )
+      await expect(hero).toBeInViewport()
+      await page.goForward()
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#contacts$`),
+      )
+      await expect(page.locator('#contacts-heading')).toBeInViewport()
+      await page.reload()
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/\\?source=hero#contacts$`),
+      )
+      await expect(page.locator('html')).toHaveAttribute('lang', locale)
+    }
+    expect(errors).toEqual([])
+  })
+}
+
+for (const width of [1440, 768, 390, 320]) {
+  test(`Contacts groups, keyboard navigation and wrapping at ${width}px`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width, height: 1000 })
+    for (const locale of ['en', 'ru']) {
+      await page.goto(`/${locale}/`)
+      const contacts = page.locator('#contacts')
+      const links = contacts.locator('a')
+      await expect(links).toHaveCount(6)
+      await expect(contacts.locator('.action-primary')).toHaveText('Email')
+      await expect(contacts.locator('.contact-profiles .action')).toHaveCount(0)
+      await expect(
+        contacts.locator('.contact-profiles [aria-hidden="true"]'),
+      ).toHaveCount(3)
+      await expect(links.first()).toHaveAttribute(
+        'href',
+        'mailto:danilfaritovichwork@gmail.com',
+      )
+      await links.first().focus()
+      for (let index = 0; index < 6; index++) {
+        const link = links.nth(index)
+        await expect(link).toBeFocused()
+        const geometry = await link.evaluate((element) => {
+          const box = element.getBoundingClientRect()
+          const style = getComputedStyle(element)
+          return {
+            left: box.left,
+            right: box.right,
+            height: box.height,
+            outline: style.outlineStyle,
+          }
+        })
+        expect(geometry.left).toBeGreaterThanOrEqual(0)
+        expect(geometry.right).toBeLessThanOrEqual(width)
+        expect(geometry.height).toBeGreaterThanOrEqual(44)
+        // Tab navigation must expose the shared visible focus indicator.
+        if (index > 0) expect(geometry.outline).toBe('solid')
+        if (index < 5) await page.keyboard.press('Tab')
+      }
+      await page.keyboard.press('Shift+Tab')
+      await expect(links.nth(4)).toBeFocused()
+      await expect(links.nth(4)).toHaveCSS('outline-style', 'solid')
+      await links.nth(4).evaluate((element) => (element as HTMLElement).blur())
+      const layout = await contacts.evaluate((section) => {
+        const direct = section
+          .querySelector('.contact-group')!
+          .getBoundingClientRect()
+        const profiles = section
+          .querySelector('.contact-profiles')!
+          .getBoundingClientRect()
+        return {
+          overflow: document.documentElement.scrollWidth > innerWidth,
+          separated: profiles.top >= direct.bottom,
+          clipped: [...section.querySelectorAll('p, h2, h3')].some(
+            (element) => element.scrollWidth > element.clientWidth,
+          ),
+        }
+      })
+      expect(layout).toEqual({
+        overflow: false,
+        separated: true,
+        clipped: false,
+      })
+      await contacts.screenshot({
+        path: testInfo.outputPath(`contacts-${locale}-${width}.png`),
+      })
+    }
+  })
+}
+
+for (const width of [320, 375, 390, 768, 1024, 1440]) {
+  test(`layout keeps consistent content spacing without overflow at ${width}px`, async ({
+    page,
+  }) => {
+    const errors: string[] = []
+    page.on('pageerror', (error) => errors.push(error.message))
+    page.on('console', (message) => {
+      if (['warning', 'error'].includes(message.type()))
+        errors.push(message.text())
+    })
+    await page.setViewportSize({ width, height: 900 })
+    for (const locale of ['en', 'ru']) {
+      await page.goto(`/${locale}/`)
+      const geometry = await page.evaluate(() => {
+        const main = document.querySelector('main')!
+        const rail = document.querySelector('.desktop-rail')!
+        return {
+          overflow: document.documentElement.scrollWidth > innerWidth,
+          railRight: rail.getBoundingClientRect().right,
+          sectionLefts: [...main.querySelectorAll(':scope > section')].map(
+            (section) => section.getBoundingClientRect().left,
+          ),
+        }
+      })
+      expect(geometry.overflow).toBe(false)
+      for (const card of await page.locator('.portfolio-card').all()) {
+        await card.scrollIntoViewIfNeeded()
+        const image = card.locator('img')
+        if (await image.count()) {
+          await image.evaluate((el) => (el as HTMLImageElement).decode())
+        }
+        const copy = await card.locator('.card-copy').boundingBox()
+        const stack = await card.locator('.stack').boundingBox()
+        const actions = await card.locator('.card-actions').boundingBox()
+        expect(stack!.y).toBeGreaterThanOrEqual(copy!.y + copy!.height)
+        expect(actions!.y).toBeGreaterThanOrEqual(stack!.y + stack!.height)
+        expect(actions!.x).toBeCloseTo(copy!.x, 0)
+        const buttons = await card.locator('.card-actions a').all()
+        if (buttons.length === 2) {
+          const first = await buttons[0]!.boundingBox()
+          const second = await buttons[1]!.boundingBox()
+          expect(second!.y).toBe(first!.y)
+          expect(second!.x).toBeGreaterThan(first!.x)
+        }
+        if (await image.count()) {
+          await expect(image).toHaveJSProperty('complete', true)
+          expect(
+            await image.evaluate((el) => (el as HTMLImageElement).naturalWidth),
+          ).toBeGreaterThan(0)
+          await expect(image).not.toHaveAttribute('alt', '')
+          const preview = await card.locator('.project-preview').boundingBox()
+          if (width >= 1200) {
+            expect(preview!.x).toBeGreaterThanOrEqual(copy!.x + copy!.width)
+            expect(actions!.x + actions!.width).toBeLessThanOrEqual(preview!.x)
+          } else {
+            expect(preview!.y).toBeGreaterThanOrEqual(stack!.y + stack!.height)
+            expect(actions!.y).toBeGreaterThanOrEqual(
+              preview!.y + preview!.height,
+            )
+          }
+        } else {
+          await expect(card.locator('.project-preview')).toHaveCount(0)
+          expect(stack!.width).toBeCloseTo(copy!.width, 0)
+        }
+      }
+
+      const expectedLeft =
+        width >= 768
+          ? geometry.railRight + (width >= 1200 ? 48 : 32)
+          : width < 360
+            ? 20
+            : 24
+      for (const left of geometry.sectionLefts) expect(left).toBe(expectedLeft)
+    }
+    expect(errors).toEqual([])
+  })
+}
+
+test('desktop section tracking and language switching preserve the visible section', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/en/')
+  const navigation = page.locator('.desktop-rail .section-navigation')
+  for (const id of [
+    'about',
+    'skills',
+    'projects',
+    'tools',
+    'resume',
+    'contacts',
+  ]) {
+    await navigation.locator(`a[href$="#${id}"]`).click()
+    await expect(
+      navigation.locator('[aria-current="location"]'),
+    ).toHaveAttribute('href', `/en/#${id}`)
+  }
+  // A language switch follows manual scrolling as well as clicked anchors.
+  await page.locator('#projects').evaluate((el) => el.scrollIntoView())
+  await expect(navigation.locator('[aria-current="location"]')).toHaveAttribute(
+    'href',
+    '/en/#projects',
+  )
+  await page.locator('.desktop-rail a[lang="ru"]').click()
+  await expect(page).toHaveURL(/\/ru\/#projects$/)
+  await expect(page.locator('#projects-heading')).toHaveText(
+    'Избранные проекты',
+  )
+  await page.locator('#hero').evaluate((el) => el.scrollIntoView())
+  expect(page.context().pages()).toHaveLength(1)
+  await expect(page.locator('.desktop-rail a[lang="en"]')).toHaveAttribute(
+    'href',
+    '/en/',
+  )
+})
+
+test('mobile menu supports focus, Escape, section navigation and language selection', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 615 })
+  await page.goto('/en/')
+  const trigger = page.locator('.menu-trigger')
+  await trigger.click()
+  const dialog = page.getByRole('dialog')
+  const close = dialog.getByRole('button', { name: 'Close menu' })
+  await expect(close).toBeFocused()
+  await page.keyboard.press('Shift+Tab')
+  await expect(dialog.locator('a[lang="ru"]')).toBeFocused()
+  await page.keyboard.press('Tab')
+  await expect(close).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toHaveCount(0)
+  await expect(trigger).toBeFocused()
+  await trigger.click()
+  await dialog.locator('a[href$="#resume"]').click()
+  await expect(dialog).toHaveCount(0)
+  await expect(page.locator('#resume-heading')).toBeFocused()
+  await expect(page).toHaveURL(/#resume$/)
+  await page.locator('.mobile-topbar a[lang="ru"]').click()
+  await expect(page).toHaveURL(/\/ru\/#resume$/)
+  await trigger.click()
+  await expect(
+    dialog.getByRole('button', { name: 'Закрыть меню' }),
+  ).toBeVisible()
+  await dialog.locator('a[href$="#contacts"]').click()
+  await expect(page.locator('#contacts-heading')).toBeFocused()
+  await expect(dialog).toHaveCount(0)
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true)
+})

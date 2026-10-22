@@ -1,0 +1,68 @@
+name: CI
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+    tags: ['v*']
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  quality:
+    name: Quality and static build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - name: Validate production publication origin
+        if: github.event_name == 'push' && github.ref != 'refs/heads/develop'
+        env:
+          VITE_SITE_ORIGIN: ${{ vars.VITE_SITE_ORIGIN }}
+        run: node scripts/verify-origin.mjs --require-production
+      - run: make ci
+        env:
+          VITE_SITE_ORIGIN: ${{ vars.VITE_SITE_ORIGIN }}
+      - name: Verify production HTML origin
+        if: github.event_name == 'push' && github.ref != 'refs/heads/develop'
+        run: node scripts/verify-origin.mjs dist https://danil-miftakhov.dev
+      - name: Ensure checks did not change source
+        run: git diff --exit-code
+
+  docker:
+    name: Docker build and container smoke
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
+      - name: Validate GitHub Actions
+        run: docker run --rm -v "$PWD:/repo:ro" -w /repo rhysd/actionlint:1.7.7 -color
+      - run: make docker-test
+      - run: git diff --exit-code
+  publish:
+    name: Publish validated image
+    if: github.event_name == 'push'
+    needs: [quality, docker]
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    uses: ./.github/workflows/publish.yml

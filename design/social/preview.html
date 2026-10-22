@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="{{locale}}">
+  <meta charset="utf-8" />
+  <title>ProjectRouter social preview</title>
+  <style>
+    @font-face { font-family: Inter; font-weight: 400; src: url(data:font/otf;base64,{{regular}}); }
+    @font-face { font-family: Inter; font-weight: 700; src: url(data:font/otf;base64,{{bold}}); }
+    * { box-sizing: border-box; }
+    body { margin: 0; width: 1200px; height: 630px; background: #f5f3ee; color: #181818; font-family: Inter, sans-serif; padding: 60px 68px; }
+    header { font-size: 30px; font-weight: 700; letter-spacing: -1px; }
+    header span { color: #c98a1d; }
+    main { margin-top: 62px; }
+    h1 { margin: 0; font-size: 80px; line-height: 1.04; letter-spacing: -3px; font-weight: 700; }
+    p { margin: 30px 0 0; font-size: 30px; line-height: 1.35; color: #66625b; letter-spacing: -0.5px; }
+    img { position: absolute; right: 68px; top: 60px; width: 363px; height: 484px; border-radius: 8px; }
+    footer { position: absolute; left: 68px; bottom: 60px; width: 64px; height: 4px; background: #c98a1d; }
+  </style>
+  <body>
+    <header>DM<span>.</span></header>
+    <main><h1>{{name}}</h1><p>{{role}}</p></main>
+    <img src="data:image/webp;base64,{{portrait}}" alt="" />
+    <footer></footer>
+  </body>
+</html>
