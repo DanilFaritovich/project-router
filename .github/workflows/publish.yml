@@ -105,6 +105,7 @@ jobs:
           predicate-type: https://github.com/DanilFaritovich/project-router/attestations/build-origin/v1
           predicate-path: release-evidence/build-origin.json
           push-to-registry: true
+          create-storage-record: false
       - uses: actions/upload-artifact@v4
         with:
           name: release-evidence-${{ github.sha }}-${{ github.run_attempt }}
