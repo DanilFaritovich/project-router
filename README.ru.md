@@ -2,237 +2,210 @@
 
 [English](README.md) · [Русский](README.ru.md)
 
-ProjectRouter — EN/RU инженерное портфолио Данила Мифтахова с проектами,
-инструментами разработчика, шестью PDF резюме и контактами. Контент хранится в Git.
+ProjectRouter — двуязычное инженерное портфолио Данила Мифтахова: единая точка
+для знакомства с опытом, изучения исходного кода проектов и скачивания подходящего
+резюме. Проект также демонстрирует статическое Vue-приложение с локализованным HTML,
+доступными интеракциями, автоматизированным QA и проверяемой доставкой контейнеров.
 
-## Текущее состояние — Stage 09: подготовка релиза
+**Статус релиза:** этапы 01–09 завершены и интегрированы в `develop`.
+Метаданные проекта подготовлены для первого релиза **v1.0.0**; версия ещё не
+выпущена и не развёрнута в production. Существующий [release PR #14](https://github.com/DanilFaritovich/project-router/pull/14)
+связывает `develop → main`. Публичный Live Demo не подтверждён.
 
-Этапы 01–08 завершены и слиты в `develop`. Подготовка Stage 09 — Production
-Integration & Release реализована в `feature/production-integration`; ожидаются
-review/merge и отдельное разрешение на релиз.
-[QA-отчёт](docs/qa/STAGE07-REPORT.md) содержит свидетельства Stage 07 и проверки
-владельца. Адаптивное портфолио использует Vue 3,
-TypeScript, Vite, Tailwind CSS, Vue Router и Vue I18n. Vite SSG генерирует
-локализованные HTML по `/en/` и `/ru/`; `/` ведёт на `/en/`.
+[Скриншот desktop](docs/qa/artifacts/page-ru-1440.webp) ·
+[Скриншот mobile](docs/qa/artifacts/page-ru-390.webp) ·
+[PDF viewer](docs/qa/artifacts/pdf-ru-390.webp)
 
-- Семь секций: Hero, About, Skills, Projects, Developer Tools, Resume и Contacts.
-- Hero использует фотографию владельца в локальных оптимизированных WebP-файлах,
-  локализованный alt и адаптивные `srcset`/sizes. About разделяет коммерческий опыт,
-  фриланс и личные инженерные проекты; Skills содержит восемь групп.
-- Каталог содержит три Featured Projects, три More Projects и три Developer Tools
-  с проверенными GitHub-адресами и четырьмя явными ссылками Release на версии.
-  Четыре реальных скриншота проектов локально оптимизированы в WebP.
-- Десктопная навигация по секциям и мобильное меню поддерживают переключение EN/RU
-  с сохранением видимой секции, query/hash и истории Back/Forward; контакты
-  ведут на социальные профили владельца.
-- Локализованные title/description, язык HTML, OG/Twitter, self-canonical,
-  взаимные hreflang и x-default, robots/sitemap и безопасный Person/WebSite JSON-LD.
-  Добавлены два локальных social preview PNG 1200×630. Абсолютные метаданные
-  сайта требуют явно заданного HTTPS origin.
-- Детерминированная проверка AI/agent readability извлекает профессиональные факты
-  из готового EN/RU HTML, включая девять ссылок на исходники и честный статус PDF.
-  Она не моделирует поисковую систему и не гарантирует AI-рекомендаций.
-- ESLint, Prettier, TypeScript, Vitest, Playwright, SSG/build-проверки и GitHub
-  Actions обеспечивают автоматические проверки качества. Исходные дизайн-референсы сохранены.
+Эти существующие браузерные снимки взяты из [QA-отчёта Stage 07](docs/qa/STAGE07-REPORT.md);
+они предшествуют описанной в нём корректировке отступов.
 
-Три специализации резюме — Backend, AI / LLM и Data / ETL — представлены
-оригинальными английскими и русскими PDF владельца в `public/resumes/`
-(шесть двухстраничных файлов). «Открыть PDF» показывает доступное с клавиатуры
-модальное окно с навигацией по страницам, масштабированием, адаптивным Fit width,
-состояниями загрузки/ошибки/повтора, скачиванием и ссылкой на исходный файл.
-Язык документа изначально совпадает с языком сайта, затем переключается независимо;
-просмотр и скачивание всегда используют выбранный документ. PDF.js и локальный
-worker загружаются только при открытии просмотра.
+## Возможности
 
-URL-аннотации PDF обеспечивают кликабельные ссылки на личный сайт, Email (`mailto:`),
-WhatsApp, Telegram, LinkedIn, GitHub и проекты. HTTP(S)-ссылки открываются в новой
-вкладке с `noopener noreferrer`; остальные URL-схемы и PDF-действия исключены.
-Ссылки совпадают с отображаемой страницей при любом масштабе и доступны с клавиатуры.
-Выделение текста, поиск и полноценный Text Layer не входят в возможности просмотрщика.
-Исходные PDF и существующий дизайн портфолио сохранены.
+- Семь адаптивных секций: Hero, About, Skills, Projects, Developer Tools,
+  Resume и Contacts; коммерческий опыт, фриланс и личные проекты разделены.
+- Типизированный каталог в Git: три основных проекта, три дополнительных и
+  три инструмента разработчика, ссылки на исходники, четыре ссылки на конкретные
+  релизы и четыре локально оптимизированных скриншота. Отдельный сервис каталога не нужен.
+- Полные EN/RU тексты по `/en/` и `/ru/`. Смена языка сохраняет видимую секцию
+  и query/hash; работают Back/Forward браузера и прямые ссылки.
+- Предварительно сгенерированные локализованные HTML, метаданные, social previews
+  и зависящие от origin canonical/hreflang, sitemap и Person/WebSite structured data.
+- Шесть оригинальных EN/RU PDF для Backend, AI / LLM и Data / ETL. Отложенно
+  загружаемый PDF.js viewer поддерживает независимый язык документа, страницы,
+  масштаб, fit width, скачивание, ссылку на оригинал и состояния загрузки/ошибки/повтора.
+- Клавиатурная навигация, skip link, удержание/возврат фокуса меню и модального окна;
+  адаптивная вёрстка проверена от 320 до 1440px на обоих языках.
 
-Публичный Live Demo не подтверждён, ссылок на него нет. Production-деплой
-не выполнен. Подтверждённый build origin — `https://danil-miftakhov.dev`;
-он задан публичной Actions repository variable `VITE_SITE_ORIGIN`. Локальные SEO/readability-проверки
-покрывают сборки с тестовым origin и без origin. Backend и база данных не используются.
+## Архитектура
 
-## План разработки
+| Решение                              | Назначение                                                               |
+| ------------------------------------ | ------------------------------------------------------------------------ |
+| Vue 3 + TypeScript + Vite 8          | Типизированный компонентный UI и общие инструменты разработки/сборки     |
+| Tailwind CSS 4                       | Общие токены темы и адаптивные раскладки                                 |
+| Vue Router + Vue I18n                | Язык из URL и перевод видимых текстов и подписей доступности             |
+| Vite SSG + Unhead                    | Доступные краулерам HTML и метаданные до JavaScript, затем гидратация    |
+| Контент в Git                        | Ревью изменений текстов/каталога без backend, БД или CMS                 |
+| Отложенный PDF.js + локальный worker | Интерактивные PDF загружаются только при открытии и не исполняются в SSG |
 
-Этапы 01–08 слиты. Подготовка Stage 09 реализована, ожидает review/merge. Сопровождение документации не входит в этот roadmap.
+`src/content/` содержит метаданные каталога/резюме, `src/locales/` — EN/RU тексты.
+`src/components/` и `src/views/` формируют UI, `src/router/` управляет языковыми
+маршрутами, `src/seo/` — метаданными. `src/pdf/` и `src/components/resume/`
+изолируют клиентский viewer. SSR на каждый запрос и API-слоя нет.
 
-| Этап | Ветка                            | Название                         | Статус          |
-| ---- | -------------------------------- | -------------------------------- | --------------- |
-| 01   | `chore/project-bootstrap`        | Bootstrap                        | Завершён / слит |
-| 02   | `feature/vue-foundation`         | Vue Foundation                   | Завершён / слит |
-| 03   | `feature/portfolio-layout`       | Layout & Sections                | Завершён / слит |
-| 04   | `feature/projects-catalog`       | Projects Catalog                 | Завершён / слит |
-| 05   | `feature/i18n-seo`               | Localization & SEO               | Завершён / слит |
-| 06   | `feature/resume-interactions`    | Resume & Interactions            | Завершён / слит |
-| 07   | `test/portfolio-quality`         | Testing & Visual QA              | Завершён / слит |
-| 08   | `feature/production-foundation`  | Docker & CI/CD Foundation        | Завершён / слит |
-| 09   | `feature/production-integration` | Production Integration & Release | Готов / review  |
+PDF-ссылки разрешают только HTTP(S)/mailto; HTTP(S) открывается с `noopener noreferrer`.
+PDF scripts/actions исключены. Canvas и аннотации ссылок остаются совмещёнными при
+смене страницы, масштаба и размера окна; ресурсы документа/worker освобождаются при
+закрытии. Шесть исходных PDF в `public/resumes/` сохранены без изменений.
 
-Stage 09 отвечает за интеграцию ProjectRouter с центральным деплоем и подготовку
-релиза. Caddy и управление деплоем всех приложений относятся к отдельному
-репозиторию `portfolio-deployment`.
+Границы модулей, потоки данных и покрытие тестами описаны в [ARCHITECTURE.md](ARCHITECTURE.md).
+[design/DESIGN.md](design/DESIGN.md) сохраняет исторический замысел дизайна;
+это не спецификация финального поведения.
 
-После этих девяти этапов реализации отдельно выполняются release PR из `develop`
-в `main` и тег/релиз `v1.0.0` по явному разрешению. Этот переход к релизу не является
-десятым этапом реализации. Production-деплой также требует отдельного разрешения.
+## Быстрый старт
 
-## Разработка и документация
-
-Рабочие ветки создаются строго от `develop`; локальный commit, push и PR в
-`develop` разрешены владельцем. Merge выполняется вручную; force push запрещён.
-Требуется Node 22.22.2 или более новый patch Node 22 (см. `.nvmrc`) и npm.
+Требуются Node **22.22.2+ в пределах 22.x** ([.nvmrc](.nvmrc)) и npm.
 
 ```sh
+git clone https://github.com/DanilFaritovich/project-router.git
+cd project-router
 npm ci
-npm run dev             # локальный Vite, /en/ и /ru/
-npm run build           # статический сайт в dist/
-npm run preview         # локальная проверка production-сборки
-make fix                # безопасное форматирование и lint autofix
-npm test -- tests/unit/pdf-links.unit.spec.ts tests/integration/resume.integration.spec.ts
-make check              # lint, формат, типы, unit/integration
-npx playwright install chromium
-make verify             # SSG build, HTML и браузерный smoke
-make ci                 # check + verify, без повторов и исправления исходников
-
-# Дополнительные режимы SEO-проверок; portfolio.test — только локальный тест.
-VITE_SITE_ORIGIN=https://portfolio.test make verify
-VITE_SITE_ORIGIN= npm run build
-VITE_SITE_ORIGIN= npm run test:build
-VITE_SITE_ORIGIN= npx playwright test tests/e2e/foundation.e2e.spec.ts tests/e2e/localization.e2e.spec.ts
-# Адресный readability-аудит текущего dist/ (также входит в test:build):
-node --test tests/build/readability.test.mjs
+npm run dev
 ```
 
-В Linux для Chromium могут потребоваться системные библиотеки:
-`npx playwright install --with-deps chromium` (CI устанавливает их автоматически).
-Порядок разработки: `make fix` → целевые тесты → `make check`; `make verify`
-выполняется при изменениях сборки и пользовательских сценариев.
-
-Подтверждённый production origin — `https://danil-miftakhov.dev`. При необходимости скопируйте `.env.example`
-в `.env.local` и задайте `VITE_SITE_ORIGIN` как реальный HTTPS origin без пути,
-затем пересоберите сайт. Без origin canonical, hreflang, `og:url` и sitemap
-не генерируются, как и метаданные изображений OG/Twitter и JSON-LD;
-локализованные HTML, текстовые OG/Twitter и разрешающий robots продолжают работать.
-Хостинг должен раздавать `/en/index.html` и `/ru/index.html` напрямую и возвращать
-404 для неизвестных адресов. Docker-сервер возвращает HTTP redirect в корне; обычный статический preview
-сохраняет HTML meta-refresh. Live SEO проверяется после доставки.
-В GitHub рекомендуется сделать `Quality and static build` и `Docker build and container smoke` обязательными проверками
-веток; настройки защиты веток вручную задаёт администратор.
-
-Реализованы локально: статический HTML, SEO metadata, crawl artifacts, social
-images, JSON-LD и автоматические проверки. [Проверки SEO и readability](ARCHITECTURE.md#seo-and-agent-readability-checks)
-описывают границы валидации и доступные агентам факты.
-`llms.txt` намеренно не добавлен: конкретный потребитель и дополнительные сведения
-сверх HTML не найдены. Существующие `User-agent: *` / `Allow: /` разрешают обход
-без новых правил для отдельных ботов и изменения политики обучения моделей.
-
-После deployment необходимы проверки публичного HTTPS и настоящего `VITE_SITE_ORIGIN`,
-HTTP redirects/status codes, прямой раздачи локализованных документов, публичных
-social previews, доступа краулеров, реальной индексации и подтверждение прав/
-отправка sitemap в Search Console/webmaster tools. Локальные проверки не подтверждают
-ни один из этих production-результатов.
-
-- [AGENTS.md](AGENTS.md): процесс Codex и проектные инструкции.
-- [ARCHITECTURE.md](ARCHITECTURE.md): реализованное портфолио, границы системы, маршруты и качество.
-- [design/DESIGN.md](design/DESIGN.md) и [пояснения к референсам](design/reference/README.md): дизайн-спецификация.
-- [.agents/skills/](.agents/skills/) и [lock стандартов](.codex-standards.lock.yaml): девять полных пакетов из
-  [Codex Development Standards](https://github.com/DanilFaritovich/codex-development-standards),
-  ветка `develop`, профиль `vue-static-site` v2, инструкция `bootstrap/vue-static-site.md`.
-  Docker, CD и backend-скиллы не установлены.
-
-## Docker и GHCR foundation
-
-Multi-stage [Dockerfile](Dockerfile) использует Node 22.22.2 с закреплённым digest
-для `npm ci` и Vite SSG, затем Nginx Unprivileged на HTTP 8080 под UID/GID 101:101.
-Runtime содержит статические файлы без Node, исходников Vue и build-зависимостей.
-Compose включает read-only filesystem, временный tmpfs и сброс capabilities.
-Постоянное хранилище, HTTPS-сервер и Caddy в этом репозитории отсутствуют.
+Откройте локальный URL Vite по `/en/` или `/ru/`.
 
 ```sh
-make docker-build       # project-router:local, необязательный build arg VITE_SITE_ORIGIN
-make docker-test        # изолированные контейнеры: без origin, с тестовым и production origin
-make docker-run         # отдельный локальный Compose, http://127.0.0.1:8080
-curl -I http://127.0.0.1:8080/
-curl -f http://127.0.0.1:8080/en/ -o /dev/null
+npm run build      # статические файлы в dist/
+npm run preview    # локальный просмотр готовой сборки
+```
+
+При необходимости скопируйте [.env.example](.env.example) в `.env.local` и задайте
+`VITE_SITE_ORIGIN` как HTTPS origin без пути, затем пересоберите проект.
+Подтверждённый production build origin — `https://danil-miftakhov.dev`; это
+конфигурация, а не подтверждение работающего сайта. Без origin доступны
+локализованный HTML и текстовые метаданные; canonical/hreflang, абсолютные social
+URL, JSON-LD и sitemap не генерируются. Origin публичен и встроен в SSG;
+его изменение требует пересборки.
+
+## Качество и тестирование
+
+```sh
+make fix                         # безопасные исправления ESLint и Prettier
+make check                       # lint, формат, типы, Vitest, production-contract tests
+npx playwright install chromium
+make verify                      # SSG build, готовые HTML/ассеты, сценарии Chromium
+make ci                          # check + verify по одному разу; read-only проверки
+```
+
+В Linux команда `npx playwright install --with-deps chromium` также устанавливает
+системные библиотеки. Для целевого теста используйте `npm test -- <test-file>`.
+`VITE_SITE_ORIGIN=https://portfolio.test make verify` локально проверяет SEO,
+зависящее от origin; зарезервированный тестовый домен не является адресом deployment.
+
+Тесты покрывают контракты каталога/локализации, HTML без JavaScript, навигацию/историю,
+мобильное меню, все шесть настоящих PDF, байты скачанных файлов, геометрию ссылок,
+фокус, повтор загрузки и гонки ресурсов. [QA-отчёт](docs/qa/STAGE07-REPORT.md)
+содержит EN/RU матрицу размеров экрана, axe-проверки, визуальное ревью, исторические
+результаты и ограничения. Автоматические проверки доступности не являются
+сертификацией WCAG; readability-проверки не подтверждают квалификацию, поисковые
+позиции или AI-рекомендации.
+
+## Docker и доставка
+
+[Dockerfile](Dockerfile) использует стадии Node → Nginx Unprivileged с закреплёнными
+digest. Runtime раздаёт статику под UID/GID **101:101** на HTTP **8080**, без Node
+и build-зависимостей. Compose использует read-only root, временный tmpfs,
+сброс capabilities и no-new-privileges; постоянное хранилище не требуется.
+
+```sh
+make docker-build    # нужны Docker Engine, Compose v2 и Buildx
+make docker-test     # изолированные origin/HTTP/security/PDF проверки контейнеров
+make docker-run      # локальный просмотр: http://127.0.0.1:8080
 make docker-stop
 ```
 
-Локальному Compose не нужна production-сеть. `PROJECT_ROUTER_PORT` меняет занятый
-порт, `PROJECT_ROUTER_IMAGE` позволяет проверить другой образ/digest. Браузерные
-тесты принимают `PLAYWRIGHT_PORT`, если занят 4173. Production [compose.yaml](compose.yaml)
-содержит один сервис без публикации host-портов, `restart: unless-stopped`,
-healthcheck из образа и внешнюю сеть `portfolio-proxy` с alias `project-router`.
-Сетью управляет центральный deployment-репозиторий. Его Compose использует
-service `web` и alias `project-router-web`; не запускайте producer Compose рядом с ним. Docker health status сам по себе
-не перезапускает зависший контейнер; restart policy обрабатывает выход процесса.
+Локальный Compose использует loopback и не требует production-сети.
+`PROJECT_ROUTER_PORT` меняет порт. Nginx перенаправляет `/` на `/en/` (302),
+напрямую отдаёт локализованные SSG-файлы и возвращает 404 для неизвестных путей
+без SPA fallback.
 
-`/` возвращает HTTP 302 на `/en/`; EN/RU отдают собственные SSG-документы.
-Неизвестные пути возвращают HTTP 404 без SPA fallback. PDF остаются неизменными.
-JS (включая `.mjs` PDF.js), CSS и изображения имеют корректные MIME types.
-Ресурсы с fingerprint используют immutable cache; HTML, crawl files и публичные
-ресурсы перевалидируются. Ответы включают nosniff, запрет встраивания во frame
-и referrer policy.
+[GitHub Actions](.github/workflows/ci.yml) запускает `Quality and static build`,
+затем `Docker build and container smoke`. PR ничего не публикует. После успеха
+обоих заданий для одного SHA доверенного push [reusable publish workflow](.github/workflows/publish.yml)
+публикует `linux/amd64` в `ghcr.io/danilfaritovich/project-router`:
 
-CI сохраняет существующие проверки сайта (`make ci`), затем проверяет workflows,
-Docker и контейнеры. PR ничего не публикует. Успешные доверенные push вызывают
-reusable GHCR workflow: `develop` → `develop-sha-<полный SHA>`, `main` →
-`main-sha-<полный SHA>`, отдельно авторизованные теги `v*` → точный тег версии.
-Buildx использует layer cache и provenance `mode=max`; публичные build arguments
-не должны содержать секреты. Только publish jobs получают запись packages/attestations
-и OIDC permissions. Закреплённые GitHub actions подписывают build provenance и
-origin predicate для точного digest после проверки registry/platform identity
-и скопированных SSG-файлов. OCI labels и обычный JSON сами по себе недостаточны.
-Тег `latest`, автоматические deployment, release и merge не создаются.
+- `develop` → `develop-sha-<полный SHA>`;
+- `main` → `main-sha-<полный SHA>`;
+- отдельно разрешённые теги `v*` → точный тег версии; тега `latest` нет.
 
-Публикация main/tag требует точного значения Actions repository variable
-`VITE_SITE_ORIGIN=https://danil-miftakhov.dev`; main дополнительно требует
-protected-ref signal. Отсутствующий/неверный origin блокирует публикацию заранее.
-Origin встроен в canonical/hreflang, sitemap/robots, JSON-LD и OG/Twitter metadata;
-его смена требует нового образа. Local/develop-сборки могут обходиться без него.
+Публикация проверяет registry digest/platform и встроенные метаданные origin,
+затем через GitHub OIDC/Sigstore подписывает SLSA provenance и собственную
+origin/build-input attestation для этого digest. Потребитель совместно проверяет
+подписи, source SHA/ref, signer workflow и origin; тегов, OCI labels и неподписанного
+JSON недостаточно. Main/tag publication требует точного значения публичной Actions
+variable `VITE_SITE_ORIGIN=https://danil-miftakhov.dev`; main также требует protected
+ref. Образ, оставшийся после ошибки post-push проверки, не допускается к релизу.
 
-[Контракт развёртывания](docs/deployment/CONTRACT.md) и
-[release checklist](docs/deployment/RELEASE-CHECKLIST.md) описывают exact-SHA CI,
-получение GHCR digest, проверку подписей/origin и передачу manager.
-[Пример producer](docs/deployment/service-manifest.example.yaml) не является
-схемой manager. `portfolio-deployment` владеет именами `web`/`project-router-web`,
-сетями, gateway и операциями; infrastructure владеет хостом. Producer Compose
-остаётся независимым примером с alias `project-router`. Локальная сборка или PR CI
-не доказывает будущую публикацию из защищённой main. Stage 09 не заявляет
-production digest или deployment; проверка правил веток, первой подписанной
-публикации main и приёмка manager остаются задачами оператора.
+| Репозиторий                                                                                           | Ответственность                                                                                  |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| ProjectRouter                                                                                         | Статическое приложение, сборка/проверка/публикация образа и HTTP-контракт интеграции             |
+| [portfolio-deployment](https://github.com/DanilFaritovich/portfolio-deployment)                       | Регистрация/развёртывание приложений, gateway/Caddy, маршрутизация домена, сети и восстановление |
+| [portfolio-server-infrastructure](https://github.com/DanilFaritovich/portfolio-server-infrastructure) | Подготовка и усиление защиты хоста через Ansible                                                 |
 
-## Структура репозитория
+Production использует неизменяемый digest образа. Сейчас manager допускает
+артефакты protected main, а не develop/tag images. Он генерирует service `web` /
+alias `project-router-web`; producer [compose.yaml](compose.yaml) — отдельный
+пример с alias `project-router`. Не запускайте оба проекта для этого приложения.
+[Deployment contract](docs/deployment/CONTRACT.md) и
+[release checklist](docs/deployment/RELEASE-CHECKLIST.md) описывают проверку и передачу.
+Эти workflows не выполняют deployment, merge PR, создание тегов или GitHub Releases.
 
-| Путь                                | Назначение                                                        |
-| ----------------------------------- | ----------------------------------------------------------------- |
-| `src/components/`, `src/views/`     | Семь секций, навигация, карточки каталога и модальное окно резюме |
-| `src/content/`, `src/locales/`      | Типизированные проекты/резюме и EN/RU тексты                      |
-| `src/pdf/`                          | Отложенная загрузка PDF.js и безопасный слой URL-аннотаций        |
-| `src/router/`, `src/seo/`           | Локализованные маршруты, метаданные и структурированные данные    |
-| `src/assets/`, `src/styles/`        | Оптимизированные изображения и общие стили                        |
-| `public/resumes/`, `public/social/` | Оригинальные PDF резюме и social previews                         |
-| `tests/unit/`, `tests/integration/` | Логика и поведение компонентов                                    |
-| `tests/build/`, `tests/e2e/`        | Готовые HTML/ассеты и пользовательские сценарии Chromium          |
-| `.github/workflows/`, `Makefile`    | Read-only CI и локальные команды качества                         |
-| `design/reference/`                 | Сохранённые канонические дизайны                                  |
+## Ограничения и статус релиза
 
-Тесты резюме проверяют шесть реальных PDF, адреса и координаты ссылок, смену EN/RU
-и страниц, масштаб/Fit width, resize, desktop/mobile, начальный overflow,
-клавиатуру, повтор загрузки и байты скачанного файла. Внешние переходы в браузере
-перехватываются; тесты не подтверждают доступность сторонних сайтов. CI устанавливает
-зависимости из lockfile и Chromium, затем выполняет `make ci` для PR в `develop`/`main`
-и push в эти базовые ветки.
+Production deployment, приёмка публичного HTTPS/SEO, индексация и первая проверка
+production-eligible digest/подписей остаются задачами оператора. Правила веток,
+допуск manager и runtime acceptance требуют независимого ревью.
+Docker health status сам по себе не перезапускает зависший процесс.
+
+В PDF viewer нет полного текстового слоя, поиска и выделения; screen reader
+не может читать текст PDF внутри canvas. Ссылки на оригинальные файлы доступны.
+Зафиксированный браузерный QA охватывает Chromium/Linux; Safari/iOS, Firefox,
+физические устройства и приёмка с assistive technologies остаются проверками
+владельца. Тесты внешних ссылок не гарантируют доступность сторонних сайтов.
+Backend и БД не планируются как обязательные части этого статического портфолио.
+
+## Документация
+
+- [Архитектура](ARCHITECTURE.md): модули, инварианты, локализация, SEO и жизненный цикл PDF.
+- [QA-отчёт и скриншоты](docs/qa/STAGE07-REPORT.md): доказательства и границы приёмки.
+- [Deployment contract](docs/deployment/CONTRACT.md) и [release checklist](docs/deployment/RELEASE-CHECKLIST.md): безопасность, attestations и действия оператора.
+- [Changelog](CHANGELOG.md) и [черновик release notes v1.0.0](docs/releases/v1.0.0.md).
+- [Историческая дизайн-спецификация](design/DESIGN.md) и [канонические референсы](design/reference/README.md).
+- [AGENTS.md](AGENTS.md): правила участников/агентов; рабочие ветки от `develop`, PR в `develop`, ручной merge.
+
+### Этапы разработки
+
+Все девять этапов реализации завершены и интегрированы в `develop`:
+
+| Этап | Содержание                                   |
+| ---- | -------------------------------------------- |
+| 01   | Bootstrap                                    |
+| 02   | Vue Foundation                               |
+| 03   | Layout & Sections                            |
+| 04   | Projects Catalog                             |
+| 05   | Localization & SEO                           |
+| 06   | Resume & Interactions                        |
+| 07   | Testing & Visual QA                          |
+| 08   | Docker & CI/CD Foundation                    |
+| 09   | Production Integration & Release preparation |
+
+Существующий release PR #14, его отдельно разрешённый merge, тег/GitHub Release
+и production-операции относятся к передаче в релиз, а не к десятому этапу реализации.
 
 ## Лицензия
 
-Код и техническая документация доступны по стандартной [MIT License](LICENSE),
-copyright 2026 Danil Miftakhov, включая изменение и коммерческое использование.
-Персональные фотографии, документы резюме и брендинг, включая материалы
-в `design/reference/`, регулируются
-[ASSETS-LICENSE.md](ASSETS-LICENSE.md): открытая публикация не разрешает их повторное
-использование или присвоение личности владельца. Авторские права на неохраняемые
-факты и идеи не заявляются.
+Код и техническая документация используют [MIT License](LICENSE), copyright 2026
+Danil Miftakhov. Личные фотографии, резюме и брендинг, включая материалы
+дизайн-референсов, регулируются [ASSETS-LICENSE.md](ASSETS-LICENSE.md).
+При переиспользовании кода замените эти материалы; публичная доступность не даёт
+права использовать личные материалы или выдавать себя за владельца.

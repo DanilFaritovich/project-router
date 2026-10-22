@@ -2,14 +2,14 @@
 
 ## Current implementation
 
-Stages 01–08 are complete and merged into `develop`, including content refinement,
+Stages 01–09 are complete and merged into `develop`, including content refinement,
 Hero Portrait Integration, Localization & SEO and Resume & Interactions. The
 responsive seven-section portfolio and nine-item catalog use Vue 3, TypeScript,
 Vite 8, Tailwind CSS 4, Vue Router, Vue I18n, Vite SSG and Unhead. Six owner-supplied
 PDFs use a client-only PDF.js viewer with clickable links. Stage 07 — Testing & Visual QA is merged; see the
 [QA report](docs/qa/STAGE07-REPORT.md). Stage 08 — Docker & CI/CD Foundation is merged. Stage 09 producer integration
-and release preparation are implemented, pending review/merge; production delivery
-remains separately authorized.
+and release preparation are integrated into `develop`. Metadata is prepared for
+`v1.0.0`; the release and production delivery remain pending separate authorization.
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
@@ -74,7 +74,8 @@ verified and no production deployment has been performed.
   Without it, origin-dependent metadata and sitemap are deliberately omitted.
   OG/Twitter image metadata and JSON-LD are also omitted without origin;
   localized title/description, OG/Twitter text and permissive robots remain.
-  No production domain is configured or invented.
+  The confirmed production origin is `https://danil-miftakhov.dev`, configured
+  through the public Actions variable; this does not establish a live deployment.
 - `public/social/portfolio-en.png` and `portfolio-ru.png` are localized 1200×630
   previews with the owner portrait. `design/social/preview.html` and the optional
   `node scripts/render-social.mjs` renderer are their source workflow; builds copy
@@ -97,7 +98,7 @@ verified and no production deployment has been performed.
 
 ## Portfolio content and interactions
 
-The layout follows [design/DESIGN.md](design/DESIGN.md): Hero, About, Skills,
+The layout derives from the historical [design specification](design/DESIGN.md): Hero, About, Skills,
 Projects, Developer Tools, Resume and Contacts. About has an introduction, separate
 Commercial Experience, Freelance & Client Work and Personal Engineering Projects
 blocks, and a current-focus panel. Skills renders eight groups: Backend & APIs,
@@ -266,12 +267,11 @@ indexing require the public environment; none is established by local preview.
 
 ## Container architecture and delivery boundaries
 
-The nine-stage [README roadmap](README.md) records Stage 08 as merged and
-Stage 09 — Production Integration & Release preparation as implemented, pending
-review/merge. ProjectRouter owns image build/test/publication and the
+All nine implementation stages in the [README roadmap](README.md#development-roadmap)
+are complete and integrated into `develop`. ProjectRouter owns image build/test/publication and the
 [integration contract](docs/deployment/CONTRACT.md). `portfolio-deployment` owns
 gateway, network lifecycle, application operations and manager-specific naming;
-infrastructure owns the host. The producer example manifest is not a manager
+`portfolio-server-infrastructure` owns host provisioning and hardening. The producer example manifest is not a manager
 schema. No Caddy, SSH/CD, other applications or VPS operations are implemented here.
 
 `Dockerfile` installs locked npm dependencies with digest-pinned Node 22.22.2 and
@@ -333,8 +333,9 @@ operator verification. Manager's independent collector/runtime acceptance, publi
 HTTPS and actual protected-main publication are not established by local tests.
 
 No production deployment, host contact, release tag or GitHub Release is performed
-by these workflows. The separate `develop` → `main` release PR and `v1.0.0`
-tag/release require explicit authorization.
+by these workflows. The existing [release PR #14](https://github.com/DanilFaritovich/project-router/pull/14)
+tracks `develop` → `main`; its merge and the `v1.0.0` tag/release require separate
+authorization. See the [draft release notes](docs/releases/v1.0.0.md).
 
 Task flow: branch strictly from `develop` → local commit → push → PR to
 `develop` → manual review/merge. `main` is the stable branch. Stage 01's initial

@@ -1,11 +1,14 @@
 # ProjectRouter agent instructions
 
-ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–08 are
-complete and merged into `develop`; see [the QA report](docs/qa/STAGE07-REPORT.md).
-Stage 09 — Production Integration & Release preparation is implemented in
-`feature/production-integration`, pending review/merge and separate release. Caddy and deployment management for
-all applications belong to the
-separate `portfolio-deployment` repository. The site is not deployed.
+ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio. Stages 01–09 are
+complete and integrated into `develop`; see [the QA report](docs/qa/STAGE07-REPORT.md)
+and [release checklist](docs/deployment/RELEASE-CHECKLIST.md). Project metadata is
+prepared for the first release, `v1.0.0`, which has not been published. Existing
+[release PR #14](https://github.com/DanilFaritovich/project-router/pull/14)
+tracks `develop → main`; do not create a duplicate. Release merge, tag/release and
+production deployment require separate authorization. `portfolio-deployment`
+owns gateway and application operations; `portfolio-server-infrastructure` owns
+host provisioning/hardening. The site is not deployed.
 
 - Stack: Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Vue I18n,
   Vite SSG/Unhead and PDF.js. Git-tracked content; no backend or database.
@@ -47,8 +50,9 @@ separate `portfolio-deployment` repository. The site is not deployed.
 - No credentials in Git or browser bundles. Personal materials follow
   [ASSETS-LICENSE.md](ASSETS-LICENSE.md). Never invent demo/release URLs, resume
   files, professional claims or a production domain.
-- Follow the nine-stage roadmap in [README.md](README.md). The separate release
-  PR `develop` → `main` and `v1.0.0` tag/release require explicit authorization;
+- Follow the nine-stage roadmap in [README.md](README.md). The existing release
+  PR #14 (`develop` → `main`) must be reviewed separately; merge and the
+  `v1.0.0` tag/release require explicit authorization;
   release handoff is not a tenth implementation stage.
 - Docker packaging: digest-pinned multi-stage Node → Nginx Unprivileged, UID/GID
   101:101, HTTP 8080. `make docker-build`, `docker-test`, `docker-run`, `docker-stop`;

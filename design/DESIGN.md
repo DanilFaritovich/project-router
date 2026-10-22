@@ -2,8 +2,23 @@
 
 ## Status and reference priority
 
-This records the inspected local design, not implemented UI. Read the
-[reference README](reference/README.md) before translating designs to Vue.
+This is the historical Stage 01 design specification, retained with its original
+planning language and reference measurements. It is not a description of the
+final implementation. Read the [reference README](reference/README.md) for asset
+priority; use [ARCHITECTURE.md](../ARCHITECTURE.md) for current behavior and the
+[Stage 07 QA report](../docs/qa/STAGE07-REPORT.md) for browser/visual evidence.
+
+Stages 01–09 are now integrated into `develop`. The implemented UI has the owner's
+portrait, four real project screenshots, explicit versioned release URLs (rather
+than the original `/releases/latest` proposal), full EN/RU copy and six available
+PDFs with a lazy client-only viewer. Menu/locale/focus interactions and responsive
+layouts are implemented and tested. Original unavailable-PDF and typography-only
+media states below describe the design references; Live Demo remains a future
+variant with no configured public destination. Release `v1.0.0` and production
+deployment remain pending.
+
+The sections below preserve Stage 01 intent, including its planned acceptance;
+subsequent implementation and audit evidence supersede those historical statuses.
 
 | Reference | Use |
 | --- | --- |

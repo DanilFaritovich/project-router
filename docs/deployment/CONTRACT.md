@@ -1,8 +1,9 @@
 # ProjectRouter deployment contract
 
-Stage 08 is merged. Stage 09 implements producer integration and release
-preparation; production publication and deployment are not established by this
-PR. The confirmed production origin is `https://danil-miftakhov.dev`.
+Stages 01–09 are integrated into `develop`, including producer integration and
+release preparation. The first release `v1.0.0`, production-eligible publication
+and production deployment remain pending; implemented workflows do not establish
+those operator outcomes. The confirmed production origin is `https://danil-miftakhov.dev`.
 [Release checklist](RELEASE-CHECKLIST.md) separates preparation from operator actions.
 
 ## Ownership and manager compatibility
@@ -41,7 +42,8 @@ protected `main`; develop images and `v*` tags are ineligible under current poli
 
 ProjectRouter owns image build/test/publication and HTTP behavior. The manager
 owns deployment, aliases, networks, gateway, domain routing and recovery. Host
-provisioning/hardening belongs to the infrastructure repository. No gateway,
+provisioning/hardening belongs to
+[`portfolio-server-infrastructure`](https://github.com/DanilFaritovich/portfolio-server-infrastructure). No gateway,
 Caddy configuration, production network creation, SSH/CD or deployment is added here.
 
 ## Image and HTTP behavior
@@ -156,5 +158,4 @@ and tags, never prunes caches/resources or creates production networks.
 
 Optional local preview: `make docker-build`, `make docker-run`, `make docker-stop`.
 Standalone `compose.local.yaml` uses the existing default bridge and loopback 8080
-(`PROJECT_ROUTER_PORT` overrides it). Production `compose.yaml` is render-only in
-this task; its external network must already exist under manager ownership.
+(`PROJECT_ROUTER_PORT` overrides it). Production `compose.yaml` is a standalone integration example; its external network must already exist under manager ownership.
