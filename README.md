@@ -2,233 +2,207 @@
 
 [English](README.md) · [Русский](README.ru.md)
 
-ProjectRouter is Danil Miftakhov's EN/RU engineering portfolio, with projects,
-developer tools, six resume PDFs and contacts. Content is tracked in Git.
+ProjectRouter is Danil Miftakhov's bilingual engineering portfolio: a single place
+to review his experience, explore project source code and download a relevant
+resume. It also demonstrates a static Vue application with localized HTML,
+accessible interactions, automated QA and a verifiable container delivery pipeline.
 
-## Current state — Stage 09 release preparation
+**Release status:** stages 01–09 are complete and integrated into `develop`.
+Project metadata is prepared for the first release, **v1.0.0**; it has not been
+released or deployed to production. The existing [release PR #14](https://github.com/DanilFaritovich/project-router/pull/14)
+tracks `develop → main`. No public Live Demo is confirmed.
 
-Stages 01–08 are complete and merged into `develop`. Stage 09 — Production
-Integration & Release preparation is implemented in `feature/production-integration`,
-pending review/merge and separate release authorization. The [QA report](docs/qa/STAGE07-REPORT.md) records Stage 07 evidence and
-owner checks. The responsive portfolio uses Vue 3,
-TypeScript, Vite, Tailwind CSS, Vue Router and Vue I18n. Vite SSG generates
-localized HTML at `/en/` and `/ru/`; `/` goes to `/en/`.
+[Desktop screenshot](docs/qa/artifacts/page-en-1440.webp) ·
+[Mobile screenshot](docs/qa/artifacts/page-en-390.webp) ·
+[PDF viewer](docs/qa/artifacts/pdf-en-1440.webp)
 
-- Seven sections: Hero, About, Skills, Projects, Developer Tools, Resume and Contacts.
-- Hero uses the owner's photograph as local optimized WebP images, with localized
-  alt text and responsive `srcset`/sizes. About separates commercial experience,
-  freelance work and personal engineering projects; Skills has eight groups.
-- The catalog contains three Featured Projects, three More Projects and three
-  Developer Tools, with verified GitHub destinations and four explicit versioned
-  Release links. Four real project screenshots are optimized locally as WebP.
-- Desktop section navigation and a mobile menu support EN/RU switching while
-  preserving the visible section, query/hash and Back/Forward history; contacts
-  link to the owner's social profiles.
-- Localized title/description, HTML language, OG/Twitter metadata, self-canonical,
-  reciprocal hreflang and x-default, robots/sitemap, and safe Person/WebSite JSON-LD.
-  Two local 1200×630 social preview PNGs are included. Absolute site metadata
-  requires an explicit HTTPS origin.
-- A deterministic AI/agent readability check extracts professional evidence from
-  built EN/RU HTML, including all nine source links and honest PDF availability.
-  It does not simulate a search engine or guarantee AI recommendations.
-- ESLint, Prettier, TypeScript, Vitest, Playwright, SSG/build checks and GitHub
-  Actions provide automated quality checks. Original design references are preserved.
+These existing browser captures come from the [Stage 07 QA report](docs/qa/STAGE07-REPORT.md);
+they predate its documented spacing follow-up.
 
-Three resume specializations — Backend, AI / LLM and Data / ETL — each include
-owner-supplied English and Russian PDFs in `public/resumes/` (six two-page files).
-View PDF opens a keyboard-accessible modal with page navigation, zoom, responsive
-Fit width, loading/error/retry states, download and an original-file fallback.
-Document language starts from the site locale and can then change independently;
-preview and download always use the selected document. PDF.js and its local worker
-load only when a preview opens.
+## Features
 
-PDF URL annotations provide clickable personal-site, Email (`mailto:`), WhatsApp,
-Telegram, LinkedIn, GitHub and project links. HTTP(S) links open in a new tab with
-`noopener noreferrer`; other URL schemes and PDF actions are excluded. Links
-follow the rendered page at every scale and support keyboard navigation. Text
-selection, search and a full Text Layer are outside this viewer's scope. Original
-PDF files and the existing portfolio design are preserved.
+- Seven responsive sections: Hero, About, Skills, Projects, Developer Tools,
+  Resume and Contacts; commercial, freelance and personal work are distinguished.
+- Typed, Git-managed catalog: three featured projects, three more projects and
+  three developer tools, with source links, four explicit release links and four
+  locally optimized project screenshots. No runtime catalog service is needed.
+- Complete EN/RU copy at `/en/` and `/ru/`. Language switching preserves the
+  visible section and query/hash; browser Back/Forward and direct links work.
+- Pre-rendered localized HTML, metadata, social previews and origin-dependent
+  canonical/hreflang, sitemap and Person/WebSite structured data.
+- Six original EN/RU resume PDFs for Backend, AI / LLM and Data / ETL. The lazy
+  PDF.js viewer supports independent document language, pages, zoom, fit width,
+  download, original-file fallback and loading/error/retry states.
+- Keyboard navigation, skip link, mobile menu and modal focus containment/return;
+  responsive layouts checked from 320 to 1440px in both languages.
 
-No public Live Demo is confirmed or linked. Production deployment has not been
-performed. The confirmed build origin is `https://danil-miftakhov.dev`; it is
-configured as the public Actions repository variable `VITE_SITE_ORIGIN`. Local SEO/readability checks cover
-builds with a test origin and without an origin. No backend or database is used.
+## Architecture
 
-## Development roadmap
+| Choice                      | Purpose                                                              |
+| --------------------------- | -------------------------------------------------------------------- |
+| Vue 3 + TypeScript + Vite 8 | Typed component UI and a shared development/build toolchain          |
+| Tailwind CSS 4              | Shared theme tokens and responsive layouts                           |
+| Vue Router + Vue I18n       | URL-driven locale and translated visible/accessibility copy          |
+| Vite SSG + Unhead           | Crawlable HTML and metadata before JavaScript, followed by hydration |
+| Git-managed content         | Reviewable copy/catalog updates without a backend, database or CMS   |
+| Lazy PDF.js + local worker  | Interactive PDFs loaded only when opened, outside SSG execution      |
 
-Stages 01–08 are merged. Stage 09 preparation is implemented, pending review/merge. Documentation maintenance is outside this roadmap.
+`src/content/` owns catalog/resume metadata; `src/locales/` owns EN/RU copy.
+`src/components/` and `src/views/` compose the UI, `src/router/` owns locale routing,
+and `src/seo/` owns metadata. `src/pdf/` and `src/components/resume/` isolate the
+client-only viewer. There is no request-time SSR or API layer.
 
-| Stage | Branch                           | Scope                            | Status            |
-| ----- | -------------------------------- | -------------------------------- | ----------------- |
-| 01    | `chore/project-bootstrap`        | Bootstrap                        | Complete / merged |
-| 02    | `feature/vue-foundation`         | Vue Foundation                   | Complete / merged |
-| 03    | `feature/portfolio-layout`       | Layout & Sections                | Complete / merged |
-| 04    | `feature/projects-catalog`       | Projects Catalog                 | Complete / merged |
-| 05    | `feature/i18n-seo`               | Localization & SEO               | Complete / merged |
-| 06    | `feature/resume-interactions`    | Resume & Interactions            | Complete / merged |
-| 07    | `test/portfolio-quality`         | Testing & Visual QA              | Complete / merged |
-| 08    | `feature/production-foundation`  | Docker & CI/CD Foundation        | Complete / merged |
-| 09    | `feature/production-integration` | Production Integration & Release | Prepared / review |
+PDF links allow only HTTP(S)/mailto; HTTP(S) opens with `noopener noreferrer`.
+PDF scripts/actions are excluded. Canvas and link annotations stay aligned through
+page, zoom and resize changes; document/worker resources are disposed on close.
+The six source PDFs in `public/resumes/` remain unchanged.
 
-Stage 09 integrates ProjectRouter with the central deployment and prepares its
-release. Caddy and deployment management for all applications belong to the
-separate `portfolio-deployment` repository.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for module boundaries, data flows and test
+coverage. [design/DESIGN.md](design/DESIGN.md) preserves historical design intent;
+it is not the final behavior specification.
 
-After these nine implementation stages, a separate release PR from `develop`
-into `main` and the `v1.0.0` tag/release require explicit authorization. This
-release handoff is not a tenth implementation stage. Production deployment also
-requires separate authorization.
+## Quick Start
 
-## Development and documentation
-
-Task branches start strictly from `develop`; local commit, push and PR into
-`develop` are owner-authorized. Merge remains manual; never force-push.
-Requires Node 22.22.2 or a newer Node 22 patch (see `.nvmrc`) and npm.
+Requires Node **22.22.2+ within 22.x** ([.nvmrc](.nvmrc)) and npm.
 
 ```sh
+git clone https://github.com/DanilFaritovich/project-router.git
+cd project-router
 npm ci
-npm run dev             # local Vite server, /en/ and /ru/
-npm run build           # static site in dist/
-npm run preview         # inspect the production build locally
-make fix                # safe formatting and lint autofix
-npm test -- tests/unit/pdf-links.unit.spec.ts tests/integration/resume.integration.spec.ts
-make check              # lint, formatting, types, unit/integration
-npx playwright install chromium
-make verify             # SSG build, HTML checks and browser smoke
-make ci                 # check + verify, no repeated checks or source repairs
-
-# Optional SEO validation modes; portfolio.test is reserved for local tests.
-VITE_SITE_ORIGIN=https://portfolio.test make verify
-VITE_SITE_ORIGIN= npm run build
-VITE_SITE_ORIGIN= npm run test:build
-VITE_SITE_ORIGIN= npx playwright test tests/e2e/foundation.e2e.spec.ts tests/e2e/localization.e2e.spec.ts
-# Focused readability audit of the current dist/ (also part of test:build):
-node --test tests/build/readability.test.mjs
+npm run dev
 ```
 
-On Linux, Chromium may need system libraries:
-`npx playwright install --with-deps chromium` (CI installs these automatically).
-Development flow: `make fix` → targeted tests → `make check`; run `make verify`
-when build behavior or user journeys change.
-
-The confirmed production origin is `https://danil-miftakhov.dev`. Optionally copy `.env.example` to
-`.env.local`, set `VITE_SITE_ORIGIN` to the real HTTPS origin without a path,
-and rebuild. Without an origin, canonical, hreflang, `og:url` and sitemap are
-omitted, along with OG/Twitter image metadata and JSON-LD; localized HTML,
-OG/Twitter text and the permissive robots file still work. Static hosting must serve
-`/en/index.html` and `/ru/index.html` directly and return 404 for unknown paths.
-The Docker server returns an HTTP redirect at root; plain static preview retains
-the HTML meta-refresh. Live SEO checks remain pending. Administrators should require
-`Quality and static build` and `Docker build and container smoke` checks in GitHub branch protection; these repository
-settings are configured manually.
-
-Implemented locally: static HTML, SEO metadata, crawl artifacts, social images,
-JSON-LD and automated checks. See [SEO and readability checks](ARCHITECTURE.md#seo-and-agent-readability-checks)
-for the validation boundaries and evidence available to agents.
-`llms.txt` is intentionally absent: no concrete consumer or extra information
-beyond HTML has been identified. The existing `User-agent: *` / `Allow: /`
-permits crawling without new bot-specific rules or a change to training policy.
-
-After deployment, validate public HTTPS and the real `VITE_SITE_ORIGIN`, HTTP
-redirects/status codes, direct localized documents, public image previews,
-crawler access, actual indexing and Search Console/webmaster ownership/sitemap
-submission. None of these production checks has been performed locally.
-
-- [AGENTS.md](AGENTS.md): Codex workflow and project instructions.
-- [ARCHITECTURE.md](ARCHITECTURE.md): implemented portfolio, system boundaries, routing and quality.
-- [design/DESIGN.md](design/DESIGN.md) and [reference notes](design/reference/README.md): visual specification.
-- [.agents/skills/](.agents/skills/) and [standards lock](.codex-standards.lock.yaml): nine complete packages from
-  [Codex Development Standards](https://github.com/DanilFaritovich/codex-development-standards),
-  `develop`, profile `vue-static-site` v2, using `bootstrap/vue-static-site.md`.
-  Docker, CD and backend skills are not installed.
-
-## Docker and GHCR foundation
-
-The multi-stage [Dockerfile](Dockerfile) uses digest-pinned Node 22.22.2 for locked
-`npm ci` and Vite SSG, then Nginx Unprivileged on HTTP 8080 as UID/GID 101:101.
-Runtime contains static output without Node, Vue sources or build dependencies.
-Compose uses a read-only filesystem, disposable tmpfs and dropped capabilities.
-There is no persistent storage, HTTPS server or Caddy in this repository.
+Open the local Vite URL at `/en/` or `/ru/`.
 
 ```sh
-make docker-build       # project-router:local, optional VITE_SITE_ORIGIN build arg
-make docker-test        # isolated containers: unset, test and production origins
-make docker-run         # standalone local Compose, http://127.0.0.1:8080
-curl -I http://127.0.0.1:8080/
-curl -f http://127.0.0.1:8080/en/ -o /dev/null
+npm run build      # static output in dist/
+npm run preview    # inspect the built site locally
+```
+
+Optional: copy [.env.example](.env.example) to `.env.local` and set
+`VITE_SITE_ORIGIN` to an HTTPS origin without a path, then rebuild. The confirmed
+production build origin is `https://danil-miftakhov.dev`; this is configuration,
+not evidence of a live site. Without an origin, localized HTML and text metadata
+remain available; canonical/hreflang, absolute social URLs, JSON-LD and sitemap
+are omitted. The origin is public and baked into SSG; changing it requires a rebuild.
+
+## Quality and testing
+
+```sh
+make fix                         # safe ESLint and Prettier fixes
+make check                       # lint, format, types, Vitest, production-contract tests
+npx playwright install chromium
+make verify                      # SSG build, built HTML/assets, Chromium journeys
+make ci                          # check + verify, once each; read-only validation
+```
+
+On Linux, `npx playwright install --with-deps chromium` also installs required
+system libraries. For a focused test, use `npm test -- <test-file>`.
+`VITE_SITE_ORIGIN=https://portfolio.test make verify` exercises origin-dependent
+SEO locally; the reserved test domain is not a deployment destination.
+
+Tests cover catalog/locale contracts, no-JavaScript HTML, navigation/history,
+mobile menu, all six real PDFs, download bytes, link geometry, focus, retry and
+resource races. The [QA report](docs/qa/STAGE07-REPORT.md) records the EN/RU
+viewport matrix, axe scans, visual review, historical results and limitations.
+Automated accessibility checks are not WCAG certification; readability checks do
+not prove credentials, search rankings or AI recommendations.
+
+## Docker and delivery
+
+The [Dockerfile](Dockerfile) uses digest-pinned Node → Nginx Unprivileged stages.
+The runtime serves static files as UID/GID **101:101** on HTTP **8080**, without
+Node or build dependencies. Compose uses a read-only root, disposable tmpfs,
+dropped capabilities and no-new-privileges; no persistent storage is required.
+
+```sh
+make docker-build    # requires Docker Engine, Compose v2 and Buildx
+make docker-test     # isolated origin/HTTP/security/PDF container checks
+make docker-run      # local preview: http://127.0.0.1:8080
 make docker-stop
 ```
 
-Local Compose needs no production network. Override `PROJECT_ROUTER_PORT` for a
-busy port or `PROJECT_ROUTER_IMAGE` to test another image/digest. Browser tests
-similarly accept `PLAYWRIGHT_PORT` if 4173 is busy. Production [compose.yaml](compose.yaml)
-has one service, no published host ports, `restart: unless-stopped`, an image-owned
-healthcheck and external `portfolio-proxy` network with alias `project-router`.
-The central deployment repository owns that network. Its generated Compose uses
-service `web` and alias `project-router-web`; do not run producer Compose beside it. Docker health status alone
-does not restart a hung container; restart policy handles process exit.
+Local Compose uses loopback and needs no production network. `PROJECT_ROUTER_PORT`
+can change its port. Nginx redirects `/` to `/en/` (302), serves localized SSG
+files directly and returns 404 for unknown paths without SPA fallback.
 
-`/` returns HTTP 302 to `/en/`; EN/RU serve their SSG documents. Unknown paths
-return HTTP 404 without SPA fallback. PDFs remain unchanged. JS (including PDF.js
-`.mjs`), CSS and images have proper MIME types. Fingerprinted assets use immutable
-caching; HTML, crawl files and public assets revalidate. Security response headers
-include nosniff, frame denial and a referrer policy.
+[GitHub Actions](.github/workflows/ci.yml) runs `Quality and static build`, then
+`Docker build and container smoke`. PRs never publish. After both pass for the
+same trusted push SHA, the [reusable publish workflow](.github/workflows/publish.yml)
+publishes `linux/amd64` to `ghcr.io/danilfaritovich/project-router`:
 
-CI keeps existing site checks (`make ci`) then runs workflow validation and
-Docker/container tests. PRs publish nothing. Successful trusted pushes call the
-reusable GHCR publication workflow: `develop` → `develop-sha-<full SHA>`, `main` →
-`main-sha-<full SHA>`, separately authorized `v*` tags → exact version tag. Buildx
-uses layer caching and `mode=max` provenance; public build arguments must contain
-no secrets. Only publish jobs have package/attestation write and OIDC permissions.
-Pinned GitHub actions sign both build provenance and an origin predicate for the
-exact digest after checking its registry/platform identity and copied SSG bytes.
-OCI labels/plain JSON alone are insufficient evidence. No `latest` tag, automatic
-deployment, release or merge is created.
+- `develop` → `develop-sha-<full SHA>`;
+- `main` → `main-sha-<full SHA>`;
+- separately authorized `v*` tags → exact version tag; no `latest` tag.
 
-Main/tag publication requires the exact Actions repository variable
-`VITE_SITE_ORIGIN=https://danil-miftakhov.dev`; main additionally requires the
-protected-ref signal. Missing/wrong origin fails before publication. Origin is
-baked into canonical/hreflang, sitemap/robots, JSON-LD and OG/Twitter metadata;
-changing it requires a new image. Local/develop builds may omit it.
+Publication verifies registry digest/platform and built origin metadata, then
+uses GitHub OIDC/Sigstore to sign SLSA provenance and a custom origin/build-input
+attestation for that digest. Consumers verify signatures, source SHA/ref, signer
+workflow and origin together; tags, OCI labels and unsigned JSON are insufficient.
+Main/tag publication requires the exact public Actions variable
+`VITE_SITE_ORIGIN=https://danil-miftakhov.dev`; main also requires a protected ref.
+An image left by a failed post-push check is not release eligible.
 
-The [deployment contract](docs/deployment/CONTRACT.md) and
-[release checklist](docs/deployment/RELEASE-CHECKLIST.md) explain exact-SHA CI,
-GHCR digest retrieval, signature/origin verification and manager handoff.
-The [producer example](docs/deployment/service-manifest.example.yaml) is not the
-manager's schema. `portfolio-deployment` owns its `web`/`project-router-web`
-naming, network lifecycle, gateway and operations; infrastructure owns the host.
-Producer Compose remains an independent example with alias `project-router`.
-A local build or PR check does not prove a future protected-main publication.
-No production digest or deployment is asserted by Stage 09; effective branch
-rules, first signed main publication and manager acceptance remain operator work.
+| Repository                                                                                            | Responsibility                                                                         |
+| ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| ProjectRouter                                                                                         | Static application, image build/test/publication and HTTP integration contract         |
+| [portfolio-deployment](https://github.com/DanilFaritovich/portfolio-deployment)                       | Application registration/rollout, gateway/Caddy, domain routing, networks and recovery |
+| [portfolio-server-infrastructure](https://github.com/DanilFaritovich/portfolio-server-infrastructure) | Host provisioning and hardening with Ansible                                           |
 
-## Repository map
+Production consumes an immutable image digest. The manager currently accepts
+protected-main artifacts, not develop/tag images. It generates service `web` /
+alias `project-router-web`; the producer [compose.yaml](compose.yaml) is a separate
+example with alias `project-router`. Never run both projects for this application.
+See the [deployment contract](docs/deployment/CONTRACT.md) and
+[release checklist](docs/deployment/RELEASE-CHECKLIST.md) for verification and handoff.
+These workflows do not deploy, merge PRs, create tags or publish GitHub Releases.
 
-| Path                                | Responsibility                                                 |
-| ----------------------------------- | -------------------------------------------------------------- |
-| `src/components/`, `src/views/`     | Seven sections, navigation, catalog cards and the resume modal |
-| `src/content/`, `src/locales/`      | Typed projects/resumes and EN/RU copy                          |
-| `src/pdf/`                          | Lazy PDF.js loading and safe URL annotation rendering          |
-| `src/router/`, `src/seo/`           | Localized routing, metadata and structured data                |
-| `src/assets/`, `src/styles/`        | Optimized images and shared presentation                       |
-| `public/resumes/`, `public/social/` | Original resume PDFs and social previews                       |
-| `tests/unit/`, `tests/integration/` | Logic and component behavior                                   |
-| `tests/build/`, `tests/e2e/`        | Built HTML/assets and Chromium user journeys                   |
-| `.github/workflows/`, `Makefile`    | Read-only CI and local quality commands                        |
-| `design/reference/`                 | Preserved canonical designs                                    |
+## Limitations and release status
 
-Resume tests inspect the six real PDFs, link destinations and coordinates, EN/RU
-and page changes, zoom/Fit width, resize, desktop/mobile layouts, initial overflow,
-keyboard behavior, retry and download bytes. External browser destinations are
-intercepted; the tests do not establish availability of linked sites. CI installs
-locked dependencies and Chromium, then runs `make ci` for PRs to `develop`/`main`
-and pushes to those base branches.
+Production deployment, public HTTPS/SEO acceptance, indexing and first
+production-eligible digest/signature verification remain pending operator work.
+Branch rules and manager admission/runtime acceptance need independent review.
+Docker health status alone does not restart a hung process.
+
+The PDF viewer has no full text layer, search or selection; screen readers cannot
+read PDF prose inside its canvas. Original-file links remain available.
+Recorded browser QA covers Chromium/Linux; Safari/iOS, Firefox, physical devices
+and assistive-technology acceptance remain owner checks. External-link tests do
+not guarantee third-party availability. No backend or database is planned as a
+requirement for this static portfolio.
+
+## Documentation
+
+- [Architecture](ARCHITECTURE.md): modules, invariants, localization, SEO and PDF lifecycle.
+- [QA report and screenshots](docs/qa/STAGE07-REPORT.md): evidence and acceptance limits.
+- [Deployment contract](docs/deployment/CONTRACT.md) and [release checklist](docs/deployment/RELEASE-CHECKLIST.md): security, attestations and operator steps.
+- [Changelog](CHANGELOG.md) and [draft v1.0.0 release notes](docs/releases/v1.0.0.md).
+- [Historical design specification](design/DESIGN.md) and [canonical references](design/reference/README.md).
+- [AGENTS.md](AGENTS.md): contributor/agent rules; task branches from `develop`, PRs into `develop`, manual merge.
+
+### Development roadmap
+
+All nine implementation stages are complete and integrated into `develop`:
+
+| Stage | Scope                                        |
+| ----- | -------------------------------------------- |
+| 01    | Bootstrap                                    |
+| 02    | Vue Foundation                               |
+| 03    | Layout & Sections                            |
+| 04    | Projects Catalog                             |
+| 05    | Localization & SEO                           |
+| 06    | Resume & Interactions                        |
+| 07    | Testing & Visual QA                          |
+| 08    | Docker & CI/CD Foundation                    |
+| 09    | Production Integration & Release preparation |
+
+The existing release PR #14, its separately authorized merge, tag/GitHub Release
+and production operations are the release handoff, not a tenth implementation stage.
 
 ## License
 
-Code and technical documentation use the standard [MIT License](LICENSE),
-copyright 2026 Danil Miftakhov, permitting modification and commercial reuse.
-Personal photographs, resume documents and branding, including materials in
-`design/reference/`, follow
-[ASSETS-LICENSE.md](ASSETS-LICENSE.md): public availability grants no reuse or
-impersonation rights. No copyright is claimed over unprotected facts or ideas.
+Code and technical documentation use the [MIT License](LICENSE), copyright 2026
+Danil Miftakhov. Personal photographs, resume documents and branding, including
+materials in design references, follow [ASSETS-LICENSE.md](ASSETS-LICENSE.md).
+Replace those assets when reusing the code; public availability grants no right
+to reuse personal materials or impersonate the owner.

@@ -1,15 +1,19 @@
 # Production release preparation checklist
 
-Stage 09 prepares publication; it does not authorize release or deployment. No
-production image/digest or signed release evidence is asserted by this PR. Local
+Stages 01–09 are integrated into `develop`. Project metadata is prepared for
+`v1.0.0`; the version has not been released or deployed. No production-eligible
+image/digest or signed release evidence is asserted by this documentation. Local
 builds and PR CI cannot prove a future protected-main publication. Use Bash,
 Node 22.22.2+ (22.x), npm, current authenticated `gh` with attestation verification,
 `jq`, `tar`, Docker Engine and Buildx on an isolated verification workstation.
 
-## Before requesting the separate develop → main PR
+## Before merging the existing develop → main release PR
 
-- Review/merge the Stage 09 PR into `develop` manually and inspect its CI. Its
-  subsequent develop publication is a development candidate, not production evidence.
+- Stage 09 is integrated via [PR #13](https://github.com/DanilFaritovich/project-router/pull/13).
+  Review/merge the final documentation PR into `develop`, confirm `package.json`
+  and both root lockfile versions are `1.0.0`, and review the
+  [changelog](../../CHANGELOG.md) and [draft release notes](../releases/v1.0.0.md).
+  A develop publication is a development candidate, not production evidence.
 - Confirm effective rules for both producer and manager `main`/`develop`: required
   reviews/checks, trusted GitHub App identities and bypass restrictions. Require
   `Quality and static build` and `Docker build and container smoke` in this repo.
@@ -30,9 +34,12 @@ Node 22.22.2+ (22.x), npm, current authenticated `gh` with attestation verificat
   access/retention and GitHub Artifact Attestations plan/visibility support, OIDC
   and package/attestation permissions. Missing support is a blocker, not permission
   to use labels/plain JSON as trusted evidence.
-- Obtain explicit authorization for the separate release PR, then review its diff
-  and CI. Merge, tags, `v1.0.0` and GitHub Release remain separate owner actions.
-  No release PR, merge, tag or GitHub Release is created by Stage 09.
+- Review the updated diff and exact-head CI of the existing
+  [release PR #14](https://github.com/DanilFaritovich/project-router/pull/14)
+  (`develop → main`); do not create a duplicate. Documentation merged into
+  `develop` appears there automatically. Obtain separate authorization for its
+  merge. The `v1.0.0` tag and GitHub Release are separately authorized owner
+  actions, using the reviewed main commit and finalized release notes.
 
 ## After a separately authorized merge to protected main
 
@@ -146,7 +153,7 @@ does not install that collector or confer deployment authority.
   secrets/host application ports. Never run producer Compose beside the manager.
 - Obtain separately authorized isolated exact-digest runtime acceptance with the
   manager's Compose projection: startup, image health, restart, security settings,
-  aliases, locales/404/assets/PDF and origin. Recipe smoke in this PR is not proof
+  aliases, locales/404/assets/PDF and origin. Repository recipe smoke is not proof
   for a future registry digest. Preserve unrelated local resources.
 - Host access, infrastructure handoff, production network ownership, trusted
   observations, DNS/ACME/TLS, Caddy storage/validation, backups/restore, first-install

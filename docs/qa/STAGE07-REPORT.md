@@ -1,10 +1,15 @@
 # Stage 07 — Testing & Visual QA
 
+This is a historical Stage 07 audit, including its dated follow-up. It is not
+current-release CI or production acceptance. Stages 01–09 are now integrated into
+`develop`; use [ARCHITECTURE.md](../../ARCHITECTURE.md) for current behavior and the
+[release checklist](../deployment/RELEASE-CHECKLIST.md) for remaining release work.
+
 ## Configuration and evidence
 
 Audit date: 2026-10-19. Repository: `DanilFaritovich/project-router`.
 Base: [`127bf3e`](https://github.com/DanilFaritovich/project-router/commit/127bf3e)
-(current `origin/develop`, Stage 06 merged). Branch: `test/portfolio-quality`.
+(`origin/develop` at the audit date, Stage 06 merged). Branch: `test/portfolio-quality`.
 Validated application/test revision:
 [`2bec1d37e8a0c9e5117602e4c9ddcb70d00a7851`](https://github.com/DanilFaritovich/project-router/commit/2bec1d37e8a0c9e5117602e4c9ddcb70d00a7851).
 Subsequent changes document the audit, add review images and include the spacing
@@ -149,8 +154,8 @@ The full generated matrix stays ignored in `test-results/`. Reproduce with
 Committed artifacts do not duplicate canonical design assets.
 
 Cosmetic suggestions for future owner review, not changes in this stage:
-consider the long RU mobile Hero role line breaks and the generous Projects →
-Tools spacing. Both remain readable and consistent with the established design.
+consider the long RU mobile Hero role line breaks. The Projects → Tools spacing
+suggestion was addressed in the dated owner-review follow-up above.
 Real project previews contain small text; their purpose is an overview, not
 reading application content at mobile size.
 
