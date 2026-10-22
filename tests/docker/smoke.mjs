@@ -49,7 +49,19 @@ export async function smoke(docker, id, image, origin) {
   assert.equal(service.read_only, true)
 
   const metadata = JSON.parse(docker('image', 'inspect', image))[0]
+  assert.equal(metadata.Os, 'linux')
+  assert.equal(metadata.Architecture, 'amd64')
   assert.equal(metadata.Config.User, '101:101')
+  assert.deepEqual(Object.keys(metadata.Config.ExposedPorts), ['8080/tcp'])
+  assert.ok(
+    !metadata.Config.Env.some((value) => value.startsWith('VITE_SITE_ORIGIN=')),
+  )
+  const runtime = JSON.parse(docker('inspect', id))[0]
+  assert.equal(runtime.HostConfig.ReadonlyRootfs, true)
+  assert.deepEqual(runtime.HostConfig.CapDrop, ['ALL'])
+  assert.ok(runtime.HostConfig.SecurityOpt.includes('no-new-privileges:true'))
+  assert.match(runtime.HostConfig.Tmpfs['/tmp'], /size=16m/)
+  assert.equal(docker('exec', id, 'id', '-g'), '101')
   assert.ok(
     metadata.Config.Healthcheck.Test.join(' ').includes(
       'http://127.0.0.1:8080/en/',

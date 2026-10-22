@@ -15,13 +15,28 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v4
-      - name: Require confirmed origin for stable and release images
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Require exact confirmed origin for stable and release images
         if: github.ref != 'refs/heads/develop'
         env:
           VITE_SITE_ORIGIN: ${{ vars.VITE_SITE_ORIGIN }}
-        run: test -n "$VITE_SITE_ORIGIN" || { echo 'Set the confirmed HTTPS origin in repository variable VITE_SITE_ORIGIN before stable/release publication.'; exit 1; }
+        run: node scripts/verify-origin.mjs --require-production
+      - name: Require protected main
+        if: github.ref == 'refs/heads/main'
+        env:
+          REF_PROTECTED: ${{ github.ref_protected }}
+        run: test "$REF_PROTECTED" = true
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:
@@ -51,10 +66,55 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=project-router-publish
           cache-to: type=gha,mode=max,scope=project-router-publish
-          provenance: mode=min
+          provenance: mode=max
+      - name: Verify published digest, platform and built origin
+        env:
+          IMAGE: ghcr.io/danilfaritovich/project-router@${{ steps.build.outputs.digest }}
+          VITE_SITE_ORIGIN: ${{ vars.VITE_SITE_ORIGIN }}
+        run: |
+          mkdir release-evidence
+          node scripts/verify-image.mjs "$IMAGE" "$VITE_SITE_ORIGIN" release-evidence
+      - name: Prepare public origin predicate
+        env:
+          VITE_SITE_ORIGIN: ${{ vars.VITE_SITE_ORIGIN }}
+        run: |
+          node --input-type=module <<'JS'
+          import { writeFileSync } from 'node:fs';
+          writeFileSync('release-evidence/build-origin.json', JSON.stringify({
+            sourceRepository: process.env.GITHUB_REPOSITORY,
+            sourceSha: process.env.GITHUB_SHA,
+            sourceRef: process.env.GITHUB_REF,
+            platform: 'linux/amd64',
+            buildArguments: { VITE_SITE_ORIGIN: process.env.VITE_SITE_ORIGIN },
+            originOutputVerified: Boolean(process.env.VITE_SITE_ORIGIN),
+            runId: process.env.GITHUB_RUN_ID,
+            runAttempt: process.env.GITHUB_RUN_ATTEMPT
+          }));
+          JS
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
+        with:
+          subject-name: ghcr.io/danilfaritovich/project-router
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+      - name: Attest verified origin and public build inputs
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: ghcr.io/danilfaritovich/project-router
+          subject-digest: ${{ steps.build.outputs.digest }}
+          predicate-type: https://github.com/DanilFaritovich/project-router/attestations/build-origin/v1
+          predicate-path: release-evidence/build-origin.json
+          push-to-registry: true
+          create-storage-record: false
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-evidence-${{ github.sha }}-${{ github.run_attempt }}
+          path: release-evidence/
+          retention-days: 30
       - name: Published immutable identity
         env:
           DIGEST: ${{ steps.build.outputs.digest }}
         run: |
           echo "ghcr.io/danilfaritovich/project-router@$DIGEST"
           echo "Image: \`ghcr.io/danilfaritovich/project-router@$DIGEST\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "Source: $GITHUB_SHA; run: $GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT; platform: linux/amd64" >> "$GITHUB_STEP_SUMMARY"

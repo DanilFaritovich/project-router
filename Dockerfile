@@ -6,8 +6,10 @@ RUN npm ci --no-audit --no-fund
 COPY index.html vite.config.ts tsconfig*.json ./
 COPY src/ ./src/
 COPY public/ ./public/
+COPY scripts/verify-origin.mjs ./scripts/verify-origin.mjs
 ARG VITE_SITE_ORIGIN=""
-RUN VITE_SITE_ORIGIN="$VITE_SITE_ORIGIN" npm run build
+RUN VITE_SITE_ORIGIN="$VITE_SITE_ORIGIN" npm run build \
+    && if [ -n "$VITE_SITE_ORIGIN" ]; then node scripts/verify-origin.mjs dist "$VITE_SITE_ORIGIN"; fi
 
 FROM nginxinc/nginx-unprivileged:1.30.6-alpine@sha256:f5116ed4606f3eb015dd4a8e28cb9b351476dc0ad4bc6e9f93b19cec130cdf03 AS runtime
 USER root

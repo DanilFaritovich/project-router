@@ -5,10 +5,11 @@
 ProjectRouter — EN/RU инженерное портфолио Данила Мифтахова с проектами,
 инструментами разработчика, шестью PDF резюме и контактами. Контент хранится в Git.
 
-## Текущее состояние — Stage 08 в разработке
+## Текущее состояние — Stage 09: подготовка релиза
 
-Этапы 01–07 завершены и слиты в `develop`. Stage 08 — Docker & CI/CD Foundation
-реализуется в `feature/production-foundation`; Stage 09 запланирован.
+Этапы 01–08 завершены и слиты в `develop`. Подготовка Stage 09 — Production
+Integration & Release реализована в `feature/production-integration`; ожидаются
+review/merge и отдельное разрешение на релиз.
 [QA-отчёт](docs/qa/STAGE07-REPORT.md) содержит свидетельства Stage 07 и проверки
 владельца. Адаптивное портфолио использует Vue 3,
 TypeScript, Vite, Tailwind CSS, Vue Router и Vue I18n. Vite SSG генерирует
@@ -51,12 +52,13 @@ WhatsApp, Telegram, LinkedIn, GitHub и проекты. HTTP(S)-ссылки о�
 Исходные PDF и существующий дизайн портфолио сохранены.
 
 Публичный Live Demo не подтверждён, ссылок на него нет. Production-деплой
-не выполнен, production origin не настроен. Локальные SEO/readability-проверки
+не выполнен. Подтверждённый build origin — `https://danil-miftakhov.dev`;
+он задан публичной Actions repository variable `VITE_SITE_ORIGIN`. Локальные SEO/readability-проверки
 покрывают сборки с тестовым origin и без origin. Backend и база данных не используются.
 
 ## План разработки
 
-Этапы 01–07 слиты. Stage 08 в разработке; Stage 09 запланирован. Сопровождение документации не входит в этот roadmap.
+Этапы 01–08 слиты. Подготовка Stage 09 реализована, ожидает review/merge. Сопровождение документации не входит в этот roadmap.
 
 | Этап | Ветка                            | Название                         | Статус          |
 | ---- | -------------------------------- | -------------------------------- | --------------- |
@@ -67,8 +69,8 @@ WhatsApp, Telegram, LinkedIn, GitHub и проекты. HTTP(S)-ссылки о�
 | 05   | `feature/i18n-seo`               | Localization & SEO               | Завершён / слит |
 | 06   | `feature/resume-interactions`    | Resume & Interactions            | Завершён / слит |
 | 07   | `test/portfolio-quality`         | Testing & Visual QA              | Завершён / слит |
-| 08   | `feature/production-foundation`  | Docker & CI/CD Foundation        | В разработке    |
-| 09   | `feature/production-integration` | Production Integration & Release | Запланирован    |
+| 08   | `feature/production-foundation`  | Docker & CI/CD Foundation        | Завершён / слит |
+| 09   | `feature/production-integration` | Production Integration & Release | Готов / review  |
 
 Stage 09 отвечает за интеграцию ProjectRouter с центральным деплоем и подготовку
 релиза. Caddy и управление деплоем всех приложений относятся к отдельному
@@ -110,7 +112,7 @@ node --test tests/build/readability.test.mjs
 Порядок разработки: `make fix` → целевые тесты → `make check`; `make verify`
 выполняется при изменениях сборки и пользовательских сценариев.
 
-Production-домен ещё не выбран. При необходимости скопируйте `.env.example`
+Подтверждённый production origin — `https://danil-miftakhov.dev`. При необходимости скопируйте `.env.example`
 в `.env.local` и задайте `VITE_SITE_ORIGIN` как реальный HTTPS origin без пути,
 затем пересоберите сайт. Без origin canonical, hreflang, `og:url` и sitemap
 не генерируются, как и метаданные изображений OG/Twitter и JSON-LD;
@@ -152,7 +154,7 @@ Compose включает read-only filesystem, временный tmpfs и сб�
 
 ```sh
 make docker-build       # project-router:local, необязательный build arg VITE_SITE_ORIGIN
-make docker-test        # реальные контейнеры: без origin и с https://portfolio.test
+make docker-test        # изолированные контейнеры: без origin, с тестовым и production origin
 make docker-run         # отдельный локальный Compose, http://127.0.0.1:8080
 curl -I http://127.0.0.1:8080/
 curl -f http://127.0.0.1:8080/en/ -o /dev/null
@@ -164,7 +166,8 @@ make docker-stop
 тесты принимают `PLAYWRIGHT_PORT`, если занят 4173. Production [compose.yaml](compose.yaml)
 содержит один сервис без публикации host-портов, `restart: unless-stopped`,
 healthcheck из образа и внешнюю сеть `portfolio-proxy` с alias `project-router`.
-Сетью управляет будущий deployment-репозиторий. Docker health status сам по себе
+Сетью управляет центральный deployment-репозиторий. Его Compose использует
+service `web` и alias `project-router-web`; не запускайте producer Compose рядом с ним. Docker health status сам по себе
 не перезапускает зависший контейнер; restart policy обрабатывает выход процесса.
 
 `/` возвращает HTTP 302 на `/en/`; EN/RU отдают собственные SSG-документы.
@@ -178,28 +181,29 @@ CI сохраняет существующие проверки сайта (`mak
 Docker и контейнеры. PR ничего не публикует. Успешные доверенные push вызывают
 reusable GHCR workflow: `develop` → `develop-sha-<полный SHA>`, `main` →
 `main-sha-<полный SHA>`, отдельно авторизованные теги `v*` → точный тег версии.
-Buildx использует layer cache, OCI labels и стандартный provenance; только publish
-jobs получают `packages: write` и используют `GITHUB_TOKEN`. Тег `latest` и
-production deployment не создаются. Для доставки используется
-`ghcr.io/danilfaritovich/project-router@sha256:<digest>` из лога/summary publish job.
-PR не проверяет первую post-merge публикацию GHCR; registry digest не заявляется
-до фактической успешной публикации.
+Buildx использует layer cache и provenance `mode=max`; публичные build arguments
+не должны содержать секреты. Только publish jobs получают запись packages/attestations
+и OIDC permissions. Закреплённые GitHub actions подписывают build provenance и
+origin predicate для точного digest после проверки registry/platform identity
+и скопированных SSG-файлов. OCI labels и обычный JSON сами по себе недостаточны.
+Тег `latest`, автоматические deployment, release и merge не создаются.
 
-`VITE_SITE_ORIGIN` — build-time HTTPS origin без path, credentials, query и
-fragment. Без него работают local/development-сборки. С ним включаются имеющиеся
-canonical/hreflang, sitemap, JSON-LD и OG/Twitter metadata. Смена origin требует
-пересборки образа. Реальный домен ещё не выбран; перед stable/release publication
-владелец подтверждает его и задаёт Actions repository variable `VITE_SITE_ORIGIN`.
-Секреты и настройки реального сервера в этой задаче не добавляются.
+Публикация main/tag требует точного значения Actions repository variable
+`VITE_SITE_ORIGIN=https://danil-miftakhov.dev`; main дополнительно требует
+protected-ref signal. Отсутствующий/неверный origin блокирует публикацию заранее.
+Origin встроен в canonical/hreflang, sitemap/robots, JSON-LD и OG/Twitter metadata;
+его смена требует нового образа. Local/develop-сборки могут обходиться без него.
 
 [Контракт развёртывания](docs/deployment/CONTRACT.md) и
-[пример manifest](docs/deployment/service-manifest.example.yaml) описывают сервис
-`project-router`, GHCR digest, HTTP 8080, сеть `portfolio-proxy`, alias
-`project-router`, health endpoint `/en/`, stateless storage и отсутствие секретов
-для базового сайта. Будущий controller `portfolio-deployment` назначает домен и
-обновляет контейнеры за своим gateway. SSH/CD, конфигурация Caddy, reconciliation,
-другие приложения и VPS rollback находятся вне ProjectRouter. CI проверяет,
-GHCR публикует артефакт, production deployment остаётся отдельной работой.
+[release checklist](docs/deployment/RELEASE-CHECKLIST.md) описывают exact-SHA CI,
+получение GHCR digest, проверку подписей/origin и передачу manager.
+[Пример producer](docs/deployment/service-manifest.example.yaml) не является
+схемой manager. `portfolio-deployment` владеет именами `web`/`project-router-web`,
+сетями, gateway и операциями; infrastructure владеет хостом. Producer Compose
+остаётся независимым примером с alias `project-router`. Локальная сборка или PR CI
+не доказывает будущую публикацию из защищённой main. Stage 09 не заявляет
+production digest или deployment; проверка правил веток, первой подписанной
+публикации main и приёмка manager остаются задачами оператора.
 
 ## Структура репозитория
 

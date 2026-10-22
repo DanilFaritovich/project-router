@@ -10,6 +10,7 @@ check:
 	@npm run format:check --silent
 	@npm run typecheck --silent
 	@npm test --silent
+	@node --test --test-reporter=dot tests/production/*.test.mjs
 
 # Additional verification only; deliberately does not repeat check.
 verify:
@@ -29,7 +30,7 @@ export PROJECT_ROUTER_IMAGE
 docker-build:
 	@node scripts/docker.mjs build
 
-# Two isolated images: no origin and reserved test origin; removes owned resources.
+# Isolated images: no origin, reserved test origin and confirmed production origin.
 docker-test:
 	@node scripts/docker.mjs test
 

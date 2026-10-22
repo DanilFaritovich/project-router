@@ -1,17 +1,21 @@
-# Proposed integration data for the future portfolio-deployment repository.
-# This is documentation, not an executable controller configuration.
+# Illustrative producer data, NOT the manager's portfolio.deployment/v1 schema.
+# Start manager registration from its authoritative inactive template instead.
 schemaVersion: 1
 serviceId: project-router
 image:
   repository: ghcr.io/danilfaritovich/project-router
-  digest: null # Required: replace with a published sha256:<64 hex> digest.
+  digest: null # Required: independently verified published sha256:<64 lowercase hex>.
+  platform: linux/amd64
 http:
   port: 8080
   healthcheckPath: /en/
 network:
-  name: portfolio-proxy
-  alias: project-router
+  name: portfolio-proxy # Manager owns lifecycle; producer never creates it.
+  alias: project-router # Producer Compose example only.
+manager:
+  service: web
+  networkAlias: project-router-web # Derived by manager, no compatibility alias.
 storage: stateless
-domain: null # Assigned by the central controller after owner confirmation.
-buildOrigin: null # Must match the HTTPS origin baked into the selected image.
+domain: danil-miftakhov.dev
+buildOrigin: https://danil-miftakhov.dev
 secrets: []
