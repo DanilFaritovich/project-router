@@ -14,8 +14,36 @@ import {
   verifiedManifest,
   amd64Descriptor,
   verifiedRuntimeConfig,
+  publicContentEvidence,
 } from '../../scripts/verify-image.mjs'
 import { Buffer } from 'node:buffer'
+
+test('public acceptance binds extracted HTML bytes to the exact published digest', () => {
+  const image = `ghcr.io/danilfaritovich/project-router@sha256:${'a'.repeat(64)}`
+  const environment = {
+    GITHUB_REPOSITORY: 'DanilFaritovich/project-router',
+    GITHUB_SHA: 'b'.repeat(40),
+    GITHUB_REF: 'refs/heads/main',
+    GITHUB_RUN_ID: '123',
+    GITHUB_RUN_ATTEMPT: '2',
+  }
+  const html = Buffer.from('<html>exact image content</html>')
+  const evidence = publicContentEvidence(html, image, environment)
+  assert.equal(evidence.imageDigest, `sha256:${'a'.repeat(64)}`)
+  assert.equal(
+    evidence.htmlSha256,
+    createHash('sha256').update(html).digest('hex'),
+  )
+  assert.equal(evidence.sourceSha, environment.GITHUB_SHA)
+  assert.notEqual(
+    publicContentEvidence(Buffer.from('old content'), image, environment)
+      .htmlSha256,
+    evidence.htmlSha256,
+  )
+  assert.throws(() =>
+    publicContentEvidence(html, 'project-router:latest', environment),
+  )
+})
 
 function page(locale) {
   const graph = [

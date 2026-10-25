@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { createHash, randomUUID } from 'node:crypto'
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -10,6 +10,19 @@ import console from 'node:console'
 import { verifyOrigin } from './verify-origin.mjs'
 
 const repository = 'ghcr.io/danilfaritovich/project-router'
+export function publicContentEvidence(html, image, environment = process.env) {
+  return {
+    sourceRepository: environment.GITHUB_REPOSITORY,
+    sourceSha: environment.GITHUB_SHA,
+    sourceRef: environment.GITHUB_REF,
+    runId: environment.GITHUB_RUN_ID,
+    runAttempt: environment.GITHUB_RUN_ATTEMPT,
+    imageDigest: imageDigest(image),
+    path: '/en/',
+    htmlSha256: createHash('sha256').update(html).digest('hex'),
+  }
+}
+
 export function imageDigest(image) {
   assert.match(
     image,
@@ -170,6 +183,17 @@ export async function verifyImage(image, origin, evidenceDirectory) {
           },
           null,
           2,
+        ),
+      )
+      // The publication job signs this exact digest/content binding. It is
+      // measured from the pulled image, never from a second frontend build.
+      await writeFile(
+        resolve(evidenceDirectory, 'public-content.json'),
+        JSON.stringify(
+          publicContentEvidence(
+            await readFile(resolve(directory, 'en/index.html')),
+            image,
+          ),
         ),
       )
     }
