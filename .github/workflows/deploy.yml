@@ -19,7 +19,7 @@ jobs:
       github.event.workflow_run.repository.full_name == 'DanilFaritovich/project-router' &&
       github.event.workflow_run.head_repository.full_name == 'DanilFaritovich/project-router'
     # Reviewed immutable Manager implementation. All VDS policy/rollout remains there.
-    uses: DanilFaritovich/portfolio-deployment/.github/workflows/cd-deploy.yml@3c5421d1729c3d5ea4563a301464f67f3d1347d2
+    uses: DanilFaritovich/portfolio-deployment/.github/workflows/cd-deploy.yml@8447d610f398cc77098f5c95d10d78baba2bf4be
     with:
       kind: application
     secrets: inherit
