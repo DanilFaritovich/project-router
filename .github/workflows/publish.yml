@@ -106,6 +106,15 @@ jobs:
           predicate-path: release-evidence/build-origin.json
           push-to-registry: true
           create-storage-record: false
+      - name: Attest public HTML from the exact image
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: ghcr.io/danilfaritovich/project-router
+          subject-digest: ${{ steps.build.outputs.digest }}
+          predicate-type: https://github.com/DanilFaritovich/project-router/attestations/public-content/v1
+          predicate-path: release-evidence/public-content.json
+          push-to-registry: true
+          create-storage-record: false
       - uses: actions/upload-artifact@v4
         with:
           name: release-evidence-${{ github.sha }}-${{ github.run_attempt }}

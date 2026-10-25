@@ -13,6 +13,29 @@ and release preparation are integrated into `develop`. Metadata is prepared for
 Node 22.22.2 or a newer Node 22 patch and npm are required. Dependencies are
 pinned in `package.json` with a committed `package-lock.json`.
 
+## Deployment Manager CD handoff
+
+The successful completed main-push CI run triggers `deploy.yml`, which calls the
+Deployment Manager's reusable CD workflow at a reviewed immutable commit. Image
+publication still belongs here; VDS policy, bootstrap, rollout, gateway and
+rollback remain in `portfolio-deployment`. Pull requests receive no deployment
+credentials. The reusable job uses this repository's protected `production`
+Environment and a restricted forced-command bridge, never a Docker socket or
+unrestricted remote shell.
+
+`verify-image.mjs` measures `/en/index.html` from the pulled exact OCI digest.
+Publication signs `public-content/v1` with digest, HTML hash, source SHA/ref and
+run/attempt alongside existing provenance and origin attestations. The Manager
+independently verifies all evidence and the unchanged runtime/admission contract,
+then performs image-only rollout through its existing executor. Internal readiness
+and public HTTPS with a separate SSHSIG observer precede LKG promotion; failed
+updates retain the known-good image and persistent state.
+
+Local checks do not establish production CD. The independently reviewed bridge,
+standing policy, Environment keys/variables and first bootstrap/rollout still
+require separately authorized one-time setup on the VDS. Both actual main-merge
+production delivery chains must be accepted before claiming live automatic CD.
+
 ## Static frontend and boundaries
 
 [Vite SSG](https://github.com/antfu-collective/vite-ssg) integrates the existing
