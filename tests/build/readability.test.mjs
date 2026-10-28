@@ -11,7 +11,6 @@ const repositories = {
   geocoder: 'yandex-geocoder-region-parser',
   task: 'task-service-api',
   maxim: 'maxim-ml',
-  avito: 'avito-parser',
   server: 'portfolio-server-infrastructure',
   worker: 'codex-free-worker-mcp/tree/develop',
   standards: 'codex-development-standards/tree/develop',
@@ -53,7 +52,7 @@ for (const locale of ['en', 'ru']) {
           assert.match(text('.hero-role'), /Python Backend/)
           assert.match(
             text('.hero-role'),
-            locale === 'en' ? /Data & Automation/ : /данным и автоматизации/,
+            locale === 'en' ? /Data & Automation/ : /Данные и автоматизация/,
           )
           assert.match(text('.hero-intro'), /PostgreSQL/)
         },
@@ -70,13 +69,7 @@ for (const locale of ['en', 'ru']) {
             commercial,
             locale === 'en' ? /Commercial Experience/ : /Коммерческий опыт/,
           )
-          for (const fact of [
-            /2022/,
-            /Maxim/,
-            /Python/,
-            /PostgreSQL\/PostGIS/,
-            /SQL/,
-          ])
+          for (const fact of [/Maxim/, /Python/, /PostgreSQL\/PostGIS/, /SQL/])
             assert.match(commercial, fact)
           assert.match(
             freelance,
@@ -84,12 +77,7 @@ for (const locale of ['en', 'ru']) {
               ? /Freelance & Client Work/
               : /Фриланс и заказные проекты/,
           )
-          assert.match(
-            freelance,
-            locale === 'en'
-              ? /marketplace integrations/
-              : /интеграции маркетплейсов/,
-          )
+          assert.match(freelance, locale === 'en' ? /Ozon/ : /Ozon/)
           assert.match(freelance, /Telegram/)
           assert.match(
             personal,
@@ -97,14 +85,14 @@ for (const locale of ['en', 'ru']) {
               ? /Personal Engineering Projects/
               : /Собственные инженерные проекты/,
           )
-          for (const fact of [/FastAPI/, /Apache Airflow/, /LLM\/MCP/])
+          for (const fact of [/FastAPI/, /Apache Airflow/, /MCP/])
             assert.match(personal, fact)
         },
       )
       await t.test(
         'Q3: FastAPI, ETL and LLM examples — project cards and #skills',
         () => {
-          for (const id of ['moon', 'support', 'task', 'maxim'])
+          for (const id of ['moon', 'support', 'maxim'])
             assert.match(text(`#project-${id}`), /FastAPI/)
           for (const fact of [
             /ETL/,
@@ -113,7 +101,7 @@ for (const locale of ['en', 'ru']) {
             /MinIO\/S3/,
           ])
             assert.match(text('#project-geocoder'), fact)
-          assert.match(text('#project-support .card-detail'), /LLM/)
+          assert.match(text('#project-support'), /LLM/)
           assert.match(text('#project-worker'), /MCP/)
           for (const skill of [
             'Python',
@@ -129,9 +117,14 @@ for (const locale of ['en', 'ru']) {
         },
       )
       await t.test(
-        'Q4: all nine named projects expose confirmed source links — #projects / #tools',
+        'Q4: all eight project cards expose confirmed source links — #projects / #tools',
         () => {
-          assert.equal(document.querySelectorAll('.portfolio-card').length, 9)
+          assert.equal(document.querySelectorAll('.portfolio-card').length, 8)
+          assert.ok(
+            document.querySelector(
+              '#project-server a[href="https://github.com/DanilFaritovich/portfolio-deployment/tree/develop"]',
+            ),
+          )
           for (const [id, repository] of Object.entries(repositories)) {
             text(`#project-${id} h3`)
             text(`#project-${id} .card-summary`)
@@ -217,7 +210,7 @@ for (const locale of ['en', 'ru']) {
             for (const id of ['backend', 'ai', 'data']) {
               assert.ok(
                 document.querySelector(
-                  `#resume a[href="/resumes/${id}-${locale}.pdf"][download]`,
+                  `#resume a[href="/resumes/candidate-${id}-${locale}.pdf"][download]`,
                 ),
               )
             }

@@ -158,7 +158,7 @@ test('localized production metadata works with JavaScript disabled', async ({
   await page.goto('/ru/')
   await expectMetadata(page, 'ru')
   await expect(page.locator('main > section')).toHaveCount(7)
-  await expect(page.locator('.portfolio-card h3')).toHaveCount(9)
+  await expect(page.locator('.portfolio-card h3')).toHaveCount(8)
   await expect(page.locator('main')).toContainText('Данил Мифтахов')
   await page
     .getByRole('link', { name: 'English' })
@@ -166,6 +166,6 @@ test('localized production metadata works with JavaScript disabled', async ({
     .click()
   await expectMetadata(page, 'en')
   await expect(page.locator('main > section')).toHaveCount(7)
-  await expect(page.locator('.portfolio-card h3')).toHaveCount(9)
+  await expect(page.locator('.portfolio-card h3')).toHaveCount(8)
   await context.close()
 })

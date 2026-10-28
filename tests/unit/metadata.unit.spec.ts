@@ -4,14 +4,14 @@ import { parseSiteOrigin } from '../../src/seo/origin'
 
 const expectedMetadata = {
   en: {
-    title: 'Danil Miftakhov | Python Backend & Data Engineer',
+    title: 'Danil Miftakhov | Python Backend Developer',
     description:
-      "Danil Miftakhov's Python backend and data engineering portfolio: API integrations, ETL and data processing with PostgreSQL/PostGIS, plus automation projects.",
+      'Python backend developer working with PostgreSQL/PostGIS, data processing and API integrations. Commercial experience, engineering projects and role-specific resumes.',
   },
   ru: {
-    title: 'Данил Мифтахов — Python Backend-разработчик и инженер по данным',
+    title: 'Данил Мифтахов — Python Backend-разработчик',
     description:
-      'Портфолио Данила Мифтахова: Python backend, инженерия данных и автоматизация. API-интеграции, ETL и обработка данных с PostgreSQL/PostGIS.',
+      'Python Backend-разработчик: PostgreSQL/PostGIS, обработка данных и API-интеграции. Коммерческий опыт, инженерные проекты и резюме под разные роли.',
   },
 }
 

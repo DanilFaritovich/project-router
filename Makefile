@@ -1,5 +1,9 @@
 .DEFAULT_GOAL := check
-.PHONY: fix check verify ci
+.PHONY: fix check verify ci resume-candidates
+
+# Local review artifacts only; never overwrites public/resumes.
+resume-candidates:
+	@node scripts/render-resumes.mjs
 
 fix:
 	@npm run fix --silent

@@ -8,7 +8,7 @@ for (const locale of ['en', 'ru']) {
       await page.setViewportSize({ width, height: 900 })
       await page.goto(`/${locale}/`)
       const cards = page.locator('.portfolio-card')
-      await expect(cards).toHaveCount(9)
+      await expect(cards).toHaveCount(8)
       await expect(cards.locator('a')).toHaveCount(13)
       await expect(cards.locator('a[href*="/releases/tag/"]')).toHaveCount(4)
       for (const card of await cards.all()) {
@@ -38,6 +38,15 @@ for (const locale of ['en', 'ru']) {
           () => document.documentElement.scrollWidth <= innerWidth,
         ),
       ).toBe(true)
+      const infrastructure = page.locator('#project-server .card-actions a')
+      await expect(infrastructure).toHaveCount(3)
+      await expect(infrastructure.nth(0)).toHaveText(
+        locale === 'en' ? 'Host toolkit' : 'Настройка хоста',
+      )
+      await expect(infrastructure.nth(1)).toHaveAttribute(
+        'href',
+        'https://github.com/DanilFaritovich/portfolio-deployment/tree/develop',
+      )
       const actions = page.locator('#project-moon .card-actions a')
       await actions.first().focus()
       await page.keyboard.press('Tab')

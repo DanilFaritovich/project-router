@@ -8,6 +8,7 @@ import ProjectsSection from '../components/sections/ProjectsSection.vue'
 import ToolsSection from '../components/sections/ToolsSection.vue'
 import ResumeSection from '../components/sections/ResumeSection.vue'
 import ContactsSection from '../components/sections/ContactsSection.vue'
+import { siteRepositoryUrl } from '../content/projects'
 const { t } = useI18n()
 </script>
 
@@ -15,6 +16,11 @@ const { t } = useI18n()
   <PortfolioNavigation />
   <main id="main" class="portfolio-main" tabindex="-1">
     <HeroSection /><AboutSection /><SkillsSection /><ProjectsSection /><ToolsSection /><ResumeSection /><ContactsSection />
-    <footer>{{ t('footer') }}</footer>
+    <footer>
+      {{ t('footer') }} ·
+      <a :href="siteRepositoryUrl" target="_blank" rel="noopener noreferrer">{{
+        t('siteSource')
+      }}</a>
+    </footer>
   </main>
 </template>

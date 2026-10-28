@@ -23,7 +23,7 @@ for (const width of [390, 1440]) {
     const arrived = new Promise<void>((resolve) => {
       received = resolve
     })
-    await page.route('**/resumes/backend-en.pdf', async (route) => {
+    await page.route('**/resumes/candidate-backend-en.pdf', async (route) => {
       received()
       await gate
       await route.continue().catch(() => {})
@@ -40,7 +40,7 @@ for (const width of [390, 1440]) {
     await expect(dialog).toHaveCount(0)
     await expect(opener).toBeFocused()
     release()
-    await page.unroute('**/resumes/backend-en.pdf')
+    await page.unroute('**/resumes/candidate-backend-en.pdf')
     await opener.click()
     await expect(dialog.locator('canvas')).toBeVisible()
     let releaseRussian!: () => void
@@ -51,7 +51,7 @@ for (const width of [390, 1440]) {
     const russianArrived = new Promise<void>((resolve) => {
       russianReceived = resolve
     })
-    await page.route('**/resumes/backend-ru.pdf', async (route) => {
+    await page.route('**/resumes/candidate-backend-ru.pdf', async (route) => {
       russianReceived()
       await russianGate
       await route.continue().catch(() => {})
@@ -64,7 +64,7 @@ for (const width of [390, 1440]) {
     await expect(dialog.locator('canvas')).toHaveAttribute('lang', 'en')
     await expect(dialog.locator('a[download]')).toHaveAttribute(
       'href',
-      '/resumes/backend-en.pdf',
+      '/resumes/candidate-backend-en.pdf',
     )
     await expect(
       dialog.locator('.pdf-annotations a[href*="github"]'),

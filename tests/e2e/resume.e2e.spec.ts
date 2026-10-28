@@ -19,7 +19,9 @@ async function expectPdfLinks(
         const { getDocument, AnnotationType } =
           await import('pdfjs-dist/legacy/build/pdf.mjs')
         const task = getDocument({
-          data: new Uint8Array(await readFile(`public/resumes/${name}`)),
+          data: new Uint8Array(
+            await readFile(`public/resumes/candidate-${name}`),
+          ),
           standardFontDataUrl: `${process.cwd()}/node_modules/pdfjs-dist/standard_fonts/`,
         })
         try {
@@ -131,7 +133,7 @@ test.describe('real resume viewer', () => {
       ).toBeFocused()
       await expect(
         dialog.getByRole('link', { name: 'Download PDF' }),
-      ).toHaveAttribute('href', '/resumes/backend-en.pdf')
+      ).toHaveAttribute('href', '/resumes/candidate-backend-en.pdf')
       await dialog.getByRole('button', { name: 'RU', exact: true }).click()
       await expect(dialog.locator('canvas')).toHaveAttribute('lang', 'ru')
       await expect(dialog.locator('[aria-busy]')).toHaveAttribute(
@@ -140,7 +142,7 @@ test.describe('real resume viewer', () => {
       )
       await expect(
         dialog.getByRole('link', { name: 'Download PDF' }),
-      ).toHaveAttribute('href', '/resumes/backend-ru.pdf')
+      ).toHaveAttribute('href', '/resumes/candidate-backend-ru.pdf')
       await expect(dialog.locator('.pdf-page-count')).toHaveText('Page 1 / 2')
       await expectPdfLinks(dialog, 'backend-ru.pdf', 1)
       await dialog.getByRole('button', { name: 'Next page' }).click()
@@ -163,7 +165,7 @@ test.describe('real resume viewer', () => {
       const download = await downloadEvent
       expect(download.suggestedFilename()).toBe('backend-ru.pdf')
       expect(await readFile((await download.path())!)).toEqual(
-        await readFile('public/resumes/backend-ru.pdf'),
+        await readFile('public/resumes/candidate-backend-ru.pdf'),
       )
       await dialog.getByRole('button', { name: 'Zoom in' }).click()
       await expect(dialog.locator('[aria-busy]')).toHaveAttribute(
@@ -232,7 +234,7 @@ test.describe('real resume viewer', () => {
     })
   }
 
-  test('opens all six original documents with the matching download and fallback', async ({
+  test('opens all six candidate documents with the matching download and fallback', async ({
     page,
   }) => {
     await page.context().route(/^https:\/\//, (route) =>
@@ -261,7 +263,7 @@ test.describe('real resume viewer', () => {
       await page.goto(`/${language}/#resume`)
       const cards = page.locator('#resume article')
       for (const [index, id] of ['backend', 'ai', 'data'].entries()) {
-        const url = `/resumes/${id}-${language}.pdf`
+        const url = `/resumes/candidate-${id}-${language}.pdf`
         await expect(cards.nth(index).locator('a[download]')).toHaveAttribute(
           'href',
           url,
@@ -276,6 +278,11 @@ test.describe('real resume viewer', () => {
           dialog.locator('footer a[target="_blank"]'),
         ).toHaveAttribute('href', url)
         await expectPdfLinks(dialog, `${id}-${language}.pdf`, 1)
+        await expect(
+          dialog.locator(
+            '.pdf-annotations a[href^="https://danil-miftakhov.dev"]',
+          ),
+        ).toHaveCount(1)
         const email = dialog.locator('.pdf-annotations a[href^="mailto:"]')
         await email.evaluate((el) =>
           el.addEventListener('click', (event) => {
@@ -368,7 +375,7 @@ test.describe('real resume viewer', () => {
   }) => {
     await page.goto('/ru/#resume')
     let fail = true
-    await page.route('**/resumes/backend-ru.pdf', (route) =>
+    await page.route('**/resumes/candidate-backend-ru.pdf', (route) =>
       fail ? route.abort() : route.continue(),
     )
     await page
@@ -380,7 +387,7 @@ test.describe('real resume viewer', () => {
     await expect(dialog.getByRole('alert')).toBeVisible()
     await expect(
       dialog.getByRole('link', { name: /Открыть исходный/ }),
-    ).toHaveAttribute('href', '/resumes/backend-ru.pdf')
+    ).toHaveAttribute('href', '/resumes/candidate-backend-ru.pdf')
     fail = false
     await dialog.getByRole('button', { name: 'Повторить' }).click()
     await expect(dialog.locator('canvas')).toBeVisible()

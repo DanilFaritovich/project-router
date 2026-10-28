@@ -11,7 +11,7 @@ describe('resume document catalog', () => {
     for (const resume of resumes) {
       for (const language of ['en', 'ru'] as const) {
         expect(resumeUrl(resume.id, language)).toBe(
-          `/resumes/${resume.id}-${language}.pdf`,
+          `/resumes/candidate-${resume.id}-${language}.pdf`,
         )
       }
     }

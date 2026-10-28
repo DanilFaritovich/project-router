@@ -25,8 +25,24 @@ describe.each(['en', 'ru'] as const)('catalog cards in %s', (locale) => {
         wrapper.findAll('a').map((link) => link.attributes('href')),
       ).toEqual([
         item.repositoryUrl,
+        ...(item.relatedSources?.map(({ href }) => href) ?? []),
         ...(item.releaseUrl ? [item.releaseUrl] : []),
       ])
+      if (item.statusKey) {
+        expect(wrapper.get('.card-status').text()).toBe(
+          messages[locale][item.statusKey],
+        )
+      }
+      if (item.repositoryLabel) {
+        expect(wrapper.findAll('a')[0]!.text()).toBe(
+          messages[locale][item.repositoryLabel],
+        )
+      }
+      for (const source of item.relatedSources ?? []) {
+        expect(wrapper.get(`a[href="${source.href}"]`).text()).toBe(
+          messages[locale][source.label],
+        )
+      }
       for (const link of wrapper.findAll('a')) {
         expect(link.attributes('target')).toBe('_blank')
         expect(link.attributes('rel')).toBe('noopener noreferrer')

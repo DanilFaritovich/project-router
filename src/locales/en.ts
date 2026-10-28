@@ -1,8 +1,8 @@
 export default {
   heroPortraitAlt: 'Portrait of Danil Miftakhov',
-  title: 'Danil Miftakhov | Python Backend & Data Engineer',
+  title: 'Danil Miftakhov | Python Backend Developer',
   description:
-    "Danil Miftakhov's Python backend and data engineering portfolio: API integrations, ETL and data processing with PostgreSQL/PostGIS, plus automation projects.",
+    'Python backend developer working with PostgreSQL/PostGIS, data processing and API integrations. Commercial experience, engineering projects and role-specific resumes.',
   language: 'Choose language',
   languageLabel: 'Language',
   portfolio: 'Portfolio',
@@ -21,52 +21,52 @@ export default {
   navContacts: 'Contacts',
   heroEyebrow: '01 / Python engineering',
   name: 'Danil Miftakhov',
-  role: 'Python Backend / Data & Automation Engineer',
+  role: 'Python Backend Developer · Data & Automation',
   intro:
-    'I build Python backends, data-processing pipelines and API integrations. My work spans PostgreSQL, geospatial data and business automation — from commercial and freelance projects to personal engineering tools.',
+    'I develop Python tools for PostgreSQL/PostGIS data processing and external API integrations. In personal and client projects, I build backend services with FastAPI and SQLAlchemy, supported by automated tests and reproducible environments.',
   aboutEyebrow: '02 / About',
   aboutTitle: 'About Me',
   aboutIntro:
-    'Commercial experience, client integrations and personal engineering projects.',
+    'Commercial Python and SQL work, client integrations and independent backend projects.',
   aboutIntroduction:
-    'I enjoy turning complex data workflows and integrations into practical, maintainable tools. My experience spans commercial engineering, client work and independent projects, with an emphasis on reliable solutions.',
+    'My core experience is making data workflows practical: extracting and transforming records, integrating external services and checking results. Backend development builds on that experience with explicit business rules and typed APIs.',
   experienceTitle: 'Commercial Experience',
   experience:
-    'Since 2022, I have worked at Maxim with Python, PostgreSQL/PostGIS and SQL, processing address and geospatial data, preparing bulk imports and analytical exports, and integrating geocoding services.',
+    'I work as a Software Engineer at Maxim, where I develop Python tools for address and geospatial data processing with PostgreSQL/PostGIS, SQL and external geocoding APIs.',
   experienceDetail:
-    'I also investigate application errors and SQL performance issues using logs and execution plans, test hypotheses and document findings for developers.',
+    'I investigate data-quality and SQL performance issues using queries, logs and execution plans, and prepare imports, exports and technical findings for colleagues.',
   freelanceTitle: 'Freelance & Client Work',
   freelance:
-    'In freelance projects, I develop marketplace integrations, automate product data synchronization and order workflows, and build web scrapers and API integrations.',
+    'I deliver Python integrations and automation for clients, including supplier-to-Ozon inventory synchronization, data transformation and external API workflows.',
   freelanceDetail:
-    'I have also created Telegram interfaces for controlling server-side utilities and tools for processing CSV, Excel and JSON data, using Python, browser automation and Linux-based environments.',
+    'Other work includes browser automation, CSV/Excel/JSON processing and Telegram interfaces for server utilities. I choose between direct HTTP/API access and browser automation according to the task.',
   personalTitle: 'Personal Engineering Projects',
   personal:
-    'My personal projects include FastAPI services, Apache Airflow ETL pipelines, LLM/MCP integrations and developer automation tools.',
+    'My portfolio projects explore FastAPI business rules, geospatial ETL with Apache Airflow and LLM integrations: from a logistics simulation to a support-ticket assistant.',
   personalDetail:
-    'I focus on architecture, testing, CI and reproducible environments. One example is an AI-assisted Ansible/Python toolkit for provisioning my personal Ubuntu VPS, with independently verified initialization stages.',
+    'I use AI-assisted development to build Ansible/Python host provisioning, a container deployment manager and MCP execution tools, with automated checks and separate host/application responsibilities.',
   focusTitle: 'Current focus',
   focus:
-    'Python backend engineering, service architecture, reliable ETL pipelines and practical AI integrations for software development.',
+    'Python Backend: service logic, PostgreSQL, reliable data processing and external integrations. Data / ETL and applied LLM integrations are complementary directions.',
   skillsEyebrow: '03 / Skills',
   skillsTitle: 'Skills & Technologies',
   skillsIntro:
-    'A detailed view of the stack, grouped by engineering responsibility.',
+    'Core Python and database experience, supported by technologies used in personal and client projects.',
   backendTitle: 'Backend & APIs',
   backendDetail:
     'REST API development, data validation, asynchronous operations and application service logic using FastAPI, Flask and Python.',
   databaseTitle: 'Databases & Geospatial',
   databaseDetail:
     'PostgreSQL/PostGIS workflows involving geospatial processing, SQL exports, bulk imports, SQLAlchemy and query execution plan analysis.',
-  dataTitle: 'Data Engineering & ML',
+  dataTitle: 'Data pipelines and ML projects',
   dataDetail:
-    'ETL pipelines with Apache Airflow and MinIO/S3, data transformation, geospatial processing and model training with scikit-learn.',
+    'In portfolio projects: Airflow orchestration, MinIO/S3 intermediate storage, geospatial transformations and scikit-learn training/inference pipelines.',
   automationTitle: 'Automation & Integrations',
   automationDetail:
     'External API integrations, marketplace automation, web scraping, browser workflows and data transformation between services.',
   infraTitle: 'Infrastructure & Delivery',
   infraDetail:
-    'Docker and Docker Compose, Ansible-based Linux server provisioning, SSH/UFW management and automated validation with GitHub Actions.',
+    'Personal infrastructure projects: staged Ubuntu provisioning with Ansible, Docker/Compose delivery, CI checks and explicit readiness and recovery procedures.',
   testingTitle: 'Testing & Quality',
   testingDetail:
     'Unit, integration and E2E testing, formatting checks, static type analysis and automated code quality workflows.',
@@ -79,35 +79,36 @@ export default {
   projectsEyebrow: '04 / Projects',
   projectsTitle: 'Featured Projects',
   projectsIntro:
-    'Three selected applications. Engineering decisions, interfaces and data flows.',
+    'Three projects showing data pipelines, backend business rules and validated LLM integration.',
   moreTitle: 'More Projects',
-  moreIntro: 'Additional backend, ML and automation work.',
+  moreIntro:
+    'A PostgreSQL API and an ML application with reusable data pipelines.',
   moonTitle: 'Moon Courier Crisis',
   moonImageAlt:
     'Moon Courier Crisis mission map with the lunar base, delivery routes and rover battery and cargo status.',
   moonSummary:
-    'A turn-based lunar logistics game where players assign rovers to delivery contracts while managing routes, cargo capacity and battery limits.',
+    'A turn-based lunar logistics simulation: assign deliveries while respecting route, cargo and battery constraints.',
   moonDetail:
-    'The FastAPI backend controls game rules and state transitions, using SQLAlchemy repositories, a Unit of Work and NetworkX for route calculations.',
-  moonCategory: '01 / Full-stack',
+    'The FastAPI backend checks delivery feasibility and owns game state; the Vue interface renders API results. SQLAlchemy repositories and Unit of Work separate persistence from domain services.',
+  moonCategory: '02 / Python Backend',
   moonCaption: 'Lunar logistics',
   supportTitle: 'Support Assistant',
   supportImageAlt:
     'Support Assistant ticket input form and department directory for routing IT requests.',
   supportSummary:
-    'AI-assisted IT ticket processing with department routing, human approval and structured description generation.',
+    'An LLM-assisted IT-ticket application: propose a responsible department, let the user confirm or change it, then generate a structured description.',
   supportDetail:
-    'Built with a Ports & Adapters architecture, schema-validated LLM responses and shared Redis quotas for controlled API usage.',
-  supportCategory: '02 / AI / Backend',
+    'JSON Schema and Pydantic validate model responses. Retries, timeouts and shared Redis quotas bound external requests; the user retains control of the final department assignment.',
+  supportCategory: '03 / Applied LLM',
   supportCaption: 'Ticket workflows',
-  geocoderTitle: 'Yandex Geocoder Region Parser',
+  geocoderTitle: 'Geospatial ETL Pipeline',
   geocoderImageAlt:
     'Apache Airflow dashboard listing the four geocoding DAGs and their recent task runs.',
   geocoderSummary:
-    'A geospatial ETL pipeline that discovers districts by generating coordinate grids within geographic polygons and processing Yandex Geocoder API responses.',
+    'Enrich locality data with administrative districts by sampling coordinates inside polygons and aggregating Yandex Geocoder responses.',
   geocoderDetail:
-    'Built with four event-driven Apache Airflow DAGs, PostgreSQL, MinIO/S3, parallel task mapping and API-key quota management.',
-  geocoderCategory: '03 / Data engineering',
+    'Four connected Airflow DAGs read PostgreSQL polygons, generate points, run quota-aware API requests and export deduplicated results to MinIO/S3. Intermediate storage keeps data between processing stages.',
+  geocoderCategory: '01 / Data engineering',
   geocoderCaption: 'Geospatial pipeline',
   taskTitle: 'Task Service API',
   taskSummary:
@@ -118,9 +119,9 @@ export default {
   maximImageAlt:
     'MaximML prediction form with housing features, a price estimate and prediction feedback controls.',
   maximSummary:
-    'A full-stack machine learning application for California housing price prediction using Linear Regression and Gradient Boosting.',
+    'A portfolio ML application for estimating California housing prices, training regression models and collecting prediction feedback.',
   maximDetail:
-    'Features reusable scikit-learn pipelines, API-driven model training, prediction feedback and a React interface backed by FastAPI.',
+    'Saved scikit-learn Pipelines reuse fitted transformations during inference. FastAPI exposes training and prediction, while a React interface presents results and persisted training history.',
   avitoTitle: 'Avito Parser',
   avitoSummary:
     'A Python web scraping prototype for collecting Avito listings by product article numbers using Playwright and Camoufox.',
@@ -128,18 +129,19 @@ export default {
     'Includes SQLite storage, URL-based deduplication, price ranking and CSV export of up to five lowest-priced listings per search query.',
   toolsEyebrow: '05 / Tools',
   toolsTitle: 'Developer Tools',
-  toolsIntro: 'A compact catalog of reusable engineering tools.',
-  featuredTool: 'Featured tool / Infrastructure',
-  serverTitle: 'Portfolio Server Infrastructure',
+  toolsIntro:
+    'Personal tools for reproducible infrastructure and AI-assisted engineering.',
+  featuredTool: 'Related projects / Infrastructure & delivery',
+  serverTitle: 'Portfolio Infrastructure & Deployment',
   serverSummary:
-    'An Infrastructure as Code toolkit for secure, reproducible Ubuntu VPS provisioning through Ansible and a Python CLI.',
+    'Two related projects: an Ansible/Python toolkit prepares an Ubuntu host; a separate Python deployment manager plans and coordinates container application changes.',
   serverDetail:
-    'Automates seven initialization stages with independent verification, guarded SSH and firewall changes, Docker setup and isolated VM end-to-end testing. Validated on a real VPS.',
+    'Host provisioning uses staged verification. Application delivery adds a desired-state registry, readiness checks, a state journal and rollback/recovery handling. Separate repositories keep host and application responsibilities explicit.',
   workerTitle: 'Codex Free Worker MCP',
   workerSummary:
-    'A local MCP server that delegates bounded development tasks from Codex to configurable OpenCode or isolated Codex CLI workers.',
+    'A local MCP bridge for delegating bounded development tasks from Codex to OpenCode or a child Codex CLI.',
   workerDetail:
-    "Supports test and CI diagnostics, mechanical fixes, structured results and controlled permission handoff while keeping verbose execution logs out of the primary agent's context.",
+    'Execution backends inspect logs and return compact structured results. Result contracts and permission handoff support test diagnostics and mechanical fixes while architectural decisions remain with the primary agent.',
   standardsTitle: 'Codex Development Standards',
   standardsSummary:
     'A modular collection of reusable engineering standards and workflows for Codex-assisted software development.',
@@ -156,7 +158,7 @@ export default {
   resumeEyebrow: '06 / Resume',
   resumeTitle: 'Resume',
   resumeIntro:
-    'Choose a version for the role. Preview and direct PDF download share the same document.',
+    'Backend is my primary direction. Data / ETL and AI / LLM versions highlight related experience. Each PDF opens and downloads as the same document.',
   resumeBackend: 'Backend Developer',
   resumeAi: 'AI / LLM Integration',
   resumeData: 'Data / ETL Developer',
@@ -181,13 +183,14 @@ export default {
   pdfUnavailable: 'PDF files are currently unavailable.',
   contactsEyebrow: '07 / Contact',
   contactsTitle: 'Let’s Get in Touch',
-  contactsIntro: 'Python backend, data engineering and integration work.',
+  contactsIntro: 'Python backend, PostgreSQL and external integrations.',
   contactsCopy: 'Have a role or project in mind? Let’s discuss how I can help.',
   contactsDirect: 'Direct contact',
   contactsProfiles: 'Professional profiles',
   footer: 'Danil Miftakhov · Yerevan, Armenia',
-  projectsIntroMobile: 'Three selected engineering applications.',
-  moreIntroMobile: 'Backend, ML and applied automation.',
+  projectsIntroMobile:
+    'Data pipelines, backend rules and applied LLM integration.',
+  moreIntroMobile: 'ML workflows and a PostgreSQL API example.',
   english: 'English',
   russian: 'Русский',
   resumeBackendStack: 'Python · FastAPI · PostgreSQL',
@@ -205,4 +208,20 @@ export default {
   aiSkillStack: 'LLM APIs · OpenRouter · MCP\nCodex · OpenCode · JSON Schema',
   architectureSkillStack:
     'Ports & Adapters · Dependency Injection\nGit / PR workflows · Vue 3 · TypeScript · React',
+  siteSource: 'How this site is built',
+  infrastructureSource: 'Host toolkit',
+  infrastructureRelease: 'Host toolkit release',
+  deploymentSource: 'Deployment manager',
+  supportStatus: 'Public demonstration · Under development',
+  serverStatus: 'Personal projects · First rollout confirmed by the operator',
+  commercialCasesTitle: 'Selected commercial cases',
+  batchCaseTitle: 'Maxim · Batch address processing',
+  batchCaseDetail:
+    'Built the complete Python tool for selecting and processing records, exporting SQL files and loading SQL data into a database. One batch-processing run handled up to 46 million address records in approximately 6–8 hours.',
+  stockCaseTitle: 'Client work · Supplier-to-Ozon integration',
+  stockCaseDetail:
+    'Delivered Python automation for transforming supplier inventory data and synchronizing stock with Ozon. This is a client integration, distinct from the public demonstration applications below.',
+  translationCaseTitle: 'Maxim · LLM-assisted geospatial-name localization',
+  translationCaseDetail:
+    'Implemented translation using rules agreed with translators, followed by a second LLM review and conditional revision. The second pass identifies translations for conditional revision before the workflow completes.',
 }

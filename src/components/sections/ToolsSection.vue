@@ -7,11 +7,7 @@ import PortfolioCard from '../PortfolioCard.vue'
 <template>
   <PortfolioSection id="tools" prefix="tools"
     ><div class="card-list">
-      <PortfolioCard
-        v-for="item in tools"
-        :key="item.id"
-        :item="item"
-        tool
-      /></div
-  ></PortfolioSection>
+      <PortfolioCard v-for="item in tools" :key="item.id" :item="item" tool />
+    </div>
+  </PortfolioSection>
 </template>
