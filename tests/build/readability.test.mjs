@@ -210,7 +210,7 @@ for (const locale of ['en', 'ru']) {
             for (const id of ['backend', 'ai', 'data']) {
               assert.ok(
                 document.querySelector(
-                  `#resume a[href="/resumes/${id}-${locale}.pdf"][download]`,
+                  `#resume a[href="/resumes/candidate-${id}-${locale}.pdf"][download]`,
                 ),
               )
             }

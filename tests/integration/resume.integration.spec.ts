@@ -94,26 +94,26 @@ describe('resume preview', () => {
     expect(
       wrapper.findAll('a[download]').map((link) => link.attributes('href')),
     ).toEqual([
-      '/resumes/backend-ru.pdf',
-      '/resumes/ai-ru.pdf',
-      '/resumes/data-ru.pdf',
+      '/resumes/candidate-backend-ru.pdf',
+      '/resumes/candidate-ai-ru.pdf',
+      '/resumes/candidate-data-ru.pdf',
     ])
     await wrapper.findAll('button')[1]!.trigger('click')
     await vi.waitFor(() =>
-      expect(loadPdf).toHaveBeenCalledWith('/resumes/ai-ru.pdf'),
+      expect(loadPdf).toHaveBeenCalledWith('/resumes/candidate-ai-ru.pdf'),
     )
     await flushPromises()
     i18n.global.locale.value = 'en'
     await flushPromises()
     expect(
       document.querySelector('dialog a[download]')?.getAttribute('href'),
-    ).toBe('/resumes/ai-ru.pdf')
+    ).toBe('/resumes/candidate-ai-ru.pdf')
     expect(
       wrapper.findAll('a[download]').map((link) => link.attributes('href')),
     ).toEqual([
-      '/resumes/backend-en.pdf',
-      '/resumes/ai-en.pdf',
-      '/resumes/data-en.pdf',
+      '/resumes/candidate-backend-en.pdf',
+      '/resumes/candidate-ai-en.pdf',
+      '/resumes/candidate-data-en.pdf',
     ])
     wrapper.unmount()
   })
@@ -121,13 +121,16 @@ describe('resume preview', () => {
   it('selects the initial language and keeps preview, download and fallback URLs aligned after switching', async () => {
     const wrapper = mountViewer('ru')
     await flushPromises()
-    expect(loadPdf).toHaveBeenLastCalledWith('/resumes/backend-ru.pdf')
+    expect(loadPdf).toHaveBeenLastCalledWith(
+      '/resumes/candidate-backend-ru.pdf',
+    )
     const links = () => [
       ...document.querySelectorAll('dialog .card-actions a, dialog footer a'),
     ]
     expect(
       links().every(
-        (link) => link.getAttribute('href') === '/resumes/backend-ru.pdf',
+        (link) =>
+          link.getAttribute('href') === '/resumes/candidate-backend-ru.pdf',
       ),
     ).toBe(true)
     expect(links()[0]!.getAttribute('download')).toBe('backend-ru.pdf')
@@ -135,10 +138,13 @@ describe('resume preview', () => {
       document.querySelector('dialog button[lang="en"]') as HTMLButtonElement
     ).click()
     await flushPromises()
-    expect(loadPdf).toHaveBeenLastCalledWith('/resumes/backend-en.pdf')
+    expect(loadPdf).toHaveBeenLastCalledWith(
+      '/resumes/candidate-backend-en.pdf',
+    )
     expect(
       links().every(
-        (link) => link.getAttribute('href') === '/resumes/backend-en.pdf',
+        (link) =>
+          link.getAttribute('href') === '/resumes/candidate-backend-en.pdf',
       ),
     ).toBe(true)
     expect(destroy).toHaveBeenCalledOnce()

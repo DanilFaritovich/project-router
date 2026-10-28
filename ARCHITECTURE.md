@@ -146,8 +146,12 @@ an independently verified successful automatic application update.
 `make resume-candidates` uses the offline Chromium renderer in
 `scripts/render-resumes.mjs` to write two-page PDF and HTML review artifacts to the
 system temporary directory. Generation checks page overflow and original PDF
-hashes. This workflow is separate from SSG and does not adopt candidates into the
-website or replace the six original documents.
+hashes. Generation is separate from SSG and never replaces the originals. At the
+owner's request, six candidate copies are now committed as
+`public/resumes/candidate-{backend,ai,data}-{en,ru}.pdf` and selected by the shared
+resume catalog for in-site review. Preview, download, fallback and document-language
+switching all use those candidate URLs. The original public paths remain available
+and unchanged.
 Three resume roles use `src/content/resumes.ts` for typed specialization metadata,
 EN/RU asset paths and build-time availability. Owner-supplied documents belong in
 `public/resumes/{backend,ai,data}-{en,ru}.pdf` and are copied unchanged by Vite.

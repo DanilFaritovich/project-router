@@ -1,6 +1,6 @@
 # Portfolio content and resume refresh
 
-Status: implemented locally; Make checks passed. Owner visual review and PDF adoption remain pending. This is a content iteration on the completed implementation
+Status: implemented locally; Make checks passed. Owner visual review and final PDF content approval remain pending. This is a content iteration on the completed implementation
 stages 01–09, not a new release or deployment stage.
 
 ## Positioning and source rules
@@ -112,9 +112,8 @@ LinkedIn content and HH resume content have not been reviewed successfully.
 4. **RU/EN copy — implemented.** Align Hero, About, Skills, project cards, resume labels
    and SEO with the primary Backend direction. Avoid repeated general claims.
 5. **PDF candidates — generated for owner review.** Prepare editable sources and six separately stored
-   candidates. Preserve the original files in public/resumes. Candidate adoption
-   requires a separate decision because the project instructions preserve those
-   originals. Verify text extraction, links, wrapping and page layout.
+   candidates. Preserve the original files in public/resumes. The owner authorized adding the candidates to the existing viewer for review,
+   using separate candidate-* paths while preserving the originals. Verify text extraction, links, wrapping and page layout.
 6. **Site implementation — implemented.** Preserve the visual language and seven-section
    navigation. Keep content typed and localized; support clear actions for the
    related infrastructure/deployment repositories and standard project/tool cards.
@@ -133,7 +132,8 @@ Run `make resume-candidates` with the project Node version and installed Playwri
 Chromium. The default output is `project-router-resume-candidates` inside the system
 temporary directory: six PDFs and six standalone HTML previews. Editable content
 is in `scripts/resumes/content.mjs`; the print template and overflow checks are in
-`scripts/render-resumes.mjs`. The website continues using the original PDFs.
+`scripts/render-resumes.mjs`. The owner subsequently requested in-site review; the website now selects the
+committed candidate-* PDF copies. The six original files remain unchanged.
 
 Candidate copy uses completed education without inventing a diploma degree,
 approximately 2020 for the uncertain freelance start, and distinct project choices
@@ -158,3 +158,11 @@ The owner rejected standalone text references as inconsistent with the site styl
 Task Service API and Codex Development Standards therefore remain standard cards.
 The final catalog has eight cards: three featured applications, two additional
 applications and three tools. Avito Parser remains outside the displayed catalog.
+
+## In-site PDF review
+
+The owner requested all six candidates in the existing Resume section. The catalog
+now selects `/resumes/candidate-{id}-{language}.pdf`; opening, downloading, changing
+language and opening the source document use the same candidate. Original
+`/resumes/{id}-{language}.pdf` files are retained byte-for-byte. This changes the
+review content of the task branch; it does not authorize a merge or deployment.
