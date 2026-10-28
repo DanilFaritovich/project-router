@@ -8,29 +8,38 @@ resume. It also demonstrates a static Vue application with localized HTML,
 accessible interactions, automated QA and a verifiable container delivery pipeline.
 
 **Release status:** stages 01–09 are complete and integrated into `develop`.
-Project metadata is prepared for the first release, **v1.0.0**; it has not been
-released or deployed to production. The existing [release PR #14](https://github.com/DanilFaritovich/project-router/pull/14)
-tracks `develop → main`. No public Live Demo is confirmed.
+**v1.1.0** refreshes Python Backend positioning, commercial case briefs and
+role-specific EN/RU resumes. The content changes were integrated through
+[PR #21](https://github.com/DanilFaritovich/project-router/pull/21).
+The owner confirmed visual acceptance of the site and all six new PDFs on
+2026-10-28. See the [v1.1.0 release notes](docs/releases/v1.1.0.md) for scope and validation.
 
 [Desktop screenshot](docs/qa/artifacts/page-en-1440.webp) ·
 [Mobile screenshot](docs/qa/artifacts/page-en-390.webp) ·
 [PDF viewer](docs/qa/artifacts/pdf-en-1440.webp)
 
 These existing browser captures come from the [Stage 07 QA report](docs/qa/STAGE07-REPORT.md);
-they predate its documented spacing follow-up.
+they predate its documented spacing follow-up and the v1.1.0 content refresh.
 
 ## Features
 
 - Seven responsive sections: Hero, About, Skills, Projects, Developer Tools,
   Resume and Contacts; commercial, freelance and personal work are distinguished.
-- Typed, Git-managed catalog: three featured projects, three more projects and
+- Python Backend positioning supported by three commercial case briefs: batch
+  address processing, supplier-to-Ozon inventory synchronization and LLM-assisted
+  geospatial-name localization. Commercial work is distinct from public demos.
+- Typed, Git-managed catalog: three featured projects, two more projects and
   three developer tools, with source links, four explicit release links and four
-  locally optimized project screenshots. No runtime catalog service is needed.
+  locally optimized project screenshots. Geocoder leads the featured projects;
+  host infrastructure and application delivery have separately labeled sources.
+  No runtime catalog service is needed.
 - Complete EN/RU copy at `/en/` and `/ru/`. Language switching preserves the
   visible section and query/hash; browser Back/Forward and direct links work.
 - Pre-rendered localized HTML, metadata, social previews and origin-dependent
   canonical/hreflang, sitemap and Person/WebSite structured data.
-- Six original EN/RU resume PDFs for Backend, AI / LLM and Data / ETL. The lazy
+- Six new two-page EN/RU resume PDFs for Backend, AI / LLM and Data / ETL,
+  with editable sources and role-specific profiles, skills and project selection.
+  The six original PDFs remain unchanged. The lazy
   PDF.js viewer supports independent document language, pages, zoom, fit width,
   download, original-file fallback and loading/error/retry states.
 - Keyboard navigation, skip link, mobile menu and modal focus containment/return;
@@ -55,7 +64,14 @@ client-only viewer. There is no request-time SSR or API layer.
 PDF links allow only HTTP(S)/mailto; HTTP(S) opens with `noopener noreferrer`.
 PDF scripts/actions are excluded. Canvas and link annotations stay aligned through
 page, zoom and resize changes; document/worker resources are disposed on close.
-The six source PDFs in `public/resumes/` remain unchanged.
+The viewer serves `public/resumes/candidate-{backend,ai,data}-{en,ru}.pdf`.
+The six original PDFs in the same directory remain unchanged.
+
+Resume content lives in `scripts/resumes/content.mjs`; layout and generation live
+in `scripts/render-resumes.mjs`. After installing Chromium, `make resume-candidates`
+generates PDF and HTML review artifacts under the system temporary directory and
+prints the output path. It never overwrites `public/resumes/`; replacing the
+site's PDFs is an explicit content update.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for module boundaries, data flows and test
 coverage. [design/DESIGN.md](design/DESIGN.md) preserves historical design intent;
@@ -102,7 +118,7 @@ system libraries. For a focused test, use `npm test -- <test-file>`.
 SEO locally; the reserved test domain is not a deployment destination.
 
 Tests cover catalog/locale contracts, no-JavaScript HTML, navigation/history,
-mobile menu, all six real PDFs, download bytes, link geometry, focus, retry and
+mobile menu, all six active PDFs, original-file integrity, download bytes, link geometry, focus, retry and
 resource races. The [QA report](docs/qa/STAGE07-REPORT.md) records the EN/RU
 viewport matrix, axe scans, visual review, historical results and limitations.
 Automated accessibility checks are not WCAG certification; readability checks do
@@ -155,13 +171,18 @@ alias `project-router-web`; the producer [compose.yaml](compose.yaml) is a separ
 example with alias `project-router`. Never run both projects for this application.
 See the [deployment contract](docs/deployment/CONTRACT.md) and
 [release checklist](docs/deployment/RELEASE-CHECKLIST.md) for verification and handoff.
-These workflows do not deploy, merge PRs, create tags or publish GitHub Releases.
+After successful push CI on `main`, the [production CD workflow](.github/workflows/deploy.yml)
+calls a pinned reusable workflow in `portfolio-deployment`, which owns rollout
+policy and operations. A merge into `main` therefore enters the production CD
+path. Develop and tag publication do not trigger this workflow. No workflow merges
+PRs, creates tags or publishes GitHub Releases.
 
 ## Limitations and release status
 
-Production deployment, public HTTPS/SEO acceptance, indexing and first
-production-eligible digest/signature verification remain pending operator work.
-Branch rules and manager admission/runtime acceptance need independent review.
+The first rollout is operator-reported. This repository's local checks do not
+establish current public HTTPS/SEO behavior, indexing or field performance.
+For each release, the operator verifies the exact protected-main image digest,
+signatures, manager admission and runtime acceptance through `portfolio-deployment`.
 Docker health status alone does not restart a hung process.
 
 The PDF viewer has no full text layer, search or selection; screen readers cannot
@@ -176,7 +197,7 @@ requirement for this static portfolio.
 - [Architecture](ARCHITECTURE.md): modules, invariants, localization, SEO and PDF lifecycle.
 - [QA report and screenshots](docs/qa/STAGE07-REPORT.md): evidence and acceptance limits.
 - [Deployment contract](docs/deployment/CONTRACT.md) and [release checklist](docs/deployment/RELEASE-CHECKLIST.md): security, attestations and operator steps.
-- [Changelog](CHANGELOG.md) and [draft v1.0.0 release notes](docs/releases/v1.0.0.md).
+- [Changelog](CHANGELOG.md) and [v1.1.0 release notes](docs/releases/v1.1.0.md).
 - [Historical design specification](design/DESIGN.md) and [canonical references](design/reference/README.md).
 - [AGENTS.md](AGENTS.md): contributor/agent rules; task branches from `develop`, PRs into `develop`, manual merge.
 
@@ -196,8 +217,10 @@ All nine implementation stages are complete and integrated into `develop`:
 | 08    | Docker & CI/CD Foundation                    |
 | 09    | Production Integration & Release preparation |
 
-The existing release PR #14, its separately authorized merge, tag/GitHub Release
-and production operations are the release handoff, not a tenth implementation stage.
+The v1.1.0 content refresh builds on these completed stages. The original
+[release PR #14](https://github.com/DanilFaritovich/project-router/pull/14) is merged.
+Release integration follows `develop → main`; merge, tag/GitHub Release and
+production operations require separate authorization and are not a tenth implementation stage.
 
 ## License
 
