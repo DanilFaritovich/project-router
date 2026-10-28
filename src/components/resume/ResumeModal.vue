@@ -218,7 +218,7 @@ onUnmounted(() => {
           <a
             class="action action-primary"
             :href="url"
-            :download="url.split('/').pop()"
+            :download="`${resume.id}-${language}.pdf`"
             >{{ t('downloadPdf') }}</a
           >
           <button

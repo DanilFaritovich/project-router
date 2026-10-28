@@ -144,12 +144,20 @@ describe('portfolio', () => {
       expect(wrapper.find(`#${id}-heading`).exists()).toBe(true)
     }
     expect(wrapper.findAll('h1')).toHaveLength(1)
-    expect(wrapper.findAll('#projects article')).toHaveLength(6)
+    expect(wrapper.findAll('#projects article')).toHaveLength(5)
     expect(wrapper.findAll('#tools article')).toHaveLength(3)
     expect(wrapper.findAll('#resume button:disabled')).toHaveLength(
       2 * resumes.filter((item) => !resumeAvailable(item.id, 'en')).length,
     )
     expect(wrapper.findAll('#projects img')).toHaveLength(4)
+    expect(wrapper.get('#project-task a').attributes('href')).toBe(
+      'https://github.com/DanilFaritovich/task-service-api',
+    )
+    expect(wrapper.get('#project-standards a').attributes('href')).toBe(
+      'https://github.com/DanilFaritovich/codex-development-standards/tree/develop',
+    )
+    expect(wrapper.findAll('.experience-cases dt')).toHaveLength(3)
+    expect(wrapper.find('#project-avito').exists()).toBe(false)
     expect(wrapper.text()).not.toContain('Live Demo')
     wrapper.unmount()
   })

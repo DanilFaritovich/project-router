@@ -20,6 +20,10 @@ export interface PortfolioItem {
   stack: readonly string[]
   repositoryUrl: string
   releaseUrl?: string
+  releaseLabel?: keyof typeof en
+  repositoryLabel?: keyof typeof en
+  relatedSources?: readonly { label: keyof typeof en; href: string }[]
+  statusKey?: keyof typeof en
   preview?: string
   emphasized?: boolean
   image?: {
@@ -38,46 +42,8 @@ export interface PortfolioItem {
 // All source repositories belong to https://github.com/DanilFaritovich/.
 export const featured: readonly PortfolioItem[] = [
   {
-    id: 'moon',
-    stack: [
-      'FastAPI',
-      'SQLAlchemy',
-      'NetworkX',
-      'Vue 3',
-      'TypeScript',
-      'Docker',
-    ],
-    repositoryUrl:
-      'https://github.com/DanilFaritovich/Moon-courier-crisis-game',
-    releaseUrl:
-      'https://github.com/DanilFaritovich/Moon-courier-crisis-game/releases/tag/v1.0.0',
-    preview: 'MC',
-    emphasized: true,
-    image: { src: moonImage, altKey: 'moonImageAlt', width: 1200, height: 750 },
-  },
-  {
-    id: 'support',
-    stack: [
-      'Python',
-      'FastAPI',
-      'Vue 3',
-      'OpenRouter',
-      'Redis',
-      'SQLAlchemy',
-      'Docker',
-    ],
-    repositoryUrl:
-      'https://github.com/DanilFaritovich/support-assistant-llm/tree/develop',
-    preview: 'AI',
-    image: {
-      src: supportImage,
-      altKey: 'supportImageAlt',
-      width: 1200,
-      height: 1000,
-    },
-  },
-  {
     id: 'geocoder',
+    emphasized: true,
     stack: [
       'Python',
       'Apache Airflow',
@@ -99,6 +65,45 @@ export const featured: readonly PortfolioItem[] = [
       height: 561,
     },
   },
+  {
+    id: 'moon',
+    stack: [
+      'FastAPI',
+      'SQLAlchemy',
+      'NetworkX',
+      'Vue 3',
+      'TypeScript',
+      'Docker',
+    ],
+    repositoryUrl:
+      'https://github.com/DanilFaritovich/Moon-courier-crisis-game',
+    releaseUrl:
+      'https://github.com/DanilFaritovich/Moon-courier-crisis-game/releases/tag/v1.0.0',
+    preview: 'MC',
+    image: { src: moonImage, altKey: 'moonImageAlt', width: 1200, height: 750 },
+  },
+  {
+    id: 'support',
+    statusKey: 'supportStatus',
+    stack: [
+      'Python',
+      'FastAPI',
+      'Vue 3',
+      'OpenRouter',
+      'Redis',
+      'SQLAlchemy',
+      'Docker',
+    ],
+    repositoryUrl:
+      'https://github.com/DanilFaritovich/support-assistant-llm/tree/develop',
+    preview: 'AI',
+    image: {
+      src: supportImage,
+      altKey: 'supportImageAlt',
+      width: 1200,
+      height: 1000,
+    },
+  },
 ]
 
 export const more: readonly PortfolioItem[] = [
@@ -115,6 +120,7 @@ export const more: readonly PortfolioItem[] = [
     ],
     repositoryUrl: 'https://github.com/DanilFaritovich/task-service-api',
   },
+
   {
     id: 'maxim',
     stack: [
@@ -137,16 +143,20 @@ export const more: readonly PortfolioItem[] = [
       height: 1000,
     },
   },
-  {
-    id: 'avito',
-    stack: ['Python', 'Playwright', 'Camoufox', 'SQLAlchemy', 'SQLite', 'CSV'],
-    repositoryUrl: 'https://github.com/DanilFaritovich/avito-parser',
-  },
 ]
 
 export const tools: readonly PortfolioItem[] = [
   {
     id: 'server',
+    releaseLabel: 'infrastructureRelease',
+    repositoryLabel: 'infrastructureSource',
+    relatedSources: [
+      {
+        label: 'deploymentSource',
+        href: 'https://github.com/DanilFaritovich/portfolio-deployment/tree/develop',
+      },
+    ],
+    statusKey: 'serverStatus',
     stack: [
       'Python',
       'Ansible',
@@ -191,3 +201,6 @@ export const tools: readonly PortfolioItem[] = [
       'https://github.com/DanilFaritovich/codex-development-standards/tree/develop',
   },
 ]
+
+export const siteRepositoryUrl =
+  'https://github.com/DanilFaritovich/project-router'

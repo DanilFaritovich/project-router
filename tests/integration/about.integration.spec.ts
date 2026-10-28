@@ -23,6 +23,7 @@ describe('professional profile', () => {
         copy.experienceTitle,
         copy.freelanceTitle,
         copy.personalTitle,
+        copy.commercialCasesTitle,
         copy.focusTitle,
       ])
       const blocks = about.findAll('.about-block')
@@ -35,6 +36,20 @@ describe('professional profile', () => {
         ])
       }
       expect(blocks[0]!.text()).not.toMatch(/Airflow|Ansible/)
+      expect(
+        about.findAll('.experience-cases dt').map((item) => item.text()),
+      ).toEqual([
+        copy.batchCaseTitle,
+        copy.stockCaseTitle,
+        copy.translationCaseTitle,
+      ])
+      expect(
+        about.findAll('.experience-cases dd').map((item) => item.text()),
+      ).toEqual([
+        copy.batchCaseDetail,
+        copy.stockCaseDetail,
+        copy.translationCaseDetail,
+      ])
       expect(about.get('aside p').text()).toBe(copy.focus)
       const router = createRouter({ history: createMemoryHistory(), routes })
       await router.push(`/${locale}/`)

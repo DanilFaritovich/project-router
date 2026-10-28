@@ -32,6 +32,7 @@ const hasImage = computed(
       <p class="card-detail">
         {{ t(`${item.id}Detail`) }}
       </p>
+      <p v-if="item.statusKey" class="card-status">{{ t(item.statusKey) }}</p>
     </div>
     <p class="stack">{{ item.stack.join(' · ') }}</p>
     <div v-if="hasImage && item.image" class="project-preview">
@@ -53,9 +54,17 @@ const hasImage = computed(
       }}</span>
     </div>
     <div class="card-actions">
-      <UiAction :href="item.repositoryUrl">{{ t('github') }}</UiAction>
+      <UiAction :href="item.repositoryUrl">{{
+        t(item.repositoryLabel ?? 'github')
+      }}</UiAction>
+      <UiAction
+        v-for="source in item.relatedSources"
+        :key="source.href"
+        :href="source.href"
+        >{{ t(source.label) }}</UiAction
+      >
       <UiAction v-if="item.releaseUrl" :href="item.releaseUrl">{{
-        t('release')
+        t(item.releaseLabel ?? 'release')
       }}</UiAction>
     </div>
   </article>

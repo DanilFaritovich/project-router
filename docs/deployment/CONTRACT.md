@@ -86,7 +86,11 @@ PRs into `develop`/`main` run `Quality and static build`, then
 jobs pass for the same exact SHA calls the reusable publication workflow. No
 `pull_request_target`, manual deployment trigger or independent racing publish
 workflow exists. Only publication receives packages/attestations write and OIDC
-permissions. No automatic deployment, release, tag or merge is performed.
+permissions. The separate [production CD workflow](../../.github/workflows/deploy.yml)
+runs after successful push CI on `main` and calls a pinned reusable Manager
+workflow in `portfolio-deployment`. The Manager owns deployment policy and rollout;
+develop/tag publication does not trigger this CD path. No workflow creates a
+release, tag or merge.
 
 | Trusted push                   | Discovery tag            |
 | ------------------------------ | ------------------------ |
