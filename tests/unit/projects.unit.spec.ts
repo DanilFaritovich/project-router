@@ -5,18 +5,18 @@ import { messages } from '../../src/locales'
 const catalog = [...featured, ...more, ...tools]
 
 describe('approved project catalog', () => {
-  it('keeps the nine unique projects in their reviewed groups and order', () => {
+  it('keeps the eight main projects in their reviewed groups and order', () => {
     expect(featured.map(({ id }) => id)).toEqual([
+      'geocoder',
       'moon',
       'support',
-      'geocoder',
     ])
-    expect(more.map(({ id }) => id)).toEqual(['task', 'maxim', 'avito'])
+    expect(more.map(({ id }) => id)).toEqual(['task', 'maxim'])
     expect(tools.map(({ id }) => id)).toEqual(['server', 'worker', 'standards'])
-    expect(new Set(catalog.map(({ id }) => id)).size).toBe(9)
+    expect(new Set(catalog.map(({ id }) => id)).size).toBe(8)
     expect(
       catalog.filter(({ emphasized }) => emphasized).map(({ id }) => id),
-    ).toEqual(['moon', 'server'])
+    ).toEqual(['geocoder', 'server'])
   })
 
   it('exposes only the four approved versioned releases', () => {
@@ -26,12 +26,12 @@ describe('approved project catalog', () => {
         .map(({ id, releaseUrl }) => [id, releaseUrl]),
     ).toEqual([
       [
-        'moon',
-        'https://github.com/DanilFaritovich/Moon-courier-crisis-game/releases/tag/v1.0.0',
-      ],
-      [
         'geocoder',
         'https://github.com/DanilFaritovich/yandex-geocoder-region-parser/releases/tag/v1.2.0',
+      ],
+      [
+        'moon',
+        'https://github.com/DanilFaritovich/Moon-courier-crisis-game/releases/tag/v1.0.0',
       ],
       [
         'maxim',
@@ -44,7 +44,7 @@ describe('approved project catalog', () => {
     ])
   })
 
-  it('links the three unreleased development projects to develop', () => {
+  it('links the unreleased development projects to develop', () => {
     expect(
       catalog
         .filter(({ repositoryUrl }) => repositoryUrl.endsWith('/tree/develop'))
@@ -93,11 +93,11 @@ describe('approved project catalog', () => {
       }
     }
     expect(catalog.filter(({ image }) => image).map(({ id }) => id)).toEqual([
+      'geocoder',
       'moon',
       'support',
-      'geocoder',
       'maxim',
     ])
-    expect(featured.map(({ preview }) => preview)).toEqual(['MC', 'AI', 'ETL'])
+    expect(featured.map(({ preview }) => preview)).toEqual(['ETL', 'MC', 'AI'])
   })
 })

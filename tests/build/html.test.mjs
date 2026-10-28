@@ -81,12 +81,11 @@ for (const locale of ['en', 'ru']) {
     assert.deepEqual(
       cards.map((card) => card.id),
       [
+        'project-geocoder',
         'project-moon',
         'project-support',
-        'project-geocoder',
         'project-task',
         'project-maxim',
-        'project-avito',
         'project-server',
         'project-worker',
         'project-standards',
@@ -213,7 +212,7 @@ for (const locale of ['en', 'ru']) {
         `Missing ${id} content`,
       )
     }
-    assert.equal(document.querySelectorAll('#projects article').length, 6)
+    assert.equal(document.querySelectorAll('#projects article').length, 5)
     assert.equal(
       document.querySelectorAll('#resume button:disabled').length +
         2 * document.querySelectorAll('#resume a[download]').length,
