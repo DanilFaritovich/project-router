@@ -3,6 +3,34 @@
 This file records ProjectRouter application changes. Package metadata tracks the
 application version; the private package is not published to npm.
 
+## 1.1.0
+
+### Portfolio and resumes
+
+- Make Python Backend the primary direction, supported by PostgreSQL, data
+  processing and external API integration experience in both languages.
+- Add three commercial case briefs: batch address processing, supplier-to-Ozon
+  inventory synchronization and LLM-assisted geospatial-name localization.
+- Lead the featured catalog with Geocoder; retain Moon Courier Crisis and
+  Support Assistant, and remove Avito Parser from the displayed catalog.
+- Group host infrastructure and application delivery as related projects with
+  separate repository labels and an explicitly operator-reported rollout status.
+- Add six two-page, role-specific EN/RU resumes with editable content and layout
+  sources, offline PDF/HTML generation and consistent download names. The existing
+  viewer serves the new `candidate-*` assets; all six original PDFs remain unchanged.
+
+### Validation
+
+- PR #21 integrated the content refresh into `develop`. Its recorded checks passed:
+  `make fix`, `make check` (94 unit/integration tests) and `make verify`
+  (SSG/HTML, asset integrity and 46 Chromium scenarios).
+- The owner confirmed visual acceptance of the site and all six new PDFs on
+  2026-10-28. This is owner acceptance, separate from the recorded automated checks.
+- Release publication and deployment use the existing protected-main delivery
+  process; content integration does not establish a published tag or deployment.
+
+See [v1.1.0 release notes](docs/releases/v1.1.0.md) for scope and limitations.
+
 ## 1.0.0 — prepared, unreleased
 
 First release candidate scope: stages 01–09 are complete and integrated into

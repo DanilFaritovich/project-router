@@ -1,7 +1,9 @@
 # Portfolio content and resume refresh
 
-Status: implemented locally; Make checks passed. Owner visual review and final PDF content approval remain pending. This is a content iteration on the completed implementation
-stages 01–09, not a new release or deployment stage.
+Status: integrated into `develop` through PR #21; Make checks passed. The owner
+confirmed visual acceptance of the site and all six new PDFs on 2026-10-28.
+This content iteration is included in v1.1.0 and builds on completed implementation
+stages 01–09; release publication and deployment remain separate operations.
 
 ## Positioning and source rules
 
@@ -111,20 +113,21 @@ LinkedIn content and HH resume content have not been reviewed successfully.
    interview notes without private operational details.
 4. **RU/EN copy — implemented.** Align Hero, About, Skills, project cards, resume labels
    and SEO with the primary Backend direction. Avoid repeated general claims.
-5. **PDF candidates — generated for owner review.** Prepare editable sources and six separately stored
+5. **PDF candidates — accepted by the owner.** Prepare editable sources and six separately stored
    candidates. Preserve the original files in public/resumes. The owner authorized adding the candidates to the existing viewer for review,
    using separate candidate-* paths while preserving the originals. Verify text extraction, links, wrapping and page layout.
 6. **Site implementation — implemented.** Preserve the visual language and seven-section
    navigation. Keep content typed and localized; support clear actions for the
    related infrastructure/deployment repositories and standard project/tool cards.
 7. **Make acceptance — passed.** make fix, make check (94 unit/integration tests)
-   and make verify (SSG/HTML checks and 46 browser scenarios) passed. The owner performs visual acceptance of RU/EN layouts and PDF candidates.
+   and make verify (SSG/HTML checks and 46 browser scenarios) passed. The owner confirmed visual acceptance of RU/EN layouts and all six PDF candidates on 2026-10-28.
    Automated browser assertions within make verify remain part of Make acceptance.
    No additional agent-driven visual review is requested.
 
 Work on a task branch from develop. Deliver through a PR into develop under the
-standing owner authorization; do not merge automatically. Keep release PR #14
-separate. No release tags, production host contact or deployment are included.
+standing owner authorization; do not merge automatically. PR #21 is merged;
+v1.1.0 integration into main and publication follow the separate release process.
+No release tags, production host contact or deployment are included in this content task.
 
 ## Resume candidate reproduction and review
 
@@ -188,11 +191,11 @@ declare four distinct DAG IDs. The downstream schedules use Asset aliases. The
 resume therefore describes four DAGs linked by Asset events, not four tasks in one
 DAG. Portfolio Deployment descriptions follow its current develop README and
 reconciliation code; no successful production rollback drill or zero-downtime
-claim is added. Visual balance remains subject to owner review.
+claim is added. The owner accepted the visual balance on 2026-10-28.
 
 The owner agreed this is the resume content baseline after the role-specific
 refinement. Profiles now lead with Backend, Data / ETL or LLM/API focus respectively.
 Core Skills lead with Python/FastAPI/SQLAlchemy for Backend, PostgreSQL then Airflow
 then processing for Data, and LLM integration then MCP tooling for AI. Further
 editorial changes should address concrete review feedback or a target vacancy.
-This baseline is a task-branch commit, not a release tag or production deployment.
+This baseline was integrated through PR #21; that merge does not establish a release tag or production deployment.

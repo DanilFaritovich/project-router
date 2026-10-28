@@ -1,18 +1,19 @@
 # Production release preparation checklist
 
-Stages 01–09 are integrated into `develop`. Project metadata is prepared for
-`v1.0.0`; the version has not been released or deployed. No production-eligible
-image/digest or signed release evidence is asserted by this documentation. Local
-builds and PR CI cannot prove a future protected-main publication. Use Bash,
+Stages 01–09 and the PR #21 content refresh are integrated into `develop`.
+Application metadata is `1.1.0`; the owner confirmed visual acceptance of the site
+and six new PDFs on 2026-10-28. First rollout is operator-reported; this checklist
+does not assert an exact v1.1.0 image/digest or signed release evidence. Local
+builds and PR CI cannot prove a protected-main publication. Use Bash,
 Node 22.22.2+ (22.x), npm, current authenticated `gh` with attestation verification,
 `jq`, `tar`, Docker Engine and Buildx on an isolated verification workstation.
 
-## Before merging the existing develop → main release PR
+## Before merging a develop → main release PR
 
 - Stage 09 is integrated via [PR #13](https://github.com/DanilFaritovich/project-router/pull/13).
   Review/merge the final documentation PR into `develop`, confirm `package.json`
-  and both root lockfile versions are `1.0.0`, and review the
-  [changelog](../../CHANGELOG.md) and [draft release notes](../releases/v1.0.0.md).
+  and both root lockfile versions are `1.1.0`, and review the
+  [changelog](../../CHANGELOG.md) and [release notes](../releases/v1.1.0.md).
   A develop publication is a development candidate, not production evidence.
 - Confirm effective rules for both producer and manager `main`/`develop`: required
   reviews/checks, trusted GitHub App identities and bypass restrictions. Require
@@ -34,12 +35,16 @@ Node 22.22.2+ (22.x), npm, current authenticated `gh` with attestation verificat
   access/retention and GitHub Artifact Attestations plan/visibility support, OIDC
   and package/attestation permissions. Missing support is a blocker, not permission
   to use labels/plain JSON as trusted evidence.
-- Review the updated diff and exact-head CI of the existing
-  [release PR #14](https://github.com/DanilFaritovich/project-router/pull/14)
-  (`develop → main`); do not create a duplicate. Documentation merged into
-  `develop` appears there automatically. Obtain separate authorization for its
-  merge. The `v1.0.0` tag and GitHub Release are separately authorized owner
-  actions, using the reviewed main commit and finalized release notes.
+- The original [release PR #14](https://github.com/DanilFaritovich/project-router/pull/14)
+  is merged. Review the v1.1.0 `develop → main` diff and exact-head PR CI,
+  including the documentation and version metadata. Reuse an open release PR if
+  one exists; do not create a duplicate.
+- Obtain explicit release-merge authorization with awareness that successful
+  push CI on `main` triggers `.github/workflows/deploy.yml`. It calls the pinned
+  reusable CD workflow in `portfolio-deployment`, which owns production policy
+  and rollout. Develop/tag publication does not trigger that workflow.
+  The `v1.1.0` tag and GitHub Release are separately authorized owner actions,
+  using the reviewed main commit and finalized release notes.
 
 ## After a separately authorized merge to protected main
 
@@ -159,6 +164,7 @@ does not install that collector or confer deployment authority.
   observations, DNS/ACME/TLS, Caddy storage/validation, backups/restore, first-install
   containment and exact-candidate operator approvals remain manager/infra work.
   Stage 09 does none of them. No previous application release is invented for rollback.
-- Only after separate deployment authorization may the manager perform rollout and
+- Review Manager deployment policy and authorization before approving a main merge
+  that enters the configured production CD path. The Manager owns rollout and
   public HTTPS/redirect/metadata checks. Production acceptance and the separately
-  authorized tag/release must reflect actual evidence. No automatic CD is introduced.
+  authorized tag/release must reflect actual evidence.
