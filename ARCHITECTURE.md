@@ -4,7 +4,7 @@
 
 Stages 01–09 are complete and merged into `develop`, including content refinement,
 Hero Portrait Integration, Localization & SEO and Resume & Interactions. The
-responsive seven-section portfolio and nine-item catalog use Vue 3, TypeScript,
+responsive seven-section portfolio and curated project catalog use Vue 3, TypeScript,
 Vite 8, Tailwind CSS 4, Vue Router, Vue I18n, Vite SSG and Unhead. Six owner-supplied
 PDFs use a client-only PDF.js viewer with clickable links. Stage 07 — Testing & Visual QA is merged; see the
 [QA report](docs/qa/STAGE07-REPORT.md). Stage 08 — Docker & CI/CD Foundation is merged. Stage 09 producer integration
@@ -130,14 +130,24 @@ Infrastructure & Delivery, Testing & Quality, AI & Developer Workflows, and
 Architecture & Interfaces. These describe the owner's experience, not services
 or infrastructure running inside ProjectRouter.
 
-The catalog renders three Featured Projects, three More Projects and three
-Developer Tools. Four real screenshots occupy the three featured cards and
-MaximML; cards without an image or with a failed image remain readable without
-an empty media panel. Infrastructure is emphasized among the tools. All nine
-cards render both approved paragraphs at every breakpoint. GitHub actions use
-the verified repository or development-branch addresses, and only four cards
-expose explicit versioned release URLs. External actions open new tabs with
-`noopener noreferrer`. No public Live Demo is confirmed or linked.
+The catalog renders three Featured Projects (Geocoder, Moon Courier Crisis,
+Support Assistant), Task Service API, MaximML and three Developer Tools. Infrastructure and application
+delivery share one card with distinct source actions; its versioned release action
+explicitly belongs to the host toolkit. Task Service API and Development Standards
+retain standard cards to match the existing visual language. Four real screenshots
+remain in the application cards; failed images leave readable text without an
+empty panel. Cards support localized source labels, related repositories and status
+copy through the typed catalog. About includes three separate commercial case
+briefs. External actions open new tabs with `noopener noreferrer`; no Live Demo
+action is configured. A repository-reported first rollout is distinguished from
+an independently verified successful automatic application update.
+
+`scripts/resumes/content.mjs` holds editable RU/EN resume candidate content;
+`make resume-candidates` uses the offline Chromium renderer in
+`scripts/render-resumes.mjs` to write two-page PDF and HTML review artifacts to the
+system temporary directory. Generation checks page overflow and original PDF
+hashes. This workflow is separate from SSG and does not adopt candidates into the
+website or replace the six original documents.
 Three resume roles use `src/content/resumes.ts` for typed specialization metadata,
 EN/RU asset paths and build-time availability. Owner-supplied documents belong in
 `public/resumes/{backend,ai,data}-{en,ru}.pdf` and are copied unchanged by Vite.
