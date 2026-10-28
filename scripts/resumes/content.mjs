@@ -45,8 +45,6 @@ export const languages = {
     diagnostics:
       'Investigate data-quality and SQL performance issues using database queries, execution plans and application logs; document technical findings.',
     llm: 'Implemented a two-pass geospatial-name translation workflow: rules agreed with translators, initial LLM translation, second-pass review and conditional revision.',
-    contribution:
-      'Portfolio work includes AI-assisted implementation. My work spans requirements, integration, validation and delivery; the projects below are personal engineering applications.',
   },
   ru: {
     name: 'Данил Мифтахов',
@@ -82,8 +80,6 @@ export const languages = {
     diagnostics:
       'Исследую качество данных и производительность SQL по запросам, планам выполнения и логам приложений; документирую технические выводы.',
     llm: 'Реализовал двухэтапную локализацию географических названий: согласованные с переводчиками правила, первичный LLM-перевод, повторную проверку и условную доработку.',
-    contribution:
-      'В портфолио использую AI-assisted разработку. Мой вклад включает требования, интеграцию, проверку и поставку результата; ниже представлены собственные инженерные приложения.',
   },
 }
 

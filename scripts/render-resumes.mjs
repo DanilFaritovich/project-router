@@ -102,7 +102,6 @@ function documentHtml(roleId, locale) {
     dd { margin: 0; flex: 1; }
     article { margin: 0 0 23px; break-inside: avoid; }
     .continuation { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid #d8cebc; padding-bottom: 12px; font-size: 10pt; }
-    .contribution { color: #66625b; margin-bottom: 23px; font-size: 10pt; }
     .source { font-size: 10pt; font-weight: normal; }
     footer { position: absolute; bottom: 11mm; left: 17mm; right: 17mm; border-top: 1px solid #d8cebc; padding-top: 8px; display: flex; justify-content: space-between; gap: 20px; font-size: 8pt; color: #66625b; }
   </style></head><body>
@@ -110,7 +109,7 @@ function documentHtml(roleId, locale) {
     ${section(label.profile, `<p>${escape(variant.profile)}</p>`)}
     ${section(label.skills, skills)}${section(label.experience, experience)}${section(label.freelance, freelance)}</div>${footer(1)}</div>
     <div class="sheet"><div class="sheet-body"><div class="continuation"><strong>${escape(copy.name)}</strong><span>${escape(variant.title)}</span></div>
-    ${section(label.projects, `<p class="contribution">${escape(copy.contribution)}</p>${projectContent}`)}
+    ${section(label.projects, projectContent)}
     ${section(label.education, `<p>${escape(copy.education)}</p>`)}${section(label.languages, `<p>${escape(copy.languageLevels)}</p>`)}</div>${footer(2)}</div>
   </body></html>`
 }
