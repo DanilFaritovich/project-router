@@ -1,6 +1,7 @@
 // Owner-reviewed facts and role-specific copy. These are candidate documents;
 // generating them never replaces public/resumes or changes the website catalog.
 export const identity = {
+  website: 'https://danil-miftakhov.dev',
   email: 'danilfaritovichwork@gmail.com',
   github: 'https://github.com/DanilFaritovich',
   linkedin: 'https://www.linkedin.com/in/danil-miftakhov-55468b399/',
@@ -95,8 +96,8 @@ export const projects = {
     title: 'Geospatial ETL Pipeline',
     href: repository('yandex-geocoder-region-parser'),
     stack: 'Python · Apache Airflow · PostgreSQL · MinIO/S3 · Shapely',
-    en: 'Four connected DAGs read locality polygons, generate coordinate grids, call Yandex Geocoder under API quotas and export deduplicated district data. Intermediate results are stored outside task memory. A personal orchestration project, separate from commercial PostgreSQL work.',
-    ru: 'Четыре связанных DAG читают полигоны населённых пунктов, создают сетку координат, вызывают Yandex Geocoder с учётом квот и выгружают данные районов без дубликатов. Промежуточные результаты хранятся вне памяти задач. Собственный проект оркестрации, отдельный от коммерческой работы с PostgreSQL.',
+    en: 'Four Airflow DAGs linked by Asset events read locality polygons, generate coordinate grids, call Yandex Geocoder under API quotas and export deduplicated district data. MinIO/S3 stores intermediate results between stages; dynamic task mapping parallelizes geocoding requests.',
+    ru: 'Четыре DAG Airflow, связанные событиями Assets, читают полигоны населённых пунктов, создают сетку координат, вызывают Yandex Geocoder с учётом квот и выгружают данные районов без дубликатов. MinIO/S3 хранит промежуточные результаты; dynamic task mapping распараллеливает геокодирование.',
   },
   support: {
     title: 'Support Assistant',
@@ -130,8 +131,27 @@ export const projects = {
     title: 'Codex Development Standards',
     href: repository('codex-development-standards', true),
     stack: 'Agent Skills · Git · CI · Validation workflows',
-    en: 'Reusable instructions and stack profiles for AI-assisted development: scoped context, consistent project workflows, targeted validation and reviewable changes. Complements the executable MCP integration rather than representing a separate production AI service.',
-    ru: 'Переиспользуемые инструкции и профили стеков для разработки с AI: ограниченный контекст, единые процессы проектов, адресные проверки и обозримые изменения. Дополняет исполняемую MCP-интеграцию как инструмент организации разработки.',
+    en: 'Reusable instructions and stack profiles for AI-assisted development: scoped context, consistent Git workflows, targeted validation and reviewable changes. Applied across portfolio repositories to keep project conventions and checks consistent.',
+    ru: 'Переиспользуемые инструкции и профили стеков для разработки с AI: ограниченный контекст, единые Git-процессы, адресные проверки и обозримые изменения. Используются в репозиториях портфолио для согласованных правил разработки и проверок.',
+  },
+  deployment: {
+    title: 'Portfolio Deployment',
+    href: repository('portfolio-deployment', true),
+    stack: 'Python · GitHub Actions · Docker Compose · Caddy · SQLite',
+    details: {
+      backend: {
+        en: 'A container deployment platform with a Python planner and executor. GitHub Actions integrates signed-release and image-digest verification; Docker Compose and Caddy provide application runtime and routing. Readiness checks, a SQLite journal and scoped rollback/recovery support controlled changes.',
+        ru: 'Платформа доставки контейнерных приложений с планировщиком и исполнителем на Python. GitHub Actions интегрирует проверку подписанных релизов и digest образов; Docker Compose и Caddy отвечают за запуск и маршрутизацию. Проверки готовности, SQLite-журнал и ограниченные сценарии отката и восстановления контролируют изменения.',
+      },
+      data: {
+        en: 'A Python platform for reproducible container application delivery. Validated manifests and immutable image digests define the target state; GitHub Actions verifies release evidence. A SQLite journal, readiness checks and scoped rollback/recovery preserve explicit deployment state across failures.',
+        ru: 'Python-платформа воспроизводимой доставки контейнерных приложений. Проверяемые манифесты и неизменяемые digest образов задают целевое состояние; GitHub Actions проверяет свидетельства релиза. SQLite-журнал, проверки готовности и ограниченные сценарии отката и восстановления сохраняют явное состояние изменений при сбоях.',
+      },
+      ai: {
+        en: 'A Python deployment platform with application manifests, signed-release verification and a GitHub Actions delivery workflow. Docker Compose and Caddy handle runtime and routing; readiness checks, journaling and scoped recovery make application changes explicit and verifiable.',
+        ru: 'Python-платформа развёртывания с манифестами приложений, проверкой подписанных релизов и процессом доставки в GitHub Actions. Docker Compose и Caddy отвечают за запуск и маршрутизацию; проверки готовности, журналирование и ограниченное восстановление делают изменения приложений явными и проверяемыми.',
+      },
+    },
   },
 }
 
@@ -140,55 +160,55 @@ export const roles = {
     en: {
       title: 'Python Backend Developer',
       profile:
-        'Python developer with commercial experience since 2022 in PostgreSQL/PostGIS data processing, automation and external API integrations. I build FastAPI and SQLAlchemy applications in personal and client projects, focusing on explicit business rules, typed contracts and reliable data workflows.',
+        'Python Backend developer focused on FastAPI, SQLAlchemy and PostgreSQL. Commercial experience since 2022 covers geospatial data processing, Python automation and external API integrations. In personal and client backend projects, I use explicit business rules, typed contracts and automated tests.',
     },
     ru: {
       title: 'Python Backend-разработчик',
       profile:
-        'Python-разработчик с коммерческим опытом с 2022 года: PostgreSQL/PostGIS, обработка данных, автоматизация и внешние API. В личных и заказных проектах создаю приложения на FastAPI и SQLAlchemy с явными бизнес-правилами, типизированными контрактами и надёжными процессами работы с данными.',
+        'Python Backend-разработчик с фокусом на FastAPI, SQLAlchemy и PostgreSQL. Коммерческий опыт с 2022 года включает обработку геоданных, Python-автоматизацию и внешние API. В личных и заказных backend-проектах использую явные бизнес-правила, типизированные контракты и автоматические тесты.',
     },
     skills: [
-      ['Backend', 'Python · FastAPI · asyncio · aiohttp · Pydantic'],
-      ['SQL / Data', 'PostgreSQL · PostGIS · SQLAlchemy · psycopg · Alembic'],
+      ['Backend', 'Python · FastAPI · SQLAlchemy · asyncio · Pydantic'],
+      ['SQL / Data', 'PostgreSQL · PostGIS · SQL · psycopg · Alembic'],
       ['Quality', 'pytest · Integration tests · Ruff · mypy · GitHub Actions'],
       ['Delivery', 'Docker · Compose · Linux · Git · External APIs'],
     ],
     experience: ['batch', 'database', 'geocoding', 'diagnostics'],
-    projects: ['moon', 'geocoder', 'support'],
+    projects: ['moon', 'support', 'geocoder', 'deployment'],
   },
   data: {
     en: {
       title: 'Python Data / ETL Developer',
       profile:
-        'Python developer with commercial experience since 2022 in SQL, PostgreSQL/PostGIS and geospatial data automation. I build extraction, transformation, bulk-import and export workflows. A separate personal project demonstrates Airflow orchestration and MinIO/S3 intermediate storage.',
+        'Data / ETL developer working with PostgreSQL/PostGIS, SQL and Python. Commercial experience since 2022 includes extraction, transformation, bulk imports and exports of geospatial data. Personal projects demonstrate Airflow orchestration and MinIO/S3 intermediate storage.',
     },
     ru: {
       title: 'Разработчик Data / ETL (Python)',
       profile:
-        'Python-разработчик с коммерческим опытом с 2022 года в SQL, PostgreSQL/PostGIS и автоматизации геоданных. Создаю процессы выборки, преобразования, массового импорта и выгрузки данных. Отдельный личный проект показывает оркестрацию Airflow и промежуточное хранение в MinIO/S3.',
+        'Разработчик Data / ETL: PostgreSQL/PostGIS, SQL и Python. Коммерческий опыт с 2022 года включает выборку, преобразование, массовый импорт и выгрузку геоданных. Личные проекты показывают оркестрацию Airflow и промежуточное хранение в MinIO/S3.',
     },
     skills: [
       ['SQL / Storage', 'PostgreSQL · PostGIS · SQL · psycopg · SQLAlchemy'],
+      ['Portfolio ETL', 'Apache Airflow · MinIO/S3 · Shapely · PyProj'],
       [
         'Processing',
         'Python · Batch processing · CSV / Excel / JSON · API integration',
       ],
-      ['Portfolio ETL', 'Apache Airflow · MinIO/S3 · Shapely · PyProj'],
       ['Quality / Tools', 'pytest · Docker · Linux · GitHub Actions · pandas'],
     ],
     experience: ['database', 'batch', 'geocoding', 'diagnostics'],
-    projects: ['geocoder', 'task', 'maxim'],
+    projects: ['geocoder', 'maxim', 'task', 'deployment'],
   },
   ai: {
     en: {
       title: 'AI / LLM Integration Developer',
       profile:
-        'Python developer with commercial data-automation and API-integration experience since 2022. Implemented a two-pass LLM workflow for geospatial-name translation and review. Personal projects demonstrate validated structured outputs, user confirmation and MCP tooling for bounded agent execution.',
+        'Python developer focused on LLM API integrations, validated structured outputs and MCP tooling. Commercial Python, data-automation and API experience since 2022; implemented a two-pass geospatial-name translation workflow. Personal projects demonstrate user-confirmed ticket routing and bounded agent execution.',
     },
     ru: {
       title: 'Разработчик AI / LLM-интеграций',
       profile:
-        'Python-разработчик с коммерческим опытом автоматизации данных и API-интеграций с 2022 года. Реализовал двухэтапный LLM-процесс перевода и проверки географических названий. Личные проекты показывают валидацию структурированных ответов, подтверждение пользователем и MCP-инструменты ограниченного выполнения задач агентами.',
+        'Python-разработчик с фокусом на LLM API, валидацию структурированных ответов и MCP-инструменты. Коммерческий опыт Python, автоматизации данных и API с 2022 года; реализовал двухэтапный процесс перевода географических названий. Личные проекты показывают маршрутизацию IT-заявок с подтверждением пользователем и ограниченное выполнение задач агентами.',
     },
     skills: [
       ['LLM integration', 'LLM APIs · OpenRouter · JSON Schema · Pydantic'],
@@ -200,6 +220,6 @@ export const roles = {
       ['Reliability', 'Retries · Timeouts · pytest · Docker · GitHub Actions'],
     ],
     experience: ['llm', 'database', 'geocoding', 'diagnostics'],
-    projects: ['support', 'worker', 'standards'],
+    projects: ['support', 'worker', 'deployment', 'standards'],
   },
 }

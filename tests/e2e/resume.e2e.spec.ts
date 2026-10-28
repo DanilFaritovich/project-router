@@ -278,6 +278,11 @@ test.describe('real resume viewer', () => {
           dialog.locator('footer a[target="_blank"]'),
         ).toHaveAttribute('href', url)
         await expectPdfLinks(dialog, `${id}-${language}.pdf`, 1)
+        await expect(
+          dialog.locator(
+            '.pdf-annotations a[href^="https://danil-miftakhov.dev"]',
+          ),
+        ).toHaveCount(1)
         const email = dialog.locator('.pdf-annotations a[href^="mailto:"]')
         await email.evaluate((el) =>
           el.addEventListener('click', (event) => {

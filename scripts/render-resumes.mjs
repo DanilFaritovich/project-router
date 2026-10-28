@@ -74,7 +74,8 @@ function documentHtml(roleId, locale) {
   const projectContent = role.projects
     .map((id) => {
       const project = projects[id]
-      return `<article><h3>${escape(project.title)} <span class="source">· ${anchor(project.href, label.source)}</span></h3><p class="meta">${escape(project.stack)}</p><p>${escape(project[locale])}</p></article>`
+      const description = project.details?.[roleId]?.[locale] ?? project[locale]
+      return `<article><h3>${escape(project.title)} <span class="source">· ${anchor(project.href, label.source)}</span></h3><p class="meta">${escape(project.stack)}</p><p>${escape(description)}</p></article>`
     })
     .join('')
   const footer = (page) =>
@@ -105,12 +106,12 @@ function documentHtml(roleId, locale) {
     .source { font-size: 10pt; font-weight: normal; }
     footer { position: absolute; bottom: 11mm; left: 17mm; right: 17mm; border-top: 1px solid #d8cebc; padding-top: 8px; display: flex; justify-content: space-between; gap: 20px; font-size: 8pt; color: #66625b; }
   </style></head><body>
-    <div class="sheet"><div class="sheet-body"><header><h1>${escape(copy.name)}</h1><p class="role">${escape(variant.title)}</p><p class="location">${escape(copy.location)}</p><p class="contacts">${anchor(`mailto:${identity.email}`, identity.email)}<br>${anchor(identity.github, 'GitHub')} · ${anchor(identity.linkedin, 'LinkedIn')} · ${anchor(identity.telegram, 'Telegram')}</p></header>
+    <div class="sheet"><div class="sheet-body"><header><h1>${escape(copy.name)}</h1><p class="role">${escape(variant.title)}</p><p class="location">${escape(copy.location)}</p><p class="contacts">${anchor(`mailto:${identity.email}`, identity.email)} · ${anchor(identity.website, 'danil-miftakhov.dev')}<br>${anchor(identity.github, 'GitHub')} · ${anchor(identity.linkedin, 'LinkedIn')} · ${anchor(identity.telegram, 'Telegram')}</p></header>
     ${section(label.profile, `<p>${escape(variant.profile)}</p>`)}
-    ${section(label.skills, skills)}${section(label.experience, experience)}${section(label.freelance, freelance)}</div>${footer(1)}</div>
+    ${section(label.skills, skills)}${section(label.experience, experience)}
+    ${section(label.education, `<p>${escape(copy.education)}</p>`)}${section(label.languages, `<p>${escape(copy.languageLevels)}</p>`)}</div>${footer(1)}</div>
     <div class="sheet"><div class="sheet-body"><div class="continuation"><strong>${escape(copy.name)}</strong><span>${escape(variant.title)}</span></div>
-    ${section(label.projects, projectContent)}
-    ${section(label.education, `<p>${escape(copy.education)}</p>`)}${section(label.languages, `<p>${escape(copy.languageLevels)}</p>`)}</div>${footer(2)}</div>
+    ${section(label.freelance, freelance)}${section(label.projects, projectContent)}</div>${footer(2)}</div>
   </body></html>`
 }
 

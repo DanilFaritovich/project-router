@@ -138,8 +138,8 @@ committed candidate-* PDF copies. The six original files remain unchanged.
 Candidate copy uses completed education without inventing a diploma degree,
 approximately 2020 for the uncertain freelance start, and distinct project choices
 for Backend, Data and AI. Existing February 2022 employment and 2021–2026 education
-dates are retained from the supplied documents. No unavailable website destination
-is introduced into the candidate contact block.
+dates are retained from the supplied documents. The confirmed portfolio URL, https://danil-miftakhov.dev, is included in the
+candidate contact block at the owner's request.
 
 ## Interview preparation prompts
 
@@ -166,3 +166,33 @@ now selects `/resumes/candidate-{id}-{language}.pdf`; opening, downloading, chan
 language and opening the source document use the same candidate. Original
 `/resumes/{id}-{language}.pdf` files are retained byte-for-byte. This changes the
 review content of the task branch; it does not authorize a merge or deployment.
+
+## Role-specific resume refinement
+
+All six candidates include the portfolio link in the header and retain two A4
+pages at the existing font size. Page one holds profile, skills, Maxim experience,
+education and languages; page two holds client work and four selected projects.
+
+| Resume     | Selected projects, in order                                                                 | Deployment emphasis                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Backend    | Moon Courier Crisis, Support Assistant, Geospatial ETL Pipeline, Portfolio Deployment       | Python planner/executor, release verification, application runtime and recovery         |
+| Data / ETL | Geospatial ETL Pipeline, MaximML, Task Service API, Portfolio Deployment                    | Validated manifests, immutable images, explicit journaled state and reproducibility     |
+| AI / LLM   | Support Assistant, Codex Free Worker MCP, Portfolio Deployment, Codex Development Standards | Application delivery, verification and operational checks alongside LLM/MCP integration |
+
+Airflow was checked against main source code, not inferred from the old design:
+[prepare_polygon_dag.py](https://github.com/DanilFaritovich/yandex-geocoder-region-parser/blob/main/airflow/dags/prepare_polygon_dag.py),
+[prepare_coords_dag.py](https://github.com/DanilFaritovich/yandex-geocoder-region-parser/blob/main/airflow/dags/prepare_coords_dag.py),
+[process_coords_dag.py](https://github.com/DanilFaritovich/yandex-geocoder-region-parser/blob/main/airflow/dags/process_coords_dag.py),
+and [save_processed_coords_dag.py](https://github.com/DanilFaritovich/yandex-geocoder-region-parser/blob/main/airflow/dags/save_processed_coords_dag.py)
+declare four distinct DAG IDs. The downstream schedules use Asset aliases. The
+resume therefore describes four DAGs linked by Asset events, not four tasks in one
+DAG. Portfolio Deployment descriptions follow its current develop README and
+reconciliation code; no successful production rollback drill or zero-downtime
+claim is added. Visual balance remains subject to owner review.
+
+The owner agreed this is the resume content baseline after the role-specific
+refinement. Profiles now lead with Backend, Data / ETL or LLM/API focus respectively.
+Core Skills lead with Python/FastAPI/SQLAlchemy for Backend, PostgreSQL then Airflow
+then processing for Data, and LLM integration then MCP tooling for AI. Further
+editorial changes should address concrete review feedback or a target vacancy.
+This baseline is a task-branch commit, not a release tag or production deployment.
