@@ -13,7 +13,12 @@ export default defineConfig(({ mode }) => {
     plugins: [vue(), tailwindcss()],
     ssgOptions: {
       dirStyle: 'nested',
-      includedRoutes: () => ['/en/', '/ru/'],
+      includedRoutes: () => [
+        '/en/',
+        '/ru/',
+        '/en/deploy-test/',
+        '/ru/deploy-test/',
+      ],
       async onFinished() {
         // Root redirect also works without JavaScript on a plain static host.
         await writeFile(

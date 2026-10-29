@@ -6,12 +6,18 @@ import {
   type createAppI18n,
 } from '../locales'
 import PortfolioView from '../views/PortfolioView.vue'
+import DeployTestView from '../views/DeployTestView.vue'
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', redirect: '/en/' },
   ...locales.map((locale) => ({
     path: localePath(locale),
     component: PortfolioView,
+  })),
+  ...locales.map((locale) => ({
+    path: `${localePath(locale)}deploy-test/`,
+    component: DeployTestView,
+    meta: { noindex: true },
   })),
 ]
 
