@@ -18,11 +18,11 @@ export default defineConfig(({ mode }) => {
         // Root redirect also works without JavaScript on a plain static host.
         await writeFile(
           resolve('dist/index.html'),
-          '<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url=/en/"><title>ProjectRouter</title></head><body><a href="/en/">Continue in English</a></body></html>',
+          '<!doctype html><html lang="en"><head><meta charset="UTF-8"><link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url=/en/"><title>ProjectRouter</title></head><body><a href="/en/">Continue in English</a></body></html>',
         )
         await writeFile(
           resolve('dist/404.html'),
-          '<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="robots" content="noindex"><title>Page not found</title></head><body><h1>Page not found</h1><a href="/en/">ProjectRouter</a></body></html>',
+          '<!doctype html><html lang="en"><head><meta charset="UTF-8"><link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg"><meta name="robots" content="noindex"><title>Page not found</title></head><body><h1>Page not found</h1><a href="/en/">ProjectRouter</a></body></html>',
         )
         const escapeXml = (value: string) =>
           value
