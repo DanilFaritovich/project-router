@@ -2,17 +2,29 @@
 
 [English](README.md) · [Русский](README.ru.md)
 
+[![CI](https://github.com/DanilFaritovich/project-router/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/DanilFaritovich/project-router/actions/workflows/ci.yml)
+[![Vue](https://img.shields.io/badge/Vue-3-42b883?logo=vuedotjs)](https://vuejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Frontend-3178c6?logo=typescript)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite)](https://vite.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ed?logo=docker)](https://www.docker.com/)
+[![Playwright](https://img.shields.io/badge/Playwright-E2E-2eAD33?logo=playwright)](https://playwright.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 ProjectRouter is Danil Miftakhov's bilingual engineering portfolio: a single place
 to review his experience, explore project source code and download a relevant
-resume. It also demonstrates a static Vue application with localized HTML,
-accessible interactions, automated QA and a verifiable container delivery pipeline.
+resume. Recruiters can review commercial experience and choose a role-specific
+resume; engineers can follow source links to inspect the work behind the profile.
 
-**Release status:** stages 01–09 are complete and integrated into `develop`.
-**v1.1.0** refreshes Python Backend positioning, commercial case briefs and
-role-specific EN/RU resumes. The content changes were integrated through
-[PR #21](https://github.com/DanilFaritovich/project-router/pull/21).
-The owner confirmed visual acceptance of the site and all six new PDFs on
-2026-10-28. See the [v1.1.0 release notes](docs/releases/v1.1.0.md) for scope and validation.
+The engineering task is to combine indexable EN/RU pages with an interactive PDF
+viewer while keeping deployment static. Vue 3 and TypeScript provide the UI;
+build-time HTML generation, client-only PDF loading and automated checks keep
+content delivery, browser interactions and release validation separate.
+
+**Current version:** application metadata is `1.1.0`. The content refresh has
+owner acceptance; first rollout is operator-reported. A version number does not
+establish a published GitHub Release or the currently deployed image. See
+[release status](#limitations-and-release-status) for evidence and limitations.
 
 [Desktop screenshot](docs/qa/artifacts/page-en-1440.webp) ·
 [Mobile screenshot](docs/qa/artifacts/page-en-390.webp) ·
@@ -20,6 +32,19 @@ The owner confirmed visual acceptance of the site and all six new PDFs on
 
 These existing browser captures come from the [Stage 07 QA report](docs/qa/STAGE07-REPORT.md);
 they predate its documented spacing follow-up and the v1.1.0 content refresh.
+
+## What this project demonstrates
+
+- **A complete portfolio workflow:** experience, project sources, role-specific
+  resumes and contact options in one responsive interface.
+- **Static application design:** localized HTML is generated before JavaScript
+  runs; catalog and copy changes are reviewed in Git without a backend or CMS.
+- **Browser lifecycle management:** the PDF viewer loads on demand, handles
+  loading failures and disposes document/worker resources when closed.
+- **Accessible interactions:** keyboard navigation, focus management and safe PDF
+  links accompany the visual interface; known accessibility limits are documented.
+- **Verifiable delivery:** unit/component tests, built-HTML checks, Chromium
+  journeys and container checks precede trusted image publication.
 
 ## Features
 
@@ -45,7 +70,23 @@ they predate its documented spacing follow-up and the v1.1.0 content refresh.
 - Keyboard navigation, skip link, mobile menu and modal focus containment/return;
   responsive layouts checked from 320 to 1440px in both languages.
 
-## Architecture
+## Technology stack
+
+| Area                             | Technologies                                                        |
+| -------------------------------- | ------------------------------------------------------------------- |
+| Frontend                         | Vue 3, TypeScript, Vite 8, Tailwind CSS 4                           |
+| Routing and localization         | Vue Router, Vue I18n                                                |
+| Static HTML and metadata         | Vite SSG, Unhead, sitemap, JSON-LD                                  |
+| PDF viewing                      | PDF.js, local worker, canvas and link annotations                   |
+| Content                          | Typed TypeScript catalog, EN/RU locale files, local PDF/WebP assets |
+| Unit and component tests         | Vitest, Vue Test Utils, jsdom                                       |
+| Browser and accessibility checks | Playwright, axe-core                                                |
+| Code quality                     | ESLint, Prettier, vue-tsc                                           |
+| Runtime                          | Docker, Docker Compose, Nginx Unprivileged                          |
+| CI and image publication         | GitHub Actions, GHCR, GitHub OIDC/Sigstore attestations             |
+| Development                      | Node.js 22.22.2+ within 22.x, npm, Make                             |
+
+## Key engineering decisions
 
 | Choice                      | Purpose                                                              |
 | --------------------------- | -------------------------------------------------------------------- |
@@ -55,6 +96,8 @@ they predate its documented spacing follow-up and the v1.1.0 content refresh.
 | Vite SSG + Unhead           | Crawlable HTML and metadata before JavaScript, followed by hydration |
 | Git-managed content         | Reviewable copy/catalog updates without a backend, database or CMS   |
 | Lazy PDF.js + local worker  | Interactive PDFs loaded only when opened, outside SSG execution      |
+
+## Architecture
 
 `src/content/` owns catalog/resume metadata; `src/locales/` owns EN/RU copy.
 `src/components/` and `src/views/` compose the UI, `src/router/` owns locale routing,
@@ -178,6 +221,12 @@ path. Develop and tag publication do not trigger this workflow. No workflow merg
 PRs, creates tags or publishes GitHub Releases.
 
 ## Limitations and release status
+
+Stages 01–09 are complete and integrated into `develop`. The `1.1.0` content
+refresh was integrated through [PR #21](https://github.com/DanilFaritovich/project-router/pull/21).
+The owner confirmed visual acceptance of the site and all six new PDFs on
+2026-10-28. See the [v1.1.0 release notes](docs/releases/v1.1.0.md) for scope and
+recorded validation; these results do not establish checks for a later release SHA.
 
 The first rollout is operator-reported. This repository's local checks do not
 establish current public HTTPS/SEO behavior, indexing or field performance.
