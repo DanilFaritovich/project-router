@@ -1,6 +1,6 @@
 # ProjectRouter
 
-[English](README.md) · [Русский](README.ru.md)
+[English](README.md) · [Русский](README.ru.md) · [Сайт](https://danil-miftakhov.dev/ru/)
 
 [![CI](https://github.com/DanilFaritovich/project-router/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/DanilFaritovich/project-router/actions/workflows/ci.yml)
 [![Vue](https://img.shields.io/badge/Vue-3-42b883?logo=vuedotjs)](https://vuejs.org/)
@@ -20,18 +20,6 @@ ProjectRouter — двуязычное инженерное портфолио �
 просмотром PDF, сохранив статическое размещение. Vue 3 и TypeScript отвечают за
 интерфейс; генерация HTML при сборке, загрузка PDF только в браузере и
 автоматические проверки разделяют доставку контента, интерактивность и проверку релиза.
-
-**Текущая версия:** в метаданных приложения указана `1.1.0`. Обновление контента
-принято владельцем; первое развёртывание подтверждено оператором. Номер версии
-не подтверждает опубликованный GitHub Release или текущий образ в production.
-Источники и ограничения указаны в [статусе релиза](#ограничения-и-статус-релиза).
-
-[Скриншот desktop](docs/qa/artifacts/page-ru-1440.webp) ·
-[Скриншот mobile](docs/qa/artifacts/page-ru-390.webp) ·
-[PDF viewer](docs/qa/artifacts/pdf-ru-390.webp)
-
-Эти существующие браузерные снимки взяты из [QA-отчёта Stage 07](docs/qa/STAGE07-REPORT.md);
-они предшествуют описанной в нём корректировке отступов и обновлению контента v1.1.0.
 
 ## Что демонстрирует проект
 
@@ -246,7 +234,7 @@ Backend и БД не планируются как обязательные ча
 ## Документация
 
 - [Архитектура](ARCHITECTURE.md): модули, инварианты, локализация, SEO и жизненный цикл PDF.
-- [QA-отчёт и скриншоты](docs/qa/STAGE07-REPORT.md): доказательства и границы приёмки.
+- [QA-отчёт и исторические скриншоты](docs/qa/STAGE07-REPORT.md): результаты Stage 07 и границы приёмки; снимки предшествуют обновлению контента v1.1.0.
 - [Deployment contract](docs/deployment/CONTRACT.md) и [release checklist](docs/deployment/RELEASE-CHECKLIST.md): безопасность, attestations и действия оператора.
 - [Changelog](CHANGELOG.md) и [release notes v1.1.0](docs/releases/v1.1.0.md).
 - [Историческая дизайн-спецификация](design/DESIGN.md) и [канонические референсы](design/reference/README.md).

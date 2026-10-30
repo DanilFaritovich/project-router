@@ -1,6 +1,6 @@
 # ProjectRouter
 
-[English](README.md) · [Русский](README.ru.md)
+[English](README.md) · [Русский](README.ru.md) · [Website](https://danil-miftakhov.dev/en/)
 
 [![CI](https://github.com/DanilFaritovich/project-router/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/DanilFaritovich/project-router/actions/workflows/ci.yml)
 [![Vue](https://img.shields.io/badge/Vue-3-42b883?logo=vuedotjs)](https://vuejs.org/)
@@ -20,18 +20,6 @@ The engineering task is to combine indexable EN/RU pages with an interactive PDF
 viewer while keeping deployment static. Vue 3 and TypeScript provide the UI;
 build-time HTML generation, client-only PDF loading and automated checks keep
 content delivery, browser interactions and release validation separate.
-
-**Current version:** application metadata is `1.1.0`. The content refresh has
-owner acceptance; first rollout is operator-reported. A version number does not
-establish a published GitHub Release or the currently deployed image. See
-[release status](#limitations-and-release-status) for evidence and limitations.
-
-[Desktop screenshot](docs/qa/artifacts/page-en-1440.webp) ·
-[Mobile screenshot](docs/qa/artifacts/page-en-390.webp) ·
-[PDF viewer](docs/qa/artifacts/pdf-en-1440.webp)
-
-These existing browser captures come from the [Stage 07 QA report](docs/qa/STAGE07-REPORT.md);
-they predate its documented spacing follow-up and the v1.1.0 content refresh.
 
 ## What this project demonstrates
 
@@ -244,7 +232,7 @@ requirement for this static portfolio.
 ## Documentation
 
 - [Architecture](ARCHITECTURE.md): modules, invariants, localization, SEO and PDF lifecycle.
-- [QA report and screenshots](docs/qa/STAGE07-REPORT.md): evidence and acceptance limits.
+- [QA report and historical screenshots](docs/qa/STAGE07-REPORT.md): Stage 07 evidence and acceptance limits; captures predate the v1.1.0 content refresh.
 - [Deployment contract](docs/deployment/CONTRACT.md) and [release checklist](docs/deployment/RELEASE-CHECKLIST.md): security, attestations and operator steps.
 - [Changelog](CHANGELOG.md) and [v1.1.0 release notes](docs/releases/v1.1.0.md).
 - [Historical design specification](design/DESIGN.md) and [canonical references](design/reference/README.md).
