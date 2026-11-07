@@ -37,32 +37,32 @@ function navigate(event: MouseEvent) {
 
 <template>
   <a href="#main" class="skip-link">{{ t('skip') }}</a>
-  <header class="freelance-header freelance-container">
-    <RouterLink :to="`/${locale}/`" class="brand" aria-label="ProjectRouter"
-      >DM.</RouterLink
-    >
-    <nav
-      class="freelance-desktop-links"
-      :aria-label="t('servicesPage.navigation')"
-    >
-      <a v-for="link in links" :key="link.href" :href="link.href">{{
-        link.text
+  <div class="freelance-header-shell">
+    <header class="freelance-header freelance-container">
+      <a href="#main" class="brand" aria-label="ProjectRouter">DM.</a>
+      <nav
+        class="freelance-desktop-links"
+        :aria-label="t('servicesPage.navigation')"
+      >
+        <a v-for="link in links" :key="link.href" :href="link.href">{{
+          link.text
+        }}</a>
+      </nav>
+      <LanguageSwitcher />
+      <a class="action primary freelance-header-cta" href="#contacts">{{
+        t('servicesPage.discuss')
       }}</a>
-    </nav>
-    <LanguageSwitcher />
-    <a class="action primary freelance-header-cta" href="#contacts">{{
-      t('servicesPage.discuss')
-    }}</a>
-    <button
-      class="action freelance-menu-trigger"
-      type="button"
-      :aria-expanded="open"
-      aria-haspopup="dialog"
-      @click="open = true"
-    >
-      {{ t('menu') }}
-    </button>
-  </header>
+      <button
+        class="action freelance-menu-trigger"
+        type="button"
+        :aria-expanded="open"
+        aria-haspopup="dialog"
+        @click="open = true"
+      >
+        {{ t('menu') }}
+      </button>
+    </header>
+  </div>
   <FreelanceDialog :open="open" :title="t('menu')" @close="open = false">
     <nav
       class="freelance-menu-links"

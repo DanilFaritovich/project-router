@@ -26,6 +26,17 @@ for (const locale of ['en', 'ru']) {
       await expect(faq.locator('p')).toBeVisible()
       await page.keyboard.press('Enter')
       await expect(faq).not.toHaveAttribute('open', '')
+      expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+      await expect
+        .poll(async () =>
+          Math.round(
+            (await page.locator('.freelance-header-shell').boundingBox())!.y,
+          ),
+        )
+        .toBe(0)
+      await page.locator('.freelance-header .brand').click()
+      await expect(page).toHaveURL(new RegExp(`/${locale}/freelance/#main$`))
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
       await page.evaluate(() => {
         ;(document.activeElement as HTMLElement)?.blur()
         window.scrollTo(0, 0)
@@ -70,6 +81,11 @@ for (const locale of ['en', 'ru']) {
         await menu.locator('a[href="#cases"]').click()
         await expect(menu).not.toBeVisible()
         await expect(page.locator('#cases-heading')).toBeFocused()
+        expect(
+          (await page.locator('#cases-heading').boundingBox())!.y,
+        ).toBeGreaterThanOrEqual(
+          (await page.locator('.freelance-header-shell').boundingBox())!.height,
+        )
       }
       const other = locale === 'ru' ? 'en' : 'ru'
       await page.locator(`header a[lang="${other}"]`).click()

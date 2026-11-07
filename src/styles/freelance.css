@@ -1,13 +1,41 @@
-.client-link {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
+.client-navigation {
   margin-top: 18px;
-  color: var(--color-accent-ink);
+  padding-top: 14px;
+  border-top: 1px solid var(--color-line);
+}
+.client-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+  padding: 14px 12px;
+  border-radius: 7px;
+  color: var(--color-muted);
   font-weight: 600;
-  font-size: 14px;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.client-link > span:last-child {
+  color: var(--color-accent-ink);
+}
+.client-link:hover {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  color: var(--color-ink);
+}
+.client-link:focus-visible {
+  outline-offset: 2px;
+}
+.menu-panel .client-link {
+  padding-inline: 0;
+  font-size: 16px;
+}
+.freelance-header-shell {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--color-page);
+  border-bottom: 1px solid var(--color-line);
 }
 .freelance-container {
   width: min(100% - 96px, 1248px);
@@ -47,7 +75,6 @@
   align-items: center;
   min-height: 72px;
   gap: 24px;
-  border-bottom: 1px solid var(--color-line);
 }
 .freelance-desktop-links {
   display: flex;

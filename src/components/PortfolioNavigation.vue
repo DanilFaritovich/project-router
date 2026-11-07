@@ -90,9 +90,12 @@ onUnmounted(() => {
     >
     <p class="rail-label">{{ t('portfolio') }}</p>
     <SectionNavigation :active="active" />
-    <RouterLink class="client-link" :to="`/${locale}/freelance/`"
-      >{{ t('forClients') }} ↗</RouterLink
-    >
+    <div class="client-navigation">
+      <RouterLink class="client-link" :to="`/${locale}/freelance/`">
+        <span>{{ t('forClients') }}</span
+        ><span aria-hidden="true">→</span>
+      </RouterLink>
+    </div>
     <p class="rail-label">{{ t('languageLabel') }}</p>
     <LanguageSwitcher :section="active" />
     <p class="rail-location">{{ t('location') }}</p>
@@ -130,12 +133,16 @@ onUnmounted(() => {
         </button>
       </div>
       <SectionNavigation :active="active" @navigate="navigate" />
-      <RouterLink
-        class="client-link"
-        :to="`/${locale}/freelance/`"
-        @click="close(false)"
-        >{{ t('forClients') }} ↗</RouterLink
-      >
+      <div class="client-navigation">
+        <RouterLink
+          class="client-link"
+          :to="`/${locale}/freelance/`"
+          @click="close(false)"
+        >
+          <span>{{ t('forClients') }}</span
+          ><span aria-hidden="true">→</span>
+        </RouterLink>
+      </div>
       <div class="menu-language">
         <span class="eyebrow">{{ t('languageLabel') }}</span
         ><LanguageSwitcher :section="active" @navigate="close()" />
