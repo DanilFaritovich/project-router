@@ -341,7 +341,7 @@ test('crawl files agree with the indexable documents and optional origin', async
   assert.equal(sitemap.documentElement.localName, 'urlset')
   assert.equal(sitemap.documentElement.namespaceURI, namespace)
   const entries = [...sitemap.documentElement.children]
-  assert.equal(entries.length, 2)
+  assert.equal(entries.length, 4)
   const urls = entries.map((entry) => {
     assert.equal(entry.localName, 'url')
     assert.equal(entry.namespaceURI, namespace)
@@ -350,8 +350,13 @@ test('crawl files agree with the indexable documents and optional origin', async
     assert.equal(entry.firstElementChild.namespaceURI, namespace)
     return entry.firstElementChild.textContent
   })
-  assert.deepEqual(urls, [`${origin}/en/`, `${origin}/ru/`])
-  assert.equal(new Set(urls).size, 2)
+  assert.deepEqual(urls, [
+    `${origin}/en/`,
+    `${origin}/ru/`,
+    `${origin}/en/freelance/`,
+    `${origin}/ru/freelance/`,
+  ])
+  assert.equal(new Set(urls).size, 4)
   for (const address of urls) {
     const url = new URL(address)
     assert.equal(url.protocol, 'https:')

@@ -226,7 +226,12 @@ export async function smoke(docker, id, image, origin) {
       .document
     assert.deepEqual(
       [...document.querySelectorAll('loc')].map((node) => node.textContent),
-      [`${origin}/en/`, `${origin}/ru/`],
+      [
+        `${origin}/en/`,
+        `${origin}/ru/`,
+        `${origin}/en/freelance/`,
+        `${origin}/ru/freelance/`,
+      ],
     )
   } else {
     assert.doesNotMatch(robots, /Sitemap:/)

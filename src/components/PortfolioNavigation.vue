@@ -6,7 +6,7 @@ import LanguageSwitcher from './LanguageSwitcher.vue'
 import SectionNavigation from './SectionNavigation.vue'
 import { useActiveSection } from '../composables/useActiveSection'
 import type { SectionId } from '../content/portfolio'
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const active = useActiveSection()
 const open = ref(false)
@@ -90,6 +90,9 @@ onUnmounted(() => {
     >
     <p class="rail-label">{{ t('portfolio') }}</p>
     <SectionNavigation :active="active" />
+    <RouterLink class="client-link" :to="`/${locale}/freelance/`"
+      >{{ t('forClients') }} ↗</RouterLink
+    >
     <p class="rail-label">{{ t('languageLabel') }}</p>
     <LanguageSwitcher :section="active" />
     <p class="rail-location">{{ t('location') }}</p>
@@ -127,6 +130,12 @@ onUnmounted(() => {
         </button>
       </div>
       <SectionNavigation :active="active" @navigate="navigate" />
+      <RouterLink
+        class="client-link"
+        :to="`/${locale}/freelance/`"
+        @click="close(false)"
+        >{{ t('forClients') }} ↗</RouterLink
+      >
       <div class="menu-language">
         <span class="eyebrow">{{ t('languageLabel') }}</span
         ><LanguageSwitcher :section="active" @navigate="close()" />

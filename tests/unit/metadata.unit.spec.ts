@@ -17,6 +17,30 @@ const expectedMetadata = {
 
 describe('localized metadata', () => {
   it.each(['en', 'ru'] as const)(
+    'gives %s services its own canonical and language equivalents',
+    (locale) => {
+      const head = pageMetadata(locale, 'https://portfolio.test', 'freelance')
+      expect(head.title).not.toBe(pageMetadata(locale).title)
+      expect(head.link).toContainEqual({
+        rel: 'canonical',
+        href: `https://portfolio.test/${locale}/freelance/`,
+      })
+      for (const language of ['en', 'ru'])
+        expect(head.link).toContainEqual({
+          rel: 'alternate',
+          hreflang: language,
+          href: `https://portfolio.test/${language}/freelance/`,
+        })
+      expect(head.link).toContainEqual({
+        rel: 'alternate',
+        hreflang: 'x-default',
+        href: 'https://portfolio.test/en/freelance/',
+      })
+      expect(pageMetadata(locale, undefined, 'freelance').link).toEqual([])
+    },
+  )
+
+  it.each(['en', 'ru'] as const)(
     'provides distinct %s metadata and reciprocal links',
     (locale) => {
       // Reserved test-only domain; never used as a production default.

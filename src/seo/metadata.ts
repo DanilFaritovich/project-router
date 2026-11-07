@@ -1,4 +1,10 @@
-import { locales, localePath, messages, type Locale } from '../locales'
+import {
+  locales,
+  localePath,
+  messages,
+  type Locale,
+  type Page,
+} from '../locales'
 import { parseSiteOrigin } from './origin'
 
 export const socialPreviews = {
@@ -12,10 +18,15 @@ export const socialPreviews = {
   },
 } satisfies Record<Locale, { path: string; alt: string }>
 
-export function pageMetadata(locale: Locale, originValue?: string) {
+export function pageMetadata(
+  locale: Locale,
+  originValue?: string,
+  page: Page = 'portfolio',
+) {
   const origin = parseSiteOrigin(originValue)
-  const copy = messages[locale]
-  const url = origin ? `${origin}${localePath(locale)}` : undefined
+  const copy =
+    page === 'freelance' ? messages[locale].servicesPage : messages[locale]
+  const url = origin ? `${origin}${localePath(locale, page)}` : undefined
   const preview = socialPreviews[locale]
   const image = origin ? `${origin}${preview.path}` : undefined
   return {
@@ -53,9 +64,13 @@ export function pageMetadata(locale: Locale, originValue?: string) {
           ...locales.map((language) => ({
             rel: 'alternate',
             hreflang: language,
-            href: `${origin}${localePath(language)}`,
+            href: `${origin}${localePath(language, page)}`,
           })),
-          { rel: 'alternate', hreflang: 'x-default', href: `${origin}/en/` },
+          {
+            rel: 'alternate',
+            hreflang: 'x-default',
+            href: `${origin}${localePath('en', page)}`,
+          },
         ]
       : [],
   }

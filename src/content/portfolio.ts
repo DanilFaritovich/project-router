@@ -80,3 +80,5 @@ export const skillGroups = [
     stack: 'architectureSkillStack',
   },
 ]
+
+export const kworkProfileUrl = 'https://kwork.ru/user/danil_miftakhov'

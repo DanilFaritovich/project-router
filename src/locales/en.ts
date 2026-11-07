@@ -1,4 +1,7 @@
+import { freelanceEn } from './freelance.ts'
 export default {
+  forClients: 'For clients',
+  servicesPage: freelanceEn,
   heroPortraitAlt: 'Portrait of Danil Miftakhov',
   title: 'Danil Miftakhov | Python Backend Developer',
   description:

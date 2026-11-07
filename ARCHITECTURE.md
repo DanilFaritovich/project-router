@@ -40,14 +40,15 @@ production delivery chains must be accepted before claiming live automatic CD.
 
 [Vite SSG](https://github.com/antfu-collective/vite-ssg) integrates the existing
 Vue Router with build-time Vue rendering and Unhead metadata. `npm run build`
-generates `dist/en/index.html` and `dist/ru/index.html`, with nested route output.
+generates localized HR documents at `/en/` and `/ru/` and client-service
+documents at `/en/freelance/` and `/ru/freelance/`, with nested route output.
 The browser hydrates that HTML; no request-time SSR, backend or database is used.
 This keeps the foundation close to Vue + Vite without a second routing framework.
 
 | Existing area                       | Responsibility                                                         |
 | ----------------------------------- | ---------------------------------------------------------------------- |
 | `src/main.ts`, `src/App.vue`        | Per-app i18n, locale guard, hydration, reactive document head          |
-| `src/views/`                        | Seven-section portfolio composition                                    |
+| `src/views/`                        | HR portfolio and client-services page composition                      |
 | `src/components/`                   | Section/card/action primitives, navigation and section components      |
 | `src/locales/`                      | Typed EN/RU copy, locale paths, fresh i18n instances                   |
 | `src/router/`                       | Explicit routes and URL-driven locale guard                            |
@@ -84,16 +85,19 @@ Public configuration and repository data contain no secrets.
 These mechanisms passed the Stage 05 local audit. Production SEO has not been
 verified and no production deployment has been performed.
 
-- `/en/` and `/ru/` are independently loadable, indexable portfolio documents.
+- `/en/` and `/ru/` are independently loadable, indexable HR portfolio documents.
+  `/en/freelance/` and `/ru/freelance/` are their client-services counterparts.
+  The temporary `/en/deploy-test/` and `/ru/deploy-test/` blank routes are removed.
   `/` redirects to `/en/` as the default entry; persisted preferences must not
   prevent direct access to either language URL.
 - Router URL determines locale. Language switching preserves the equivalent
   page and section when possible. Primary navigation uses real anchor links.
-- Both HTML files contain localized visible copy, title/description, `html[lang]`
+- All four HTML files contain localized visible copy, unique title/description, `html[lang]`
   and Open Graph title/description/type/locale before JavaScript executes.
 - Optional `VITE_SITE_ORIGIN` accepts an HTTPS origin without credentials, path,
   query or fragment. It enables self-referencing canonical, reciprocal EN/RU
-  hreflang, `x-default` to `/en/`, Open Graph URL, sitemap and robots sitemap link.
+  hreflang and `x-default` to the equivalent English page, Open Graph URL,
+  a four-document sitemap and robots sitemap link.
   Without it, origin-dependent metadata and sitemap are deliberately omitted.
   OG/Twitter image metadata and JSON-LD are also omitted without origin;
   localized title/description, OG/Twitter text and permissive robots remain.
@@ -104,7 +108,7 @@ verified and no production deployment has been performed.
   `node scripts/render-social.mjs` renderer are their source workflow; builds copy
   committed PNGs and do not require font installation or image regeneration.
 - `src/seo/structuredData.ts` emits one safely serialized JSON-LD graph directly
-  in each localized HTML when origin exists. Person name/jobTitle/description
+  in each localized HR document when origin exists. Person name/jobTitle/description
   match visible copy; sameAs contains the existing GitHub/LinkedIn profiles.
   WebSite references Person through author. Stable root-scoped `/#person` and
   `/#website` identities represent the same entities in both locales. WebSite.url
@@ -118,6 +122,26 @@ verified and no production deployment has been performed.
 - Inspect built HTML without JavaScript, sitemap and link destinations before
   release. Verify HTTPS, redirects and response status against a real deployment
   only when separately authorized. Structured data reflects visible facts.
+
+## Client services page
+
+`FreelanceView.vue` composes the approved EN/RU Penpot services, delivered-work
+examples, delivery process, pricing, FAQ and contact sections. Copy belongs to
+`src/locales/freelance.ts`; real social destinations remain in
+`src/content/portfolio.ts`, including the design-confirmed Kwork profile.
+HR navigation links to services; services navigation and footer link back to HR.
+Language links preserve the page, query and section. Shared page metadata uses
+route identity to produce separate canonicals and translated equivalents.
+Person/WebSite structured data remains on HR; services reuse the existing social
+preview images without adding unsupported service claims.
+
+FAQ uses native inline disclosure elements. `FreelanceDialog.vue` owns native
+modal menu/USD states, focus containment/restoration and body scroll locking.
+RUB and USD starting prices are independent copy; no conversion, persistence or
+network API is involved. Direct contact links use the existing social components;
+there is no message form, backend or database. `src/styles/freelance.css` owns the
+responsive services layout and the secondary HR navigation link. The HR PDF
+viewer and its client-only loading boundary are unchanged.
 
 ## Portfolio content and interactions
 

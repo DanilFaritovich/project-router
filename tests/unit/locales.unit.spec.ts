@@ -13,12 +13,18 @@ describe('localization messages', () => {
     expect(Object.keys(messages.ru).sort()).toEqual(
       Object.keys(messages.en).sort(),
     )
-    for (const copy of Object.values(messages)) {
-      for (const [key, value] of Object.entries(copy)) {
+    function validate(value: unknown, key: string) {
+      if (typeof value === 'string') {
         expect(value.trim(), key).not.toBe('')
         expect(value, key).not.toMatch(/\b(?:TODO|FIXME|Lorem ipsum)\b/i)
+      } else {
+        expect(value).not.toBeNull()
+        for (const [child, text] of Object.entries(value as object))
+          validate(text, `${key}.${child}`)
       }
     }
+    for (const [locale, copy] of Object.entries(messages))
+      validate(copy, locale)
   })
 
   it.each(locales)(
