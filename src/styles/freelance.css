@@ -83,6 +83,8 @@
   margin-right: auto;
 }
 .freelance-desktop-links a {
+  color: var(--color-ink);
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -646,7 +648,6 @@
 .freelance-page .freelance-experience {
   color: var(--color-ink);
 }
-.freelance-desktop-links a,
 .freelance-page .freelance-case-label,
 .freelance-page .freelance-price,
 .freelance-evidence {
