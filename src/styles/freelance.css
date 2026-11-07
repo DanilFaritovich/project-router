@@ -97,6 +97,24 @@
 .freelance-header .language-switcher {
   flex-shrink: 0;
 }
+.freelance-portfolio-link {
+  gap: 16px;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.freelance-header .freelance-portfolio-switch {
+  border-left: 1px solid var(--color-line);
+  padding-left: 24px;
+}
+.freelance-dialog .freelance-portfolio-switch {
+  border-top: 1px solid var(--color-line);
+  padding-top: 20px;
+  margin-bottom: 20px;
+}
+.freelance-dialog .freelance-portfolio-link {
+  justify-content: space-between;
+  width: 100%;
+}
 .freelance-menu-trigger {
   display: none;
 }
@@ -449,7 +467,8 @@
 }
 @media (max-width: 999px) {
   .freelance-desktop-links,
-  .freelance-header-cta {
+  .freelance-header-cta,
+  .freelance-header .freelance-portfolio-switch {
     display: none !important;
   }
   .freelance-header .language-switcher {
@@ -627,7 +646,7 @@
 .freelance-page .freelance-experience {
   color: var(--color-ink);
 }
-.freelance-desktop-links a:not(:first-child),
+.freelance-desktop-links a,
 .freelance-page .freelance-case-label,
 .freelance-page .freelance-price,
 .freelance-evidence {

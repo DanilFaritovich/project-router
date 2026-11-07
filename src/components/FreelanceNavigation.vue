@@ -8,7 +8,6 @@ const { t, locale } = useI18n()
 const route = useRoute()
 const open = ref(false)
 const links = computed(() => [
-  { href: `/${locale.value}/`, text: t('portfolio') },
   { href: '#services', text: t('servicesPage.services') },
   { href: '#cases', text: t('servicesPage.cases') },
   { href: '#pricing', text: t('servicesPage.pricing') },
@@ -52,6 +51,11 @@ function navigate(event: MouseEvent) {
       <a class="action primary freelance-header-cta" href="#contacts">{{
         t('servicesPage.discuss')
       }}</a>
+      <div class="freelance-portfolio-switch">
+        <RouterLink class="action freelance-portfolio-link" :to="`/${locale}/`"
+          >{{ t('portfolio') }}<span aria-hidden="true">→</span></RouterLink
+        >
+      </div>
       <button
         class="action freelance-menu-trigger"
         type="button"
@@ -77,6 +81,14 @@ function navigate(event: MouseEvent) {
         t('servicesPage.discuss')
       }}</a>
     </nav>
+    <div class="freelance-portfolio-switch">
+      <RouterLink
+        class="action freelance-portfolio-link"
+        :to="`/${locale}/`"
+        @click="open = false"
+        >{{ t('portfolio') }}<span aria-hidden="true">→</span></RouterLink
+      >
+    </div>
     <LanguageSwitcher @navigate="open = false" />
   </FreelanceDialog>
 </template>

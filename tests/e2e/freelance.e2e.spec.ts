@@ -91,7 +91,20 @@ for (const locale of ['en', 'ru']) {
       await page.locator(`header a[lang="${other}"]`).click()
       await expect(page).toHaveURL(new RegExp(`/${other}/freelance/`))
       await expect(page.locator('html')).toHaveAttribute('lang', other)
-      await page.locator('.freelance-footer a').click()
+      if (width < 1000) {
+        await page.locator('.freelance-menu-trigger').click()
+        await page
+          .getByRole('dialog')
+          .locator('.freelance-portfolio-link')
+          .click()
+      } else {
+        await expect(page.locator('.freelance-desktop-links a')).toHaveCount(3)
+        for (const link of await page
+          .locator('.freelance-desktop-links a')
+          .all())
+          await expect(link).toHaveAttribute('href', /^#/)
+        await page.locator('header .freelance-portfolio-link').click()
+      }
       await expect(page).toHaveURL(new RegExp(`/${other}/$`))
       await expect(page.locator('#hero img')).toBeVisible()
       if (width < 768) {
