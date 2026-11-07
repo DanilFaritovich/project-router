@@ -85,7 +85,12 @@ export async function verifyOrigin(directory, origin) {
       [...sitemap.window.document.querySelectorAll('loc')].map(
         (node) => node.textContent,
       ),
-      [`${origin}/en/`, `${origin}/ru/`],
+      [
+        `${origin}/en/`,
+        `${origin}/ru/`,
+        `${origin}/en/freelance/`,
+        `${origin}/ru/freelance/`,
+      ],
     )
   } finally {
     sitemap.window.close()

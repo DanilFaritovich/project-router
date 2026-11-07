@@ -82,7 +82,7 @@ async function fixture(callback) {
     }
     await writeFile(
       join(directory, 'sitemap.xml'),
-      `<urlset><url><loc>${origin}/en/</loc></url><url><loc>${origin}/ru/</loc></url></urlset>`,
+      `<urlset><url><loc>${origin}/en/</loc></url><url><loc>${origin}/ru/</loc></url><url><loc>${origin}/en/freelance/</loc></url><url><loc>${origin}/ru/freelance/</loc></url></urlset>`,
     )
     await writeFile(
       join(directory, 'robots.txt'),

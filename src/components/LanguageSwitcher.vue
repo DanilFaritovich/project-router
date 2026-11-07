@@ -16,7 +16,9 @@ defineEmits<{ navigate: [] }>()
       v-for="language in locales"
       :key="language"
       :to="{
-        path: localePath(language),
+        path:
+          localePath(language) +
+          (route.meta.page === 'freelance' ? 'freelance/' : ''),
         query,
         hash: section ? (section === 'hero' ? '' : `#${section}`) : route.hash,
       }"

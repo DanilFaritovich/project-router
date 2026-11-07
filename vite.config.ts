@@ -16,8 +16,8 @@ export default defineConfig(({ mode }) => {
       includedRoutes: () => [
         '/en/',
         '/ru/',
-        '/en/deploy-test/',
-        '/ru/deploy-test/',
+        '/en/freelance/',
+        '/ru/freelance/',
       ],
       async onFinished() {
         // Root redirect also works without JavaScript on a plain static host.
@@ -37,10 +37,10 @@ export default defineConfig(({ mode }) => {
             .replaceAll('>', '&gt;')
             .replaceAll("'", '&apos;')
         if (origin) {
-          const urls = ['en', 'ru']
+          const urls = ['en/', 'ru/', 'en/freelance/', 'ru/freelance/']
             .map(
               (locale) =>
-                `<url><loc>${escapeXml(origin)}/${locale}/</loc></url>`,
+                `<url><loc>${escapeXml(origin)}/${locale}</loc></url>`,
             )
             .join('')
           await writeFile(
