@@ -3,6 +3,7 @@ import App from './App.vue'
 import { createAppI18n } from './locales'
 import { routes, installLocaleRouting } from './router'
 import './styles/main.css'
+import './styles/freelance.css'
 
 export const createApp = ViteSSG(
   App,

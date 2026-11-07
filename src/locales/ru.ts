@@ -1,5 +1,8 @@
+import { freelanceRu } from './freelance.ts'
 import type en from './en'
 export default {
+  forClients: 'Для заказчиков',
+  servicesPage: freelanceRu,
   heroPortraitAlt: 'Портрет Данила Мифтахова',
   title: 'Данил Мифтахов — Python Backend-разработчик',
   description:
@@ -226,4 +229,4 @@ export default {
   translationCaseTitle: 'Maxim · LLM-локализация географических названий',
   translationCaseDetail:
     'Реализовал перевод по правилам, согласованным с переводчиками, повторную LLM-проверку и условную доработку. Второй проход выделяет переводы для доработки перед завершением обработки.',
-} satisfies Record<keyof typeof en, string>
+} satisfies { [K in keyof typeof en]: (typeof en)[K] }

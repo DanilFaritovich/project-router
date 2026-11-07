@@ -8,17 +8,16 @@ const { locale } = useI18n()
 const route = useRoute()
 useHead(() => {
   const language = locale.value === 'ru' ? 'ru' : 'en'
-  if (route.meta.noindex) {
-    return {
-      htmlAttrs: { lang: language },
-      title: 'ProjectRouter',
-      meta: [{ name: 'robots', content: 'noindex' }],
-    }
-  }
   const origin = import.meta.env.VITE_SITE_ORIGIN
   return {
-    ...pageMetadata(language, origin),
-    ...structuredDataHead(language, origin),
+    ...pageMetadata(
+      language,
+      origin,
+      route.meta.page === 'freelance' ? 'freelance' : 'portfolio',
+    ),
+    ...(route.meta.page === 'freelance'
+      ? {}
+      : structuredDataHead(language, origin)),
   }
 })
 </script>
