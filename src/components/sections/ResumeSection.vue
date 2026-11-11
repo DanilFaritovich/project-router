@@ -1,5 +1,17 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, ref } from 'vue'
+import {
+  computed,
+  defineAsyncComponent,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from 'vue'
+import {
+  loadResumeModal,
+  prepareResumeOnIntent,
+  scheduleResumePreparation,
+} from '../../pdf/prepareResumes'
 import {
   resumes,
   resumeAvailable,
@@ -14,14 +26,33 @@ const { t, locale } = useI18n()
 const siteLanguage = computed<ResumeLanguage>(() =>
   locale.value === 'ru' ? 'ru' : 'en',
 )
-const ResumeModal = defineAsyncComponent(
-  () => import('../resume/ResumeModal.vue'),
-)
+const ResumeModal = defineAsyncComponent(loadResumeModal)
+let cancelPreparation: (() => void) | undefined
+let stopLanguageWatch: (() => void) | undefined
+onMounted(() => {
+  stopLanguageWatch = watch(
+    siteLanguage,
+    (language) => {
+      cancelPreparation?.()
+      cancelPreparation = scheduleResumePreparation(language)
+    },
+    { immediate: true },
+  )
+})
+onUnmounted(() => {
+  stopLanguageWatch?.()
+  cancelPreparation?.()
+})
 const selected = ref<Resume>()
 const language = ref<ResumeLanguage>('en')
 function show(resume: Resume) {
+  prepare(resume)
   language.value = siteLanguage.value
   selected.value = resume
+}
+function prepare(resume: Resume) {
+  if (resumeAvailable(resume.id, siteLanguage.value))
+    prepareResumeOnIntent(resumeUrl(resume.id, siteLanguage.value))
 }
 </script>
 
@@ -46,6 +77,8 @@ function show(resume: Resume) {
                 : undefined
             "
             @click="show(version)"
+            @pointerenter="prepare(version)"
+            @focus="prepare(version)"
             >{{ t('viewPdf') }}</UiAction
           >
           <UiAction
