@@ -183,10 +183,25 @@ Missing files keep the affected card actions disabled with localized explanation
 All six original, two-page A4 PDFs are included. Their bytes match the supplied
 archive; the archive itself is excluded from Git.
 
-`ResumeSection.vue` loads `components/resume/ResumeModal.vue` asynchronously on
-preview. Its client mount calls `src/pdf/loadPdf.ts`, which dynamically imports
-PDF.js and the Vite-emitted local worker URL; neither PDF.js nor browser/Canvas
-APIs execute during SSG. The native modal dialog provides background inertness;
+`ResumeSection.vue` schedules client-only preparation through
+`src/pdf/prepareResumes.ts` after page load and during browser idle time (with a
+timer fallback). It downloads the asynchronous modal, PDF.js and worker resource,
+and prepares the three available PDFs for the current site language sequentially.
+Viewer preparation and the document queue can run concurrently. Save-Data and
+reported 2G connections skip automatic preparation; pointer/focus intent still
+prepares the selected document. Language changes and unmount cancel scheduled
+work and pending background PDF requests, preserving requests claimed by preview.
+The services page does not schedule preparation.
+
+`src/pdf/resumeData.ts` shares pending requests and retains successful bytes in a
+per-tab memory cache restricted to the six catalog URLs. Each preview receives a
+copy because PDF.js transfers its input buffer to a worker. Failed requests and
+documents rejected by PDF.js are evicted so retry can fetch fresh bytes.
+`src/pdf/loadPdf.ts` shares runtime imports and warms the worker HTTP cache without
+starting a worker or rendering documents in the background. Preview starts its own
+document loading task using cached or concurrently fetched bytes. Neither PDF.js
+nor browser/Canvas APIs execute during SSG.
+The native modal dialog provides background inertness;
 the component contains Tab focus, handles cancel/Escape, locks body scrolling,
 restores the opener and destroys loading/rendering resources on unmount.
 Document language initializes from the site locale and then stays independent.
