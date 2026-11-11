@@ -373,11 +373,11 @@ test.describe('real resume viewer', () => {
   test('retries a failed PDF request and releases the modal on close', async ({
     page,
   }) => {
-    await page.goto('/ru/#resume')
     let fail = true
     await page.route('**/resumes/candidate-backend-ru.pdf', (route) =>
       fail ? route.abort() : route.continue(),
     )
+    await page.goto('/ru/#resume')
     await page
       .locator('#resume')
       .getByRole('button', { name: 'Открыть PDF' })

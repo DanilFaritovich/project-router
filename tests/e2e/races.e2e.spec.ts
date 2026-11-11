@@ -7,14 +7,6 @@ for (const width of [390, 1440]) {
     await page.setViewportSize({ width, height: 900 })
     const errors: string[] = []
     page.on('pageerror', (error) => errors.push(error.message))
-    const pdfRequests: string[] = []
-    page.on('request', (request) => pdfRequests.push(request.url()))
-    await page.goto('/en/#resume')
-    expect(
-      pdfRequests.some((url) =>
-        /pdf(?:\.worker)?[-.].*\.(?:js|mjs)$/.test(url),
-      ),
-    ).toBe(false)
     let release!: () => void
     const gate = new Promise<void>((resolve) => {
       release = resolve
@@ -28,6 +20,9 @@ for (const width of [390, 1440]) {
       await gate
       await route.continue().catch(() => {})
     })
+    await page.goto('/en/#resume')
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    expect(page.workers()).toHaveLength(0)
     const opener = page.locator('#resume article').first().getByRole('button')
     await opener.click()
     await arrived
