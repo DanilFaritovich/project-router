@@ -10,7 +10,7 @@ export default {
   language: 'Выбрать язык',
   languageLabel: 'Язык',
   portfolio: 'Портфолио',
-  location: 'Ереван, Армения',
+  location: 'Россия',
   skip: 'Перейти к содержимому',
   navigation: 'Разделы портфолио',
   menu: 'Меню',
@@ -192,7 +192,7 @@ export default {
     'Хотите обсудить работу или проект? Давайте поговорим о том, чем я могу помочь.',
   contactsDirect: 'Прямая связь',
   contactsProfiles: 'Профессиональные профили',
-  footer: 'Данил Мифтахов · Ереван, Армения',
+  footer: 'Данил Мифтахов · Россия',
   projectsIntroMobile:
     'Пайплайны данных, backend-логика и прикладная LLM-интеграция.',
   moreIntroMobile: 'ML-процессы и пример API на PostgreSQL.',
