@@ -9,7 +9,7 @@ export default {
   language: 'Choose language',
   languageLabel: 'Language',
   portfolio: 'Portfolio',
-  location: 'Yerevan, Armenia',
+  location: 'Russia',
   skip: 'Skip to content',
   navigation: 'Portfolio sections',
   menu: 'Menu',
@@ -190,7 +190,7 @@ export default {
   contactsCopy: 'Have a role or project in mind? Let’s discuss how I can help.',
   contactsDirect: 'Direct contact',
   contactsProfiles: 'Professional profiles',
-  footer: 'Danil Miftakhov · Yerevan, Armenia',
+  footer: 'Danil Miftakhov · Russia',
   projectsIntroMobile:
     'Data pipelines, backend rules and applied LLM integration.',
   moreIntroMobile: 'ML workflows and a PostgreSQL API example.',
