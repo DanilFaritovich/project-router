@@ -14,7 +14,7 @@ const repository = (name, development = false) =>
 export const languages = {
   en: {
     name: 'Danil Miftakhov',
-    location: 'Yerevan, Armenia · Open to remote work and relocation',
+    location: 'Russia · Open to remote work and relocation',
     labels: {
       profile: 'Profile',
       skills: 'Core skills',
@@ -49,7 +49,7 @@ export const languages = {
   },
   ru: {
     name: 'Данил Мифтахов',
-    location: 'Ереван, Армения · Удалённая работа и релокация',
+    location: 'Россия · Удалённая работа и релокация',
     labels: {
       profile: 'Профиль',
       skills: 'Ключевые навыки',
